@@ -48,6 +48,14 @@ towel-app/
 - 変更のたびにコミットを作成し、GitHubにプッシュすること
 - コミットは変更内容ごとに分けて管理する（1つの大きなコミットにまとめない）
 
+## TODO (保留タスク)
+
+- [ ] **Apple Developer Program有効化後にentitlementsを復元する**
+  - `project.yml` のentitlementsセクション（iCloud, CloudKit, Push Notifications）がコメントアウト中
+  - `CODE_SIGN_ENTITLEMENTS` 設定もコメントアウト中
+  - 有効化後: コメントを外し、`xcodegen generate` でプロジェクト再生成
+  - CloudKitコンソールで `iCloud.com.towel-app` コンテナも作成が必要
+
 ## Architecture
 
 - **MVVM**: Views observe ViewModels via `@Observable` macro
