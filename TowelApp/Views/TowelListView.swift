@@ -29,6 +29,14 @@ struct TowelListView: View {
         .sheet(isPresented: $showingAddForm) {
             TowelFormView()
         }
+        .alert("エラー", isPresented: Binding(
+            get: { viewModel.errorMessage != nil },
+            set: { if !$0 { viewModel.errorMessage = nil } }
+        )) {
+            Button("OK") { viewModel.errorMessage = nil }
+        } message: {
+            Text(viewModel.errorMessage ?? "")
+        }
     }
 
     private var emptyStateView: some View {

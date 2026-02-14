@@ -31,6 +31,14 @@ struct TowelDetailView: View {
         .sheet(isPresented: $showingEditForm) {
             TowelFormView(towel: towel)
         }
+        .alert("エラー", isPresented: Binding(
+            get: { viewModel.errorMessage != nil },
+            set: { if !$0 { viewModel.errorMessage = nil } }
+        )) {
+            Button("OK") { viewModel.errorMessage = nil }
+        } message: {
+            Text(viewModel.errorMessage ?? "")
+        }
         .alert("タオルを交換", isPresented: $showingExchangeConfirmation) {
             TextField("メモ（任意）", text: $exchangeNote)
             Button("交換した！") {

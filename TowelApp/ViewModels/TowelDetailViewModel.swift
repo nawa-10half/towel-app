@@ -5,6 +5,7 @@ import Observation
 @Observable
 final class TowelDetailViewModel {
     let towel: Towel
+    var errorMessage: String?
 
     init(towel: Towel) {
         self.towel = towel
@@ -17,10 +18,20 @@ final class TowelDetailViewModel {
     func exchangeNow(note: String? = nil, context: ModelContext) {
         let record = ExchangeRecord(exchangedAt: .now, note: note, towel: towel)
         context.insert(record)
-        NotificationService.shared.rescheduleNotification(for: towel)
+        do {
+            try context.save()
+            NotificationService.shared.rescheduleNotification(for: towel)
+        } catch {
+            errorMessage = "交換記録の保存に失敗しました: \(error.localizedDescription)"
+        }
     }
 
     func deleteRecord(_ record: ExchangeRecord, context: ModelContext) {
         context.delete(record)
+        do {
+            try context.save()
+        } catch {
+            errorMessage = "交換記録の削除に失敗しました: \(error.localizedDescription)"
+        }
     }
 }

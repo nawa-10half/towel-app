@@ -12,6 +12,7 @@ struct TowelFormView: View {
     @State private var iconName: String
     @State private var exchangeIntervalDays: Int
     @State private var showingIconPicker = false
+    @State private var errorMessage: String?
 
     private var isEditing: Bool { towel != nil }
 
@@ -52,6 +53,14 @@ struct TowelFormView: View {
             }
             .navigationTitle(isEditing ? "タオルを編集" : "タオルを追加")
             .navigationBarTitleDisplayMode(.inline)
+            .alert("エラー", isPresented: Binding(
+                get: { errorMessage != nil },
+                set: { if !$0 { errorMessage = nil } }
+            )) {
+                Button("OK") { errorMessage = nil }
+            } message: {
+                Text(errorMessage ?? "")
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("キャンセル") {
@@ -153,7 +162,12 @@ struct TowelFormView: View {
             NotificationService.shared.scheduleNotification(for: newTowel)
         }
 
-        dismiss()
+        do {
+            try modelContext.save()
+            dismiss()
+        } catch {
+            errorMessage = "保存に失敗しました: \(error.localizedDescription)"
+        }
     }
 }
 

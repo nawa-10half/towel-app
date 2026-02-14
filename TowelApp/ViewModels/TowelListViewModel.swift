@@ -5,6 +5,7 @@ import Observation
 @Observable
 final class TowelListViewModel {
     var searchText = ""
+    var errorMessage: String?
 
     func filteredTowels(_ towels: [Towel]) -> [Towel] {
         guard !searchText.isEmpty else { return towels }
@@ -16,6 +17,11 @@ final class TowelListViewModel {
 
     func deleteTowel(_ towel: Towel, context: ModelContext) {
         context.delete(towel)
+        do {
+            try context.save()
+        } catch {
+            errorMessage = "タオルの削除に失敗しました: \(error.localizedDescription)"
+        }
     }
 
     func sortedByStatus(_ towels: [Towel]) -> [Towel] {
