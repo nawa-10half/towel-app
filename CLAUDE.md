@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Towel App - タオルの交換タイミングを管理するiOSアプリ。家族間でCloudKit経由のデータ共有が可能。
+かえたお！ (Towel App) - タオルの交換タイミングを管理するiOSアプリ。家族間でCloudKit経由のデータ共有が可能。
 
 ## Tech Stack
 
