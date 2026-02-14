@@ -1,0 +1,162 @@
+import SwiftUI
+import SwiftData
+
+struct TowelDetailView: View {
+    @Environment(\.modelContext) private var modelContext
+    let towel: Towel
+    @State private var viewModel: TowelDetailViewModel
+    @State private var showingEditForm = false
+    @State private var showingExchangeConfirmation = false
+    @State private var exchangeNote = ""
+
+    init(towel: Towel) {
+        self.towel = towel
+        self._viewModel = State(initialValue: TowelDetailViewModel(towel: towel))
+    }
+
+    var body: some View {
+        List {
+            statusSection
+            actionSection
+            historySection
+        }
+        .navigationTitle(towel.name)
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button("編集") {
+                    showingEditForm = true
+                }
+            }
+        }
+        .sheet(isPresented: $showingEditForm) {
+            TowelFormView(towel: towel)
+        }
+        .alert("タオルを交換", isPresented: $showingExchangeConfirmation) {
+            TextField("メモ（任意）", text: $exchangeNote)
+            Button("交換した！") {
+                viewModel.exchangeNow(
+                    note: exchangeNote.isEmpty ? nil : exchangeNote,
+                    context: modelContext
+                )
+                exchangeNote = ""
+            }
+            Button("キャンセル", role: .cancel) {
+                exchangeNote = ""
+            }
+        } message: {
+            Text("交換記録を追加しますか？")
+        }
+    }
+
+    private var statusSection: some View {
+        Section {
+            HStack {
+                Label(towel.location, systemImage: "mappin")
+                Spacer()
+                Text("設置場所")
+                    .foregroundStyle(.secondary)
+            }
+
+            HStack {
+                Label("\(towel.exchangeIntervalDays)日ごと", systemImage: "calendar")
+                Spacer()
+                Text("交換間隔")
+                    .foregroundStyle(.secondary)
+            }
+
+            HStack {
+                Label("\(towel.daysSinceLastExchange)日経過", systemImage: "clock")
+                Spacer()
+                statusBadge
+            }
+
+            if let lastDate = towel.lastExchangedAt {
+                HStack {
+                    Label(lastDate.formatted日本語, systemImage: "arrow.counterclockwise")
+                    Spacer()
+                    Text("最終交換")
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            HStack {
+                Label(towel.nextExchangeDate.formattedDateOnly, systemImage: "arrow.forward")
+                Spacer()
+                Text("次回交換")
+                    .foregroundStyle(.secondary)
+            }
+        } header: {
+            Text("ステータス")
+        }
+    }
+
+    private var actionSection: some View {
+        Section {
+            Button {
+                showingExchangeConfirmation = true
+            } label: {
+                Label("交換した！", systemImage: "arrow.triangle.2.circlepath")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 4)
+            }
+            .buttonStyle(.borderedProminent)
+            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+        }
+    }
+
+    private var historySection: some View {
+        Section {
+            if viewModel.sortedRecords.isEmpty {
+                Text("交換履歴がありません")
+                    .foregroundStyle(.secondary)
+            } else {
+                ForEach(viewModel.sortedRecords) { record in
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(record.exchangedAt.formatted日本語)
+                            .font(.subheadline)
+                        if let note = record.note, !note.isEmpty {
+                            Text(note)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+                .onDelete { indexSet in
+                    let records = viewModel.sortedRecords
+                    for index in indexSet {
+                        viewModel.deleteRecord(records[index], context: modelContext)
+                    }
+                }
+            }
+        } header: {
+            Text("交換履歴")
+        }
+    }
+
+    private var statusBadge: some View {
+        Text(towel.status.label)
+            .font(.caption)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 3)
+            .background(statusColor.opacity(0.15))
+            .foregroundStyle(statusColor)
+            .clipShape(Capsule())
+    }
+
+    private var statusColor: Color {
+        switch towel.status {
+        case .ok: return .green
+        case .soon: return .orange
+        case .overdue: return .red
+        }
+    }
+}
+
+#Preview {
+    let towel = Towel(name: "バスタオル", location: "浴室", iconName: "shower.fill", exchangeIntervalDays: 3)
+    return NavigationStack {
+        TowelDetailView(towel: towel)
+    }
+    .modelContainer(for: [Towel.self, ExchangeRecord.self], inMemory: true)
+}
