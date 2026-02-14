@@ -15,7 +15,7 @@ struct TowelListView: View {
                 towelList
             }
         }
-        .navigationTitle("タオル")
+        .navigationTitle("タオリスト")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {
