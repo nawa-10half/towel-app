@@ -26,7 +26,7 @@ struct TowelFormView: View {
         "cup.and.saucer.fill",
         "washer.fill",
         "bed.double.fill",
-        "sportscourt.fill",
+        "toilet.fill",
         "figure.run",
         "dumbbell.fill"
     ]
