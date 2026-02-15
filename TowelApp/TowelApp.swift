@@ -6,6 +6,13 @@ struct TowelApp: App {
     let modelContainer: ModelContainer
 
     init() {
+        UserDefaults.standard.register(defaults: [
+            "notificationsEnabled": true,
+            "notificationHour": 8,
+            "notificationMinute": 0,
+            "overdueNotificationEnabled": true
+        ])
+
         do {
             let schema = Schema([Towel.self, ExchangeRecord.self])
             #if targetEnvironment(simulator)
@@ -22,6 +29,9 @@ struct TowelApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .task {
+                    await NotificationService.shared.requestPermission()
+                }
         }
         .modelContainer(modelContainer)
     }
