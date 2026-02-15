@@ -69,11 +69,12 @@ struct TowelListView: View {
                     }
                     .tint(.blue)
                 }
-            }
-            .onDelete { indexSet in
-                let sorted = viewModel.sortedByStatus(viewModel.filteredTowels(towels))
-                for index in indexSet {
-                    viewModel.deleteTowel(sorted[index], context: modelContext)
+                .swipeActions(edge: .trailing) {
+                    Button(role: .destructive) {
+                        viewModel.deleteTowel(towel, context: modelContext)
+                    } label: {
+                        Label("削除", systemImage: "trash")
+                    }
                 }
             }
         }

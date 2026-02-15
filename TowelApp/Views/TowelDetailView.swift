@@ -8,7 +8,6 @@ struct TowelDetailView: View {
     @State private var viewModel: TowelDetailViewModel
     @State private var showingEditForm = false
     @State private var showingExchangeSheet = false
-    @State private var showingImageSourceDialog = false
     @State private var showingCamera = false
     @State private var selectedPhotoItem: PhotosPickerItem?
     @State private var capturedImage: UIImage?
@@ -43,15 +42,6 @@ struct TowelDetailView: View {
         .fullScreenCover(isPresented: $showingCamera) {
             CameraPickerView(image: $capturedImage)
                 .ignoresSafeArea()
-        }
-        .confirmationDialog("写真の選択", isPresented: $showingImageSourceDialog) {
-            Button("カメラで撮影") {
-                showingCamera = true
-            }
-            Button("フォトライブラリから選択") {
-                // PhotosPicker handles this via selectedPhotoItem binding
-            }
-            Button("キャンセル", role: .cancel) {}
         }
         .onChange(of: capturedImage) { _, newImage in
             guard let image = newImage else { return }
@@ -154,9 +144,9 @@ struct TowelDetailView: View {
                 }
             } else {
                 Button {
-                    showingImageSourceDialog = true
+                    showingCamera = true
                 } label: {
-                    Label("状態をチェック", systemImage: "camera")
+                    Label("カメラで撮影", systemImage: "camera")
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 4)
@@ -165,11 +155,13 @@ struct TowelDetailView: View {
                 .buttonStyle(.borderedProminent)
                 .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
 
-                // PhotosPicker as hidden trigger — activated from confirmation dialog
                 PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
-                    Label("フォトライブラリから選択", systemImage: "photo.on.rectangle")
+                    Label("写真から選択", systemImage: "photo.on.rectangle")
+                        .font(.headline)
                         .frame(maxWidth: .infinity)
+                        .padding(.vertical, 4)
                 }
+                .tint(.indigo)
                 .buttonStyle(.bordered)
                 .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 8, trailing: 16))
             }
