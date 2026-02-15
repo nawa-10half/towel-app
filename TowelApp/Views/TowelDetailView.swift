@@ -31,7 +31,7 @@ struct TowelDetailView: View {
             TowelFormView(towel: towel)
         }
         .sheet(isPresented: $showingExchangeSheet) {
-            ExchangeRecordSheet(towel: towel, viewModel: viewModel)
+            ExchangeRecordSheet(towel: towel)
         }
         .alert("エラー", isPresented: Binding(
             get: { viewModel.errorMessage != nil },
@@ -90,13 +90,12 @@ struct TowelDetailView: View {
             Button {
                 showingExchangeSheet = true
             } label: {
-                Label("交換した！", systemImage: "checkmark.circle.fill")
+                Text("交換した！")
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 4)
             }
             .buttonStyle(.borderedProminent)
-            .tint(.green)
             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
         }
     }
@@ -151,11 +150,10 @@ struct TowelDetailView: View {
 
 // MARK: - Exchange Record Sheet
 
-private struct ExchangeRecordSheet: View {
+struct ExchangeRecordSheet: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     let towel: Towel
-    let viewModel: TowelDetailViewModel
     @State private var exchangeDate = Date.now
     @State private var exchangeNote = ""
 
@@ -187,11 +185,14 @@ private struct ExchangeRecordSheet: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("記録する") {
-                        viewModel.exchangeNow(
-                            at: exchangeDate,
+                        let record = ExchangeRecord(
+                            exchangedAt: exchangeDate,
                             note: exchangeNote.isEmpty ? nil : exchangeNote,
-                            context: modelContext
+                            towel: towel
                         )
+                        modelContext.insert(record)
+                        try? modelContext.save()
+                        NotificationService.shared.rescheduleNotification(for: towel)
                         dismiss()
                     }
                     .fontWeight(.semibold)

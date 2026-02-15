@@ -6,6 +6,7 @@ struct TowelListView: View {
     @Query(sort: \Towel.createdAt, order: .reverse) private var towels: [Towel]
     @State private var viewModel = TowelListViewModel()
     @State private var showingAddForm = false
+    @State private var towelToExchange: Towel?
 
     var body: some View {
         Group {
@@ -60,6 +61,14 @@ struct TowelListView: View {
                 NavigationLink(value: towel) {
                     TowelRowView(towel: towel)
                 }
+                .swipeActions(edge: .leading) {
+                    Button {
+                        towelToExchange = towel
+                    } label: {
+                        Text("交換した！")
+                    }
+                    .tint(.blue)
+                }
             }
             .onDelete { indexSet in
                 let sorted = viewModel.sortedByStatus(viewModel.filteredTowels(towels))
@@ -70,6 +79,9 @@ struct TowelListView: View {
         }
         .navigationDestination(for: Towel.self) { towel in
             TowelDetailView(towel: towel)
+        }
+        .sheet(item: $towelToExchange) { towel in
+            ExchangeRecordSheet(towel: towel)
         }
     }
 }
