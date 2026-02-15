@@ -1,9 +1,12 @@
 import SwiftUI
+import SwiftData
 
 struct SettingsView: View {
     @AppStorage("notificationsEnabled") private var notificationsEnabled = true
     @AppStorage("notificationHour") private var notificationHour = 8
     @AppStorage("notificationMinute") private var notificationMinute = 0
+    @AppStorage("overdueNotificationEnabled") private var overdueNotificationEnabled = true
+    @Query private var towels: [Towel]
     @State private var showingShareSheet = false
     @State private var notificationPermissionDenied = false
 
@@ -19,6 +22,7 @@ struct SettingsView: View {
                 let components = Calendar.current.dateComponents([.hour, .minute], from: newValue)
                 notificationHour = components.hour ?? 8
                 notificationMinute = components.minute ?? 0
+                NotificationService.shared.rescheduleAllNotifications(for: towels)
             }
         )
     }
@@ -49,7 +53,18 @@ struct SettingsView: View {
             Toggle("リマインダー通知", isOn: $notificationsEnabled)
                 .onChange(of: notificationsEnabled) { _, newValue in
                     if newValue {
-                        requestNotificationPermission()
+                        Task {
+                            let granted = await NotificationService.shared.requestPermission()
+                            if granted {
+                                NotificationService.shared.rescheduleAllNotifications(for: towels)
+                            } else {
+                                await MainActor.run {
+                                    notificationPermissionDenied = true
+                                }
+                            }
+                        }
+                    } else {
+                        NotificationService.shared.cancelAllNotifications()
                     }
                 }
 
@@ -59,11 +74,20 @@ struct SettingsView: View {
                     selection: notificationTime,
                     displayedComponents: .hourAndMinute
                 )
+
+                Toggle("期限切れリマインド", isOn: $overdueNotificationEnabled)
+                    .onChange(of: overdueNotificationEnabled) { _, _ in
+                        NotificationService.shared.rescheduleAllNotifications(for: towels)
+                    }
             }
         } header: {
             Text("通知")
         } footer: {
-            Text("交換時期が近づくとリマインダーが届きます")
+            if notificationsEnabled {
+                Text("交換期限を過ぎたタオルについてもリマインドします")
+            } else {
+                Text("交換時期が近づくとリマインダーが届きます")
+            }
         }
     }
 
@@ -94,17 +118,6 @@ struct SettingsView: View {
             }
         } header: {
             Text("アプリ情報")
-        }
-    }
-
-    private func requestNotificationPermission() {
-        Task {
-            let granted = await NotificationService.shared.requestPermission()
-            if !granted {
-                await MainActor.run {
-                    notificationPermissionDenied = true
-                }
-            }
         }
     }
 }
