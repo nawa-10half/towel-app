@@ -16,6 +16,7 @@ final class TowelListViewModel {
     }
 
     func deleteTowel(_ towel: Towel, context: ModelContext) {
+        NotificationService.shared.cancelNotification(for: towel)
         context.delete(towel)
         do {
             try context.save()
