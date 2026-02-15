@@ -6,8 +6,7 @@ struct TowelDetailView: View {
     let towel: Towel
     @State private var viewModel: TowelDetailViewModel
     @State private var showingEditForm = false
-    @State private var showingExchangeConfirmation = false
-    @State private var exchangeNote = ""
+    @State private var showingExchangeSheet = false
 
     init(towel: Towel) {
         self.towel = towel
@@ -31,6 +30,9 @@ struct TowelDetailView: View {
         .sheet(isPresented: $showingEditForm) {
             TowelFormView(towel: towel)
         }
+        .sheet(isPresented: $showingExchangeSheet) {
+            ExchangeRecordSheet(towel: towel, viewModel: viewModel)
+        }
         .alert("エラー", isPresented: Binding(
             get: { viewModel.errorMessage != nil },
             set: { if !$0 { viewModel.errorMessage = nil } }
@@ -38,21 +40,6 @@ struct TowelDetailView: View {
             Button("OK") { viewModel.errorMessage = nil }
         } message: {
             Text(viewModel.errorMessage ?? "")
-        }
-        .alert("タオルを交換", isPresented: $showingExchangeConfirmation) {
-            TextField("メモ（任意）", text: $exchangeNote)
-            Button("交換した！") {
-                viewModel.exchangeNow(
-                    note: exchangeNote.isEmpty ? nil : exchangeNote,
-                    context: modelContext
-                )
-                exchangeNote = ""
-            }
-            Button("キャンセル", role: .cancel) {
-                exchangeNote = ""
-            }
-        } message: {
-            Text("交換記録を追加しますか？")
         }
     }
 
@@ -101,14 +88,15 @@ struct TowelDetailView: View {
     private var actionSection: some View {
         Section {
             Button {
-                showingExchangeConfirmation = true
+                showingExchangeSheet = true
             } label: {
-                Label("交換した！", systemImage: "arrow.triangle.2.circlepath")
+                Label("交換した！", systemImage: "checkmark.circle.fill")
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 4)
             }
             .buttonStyle(.borderedProminent)
+            .tint(.green)
             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
         }
     }
@@ -158,6 +146,59 @@ struct TowelDetailView: View {
         case .soon: return .orange
         case .overdue: return .red
         }
+    }
+}
+
+// MARK: - Exchange Record Sheet
+
+private struct ExchangeRecordSheet: View {
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
+    let towel: Towel
+    let viewModel: TowelDetailViewModel
+    @State private var exchangeDate = Date.now
+    @State private var exchangeNote = ""
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    DatePicker(
+                        "交換日時",
+                        selection: $exchangeDate,
+                        in: ...Date.now,
+                        displayedComponents: [.date, .hourAndMinute]
+                    )
+                } header: {
+                    Text("いつ交換しましたか？")
+                }
+
+                Section {
+                    TextField("メモ（任意）", text: $exchangeNote)
+                }
+            }
+            .navigationTitle("交換記録")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("キャンセル") {
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("記録する") {
+                        viewModel.exchangeNow(
+                            at: exchangeDate,
+                            note: exchangeNote.isEmpty ? nil : exchangeNote,
+                            context: modelContext
+                        )
+                        dismiss()
+                    }
+                    .fontWeight(.semibold)
+                }
+            }
+        }
+        .presentationDetents([.medium])
     }
 }
 

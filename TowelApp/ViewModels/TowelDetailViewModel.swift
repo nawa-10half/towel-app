@@ -15,8 +15,8 @@ final class TowelDetailViewModel {
         towel.records.sorted { $0.exchangedAt > $1.exchangedAt }
     }
 
-    func exchangeNow(note: String? = nil, context: ModelContext) {
-        let record = ExchangeRecord(exchangedAt: .now, note: note, towel: towel)
+    func exchangeNow(at date: Date = .now, note: String? = nil, context: ModelContext) {
+        let record = ExchangeRecord(exchangedAt: date, note: note, towel: towel)
         context.insert(record)
         do {
             try context.save()
