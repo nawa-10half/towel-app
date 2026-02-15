@@ -20,10 +20,14 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>UIRequiresFullScreen</key>
-	<true/>
+	<key>ConditionCheckAPIURL</key>
+	<string>$(CONDITION_CHECK_API_URL)</string>
+	<key>NSCameraUsageDescription</key>
+	<string>タオルの状態を診断するために写真を撮影します</string>
 	<key>UILaunchScreen</key>
 	<dict/>
+	<key>UIRequiresFullScreen</key>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
