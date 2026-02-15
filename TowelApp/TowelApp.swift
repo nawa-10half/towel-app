@@ -30,7 +30,7 @@ struct TowelApp: App {
         WindowGroup {
             ContentView()
                 .task {
-                    await NotificationService.shared.requestPermission()
+                    _ = await NotificationService.shared.requestPermission()
                 }
         }
         .modelContainer(modelContainer)
