@@ -99,10 +99,31 @@ export const handler = async (event) => {
     };
   } catch (error) {
     console.error("Error:", error);
+
+    let statusCode = 500;
+    let message = "サーバーで予期しないエラーが発生しました";
+
+    if (error.status === 400) {
+      statusCode = 400;
+      message = "リクエストが不正です。画像データを確認してください";
+    } else if (error.status === 401) {
+      statusCode = 401;
+      message = "APIの認証に失敗しました";
+    } else if (error.status === 403 || error.message?.includes("credit balance")) {
+      statusCode = 402;
+      message = "APIのクレジット残高が不足しています";
+    } else if (error.status === 429) {
+      statusCode = 429;
+      message = "リクエストが多すぎます。しばらく待ってから再試行してください";
+    } else if (error.status === 529) {
+      statusCode = 503;
+      message = "APIが一時的に混み合っています。しばらく待ってから再試行してください";
+    }
+
     return {
-      statusCode: 500,
+      statusCode,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ error: error.message }),
+      body: JSON.stringify({ error: message }),
     };
   }
 };
