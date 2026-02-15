@@ -132,11 +132,12 @@ struct TowelDetailView: View {
             Button {
                 showingExchangeSheet = true
             } label: {
-                Text("交換した！")
+                Text("🔄 交換した！")
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 4)
             }
+            .tint(.green)
             .buttonStyle(.borderedProminent)
             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
         }
