@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import PhotosUI
 
 struct TowelDetailView: View {
     @Environment(\.modelContext) private var modelContext
@@ -7,6 +8,10 @@ struct TowelDetailView: View {
     @State private var viewModel: TowelDetailViewModel
     @State private var showingEditForm = false
     @State private var showingExchangeSheet = false
+    @State private var showingImageSourceDialog = false
+    @State private var showingCamera = false
+    @State private var selectedPhotoItem: PhotosPickerItem?
+    @State private var capturedImage: UIImage?
 
     init(towel: Towel) {
         self.towel = towel
@@ -17,6 +22,8 @@ struct TowelDetailView: View {
         List {
             statusSection
             actionSection
+            conditionCheckSection
+            conditionHistorySection
             historySection
         }
         .navigationTitle(towel.name)
@@ -33,6 +40,34 @@ struct TowelDetailView: View {
         .sheet(isPresented: $showingExchangeSheet) {
             ExchangeRecordSheet(towel: towel)
         }
+        .fullScreenCover(isPresented: $showingCamera) {
+            CameraPickerView(image: $capturedImage)
+                .ignoresSafeArea()
+        }
+        .confirmationDialog("写真の選択", isPresented: $showingImageSourceDialog) {
+            Button("カメラで撮影") {
+                showingCamera = true
+            }
+            Button("フォトライブラリから選択") {
+                // PhotosPicker handles this via selectedPhotoItem binding
+            }
+            Button("キャンセル", role: .cancel) {}
+        }
+        .onChange(of: capturedImage) { _, newImage in
+            guard let image = newImage else { return }
+            processImage(image)
+            capturedImage = nil
+        }
+        .onChange(of: selectedPhotoItem) { _, newItem in
+            guard let item = newItem else { return }
+            Task {
+                if let data = try? await item.loadTransferable(type: Data.self),
+                   let image = UIImage(data: data) {
+                    processImage(image)
+                }
+            }
+            selectedPhotoItem = nil
+        }
         .alert("エラー", isPresented: Binding(
             get: { viewModel.errorMessage != nil },
             set: { if !$0 { viewModel.errorMessage = nil } }
@@ -40,6 +75,13 @@ struct TowelDetailView: View {
             Button("OK") { viewModel.errorMessage = nil }
         } message: {
             Text(viewModel.errorMessage ?? "")
+        }
+    }
+
+    private func processImage(_ image: UIImage) {
+        guard let imageData = image.jpegDataResized() else { return }
+        Task {
+            await viewModel.assessCondition(imageData: imageData, context: modelContext)
         }
     }
 
@@ -97,6 +139,74 @@ struct TowelDetailView: View {
             }
             .buttonStyle(.borderedProminent)
             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+        }
+    }
+
+    private var conditionCheckSection: some View {
+        Section {
+            if viewModel.isAssessing {
+                HStack {
+                    ProgressView()
+                    Text("診断中...")
+                        .foregroundStyle(.secondary)
+                        .padding(.leading, 8)
+                }
+            } else {
+                Button {
+                    showingImageSourceDialog = true
+                } label: {
+                    Label("状態をチェック", systemImage: "camera")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 4)
+                }
+                .tint(.indigo)
+                .buttonStyle(.borderedProminent)
+                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+
+                // PhotosPicker as hidden trigger — activated from confirmation dialog
+                PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
+                    Label("フォトライブラリから選択", systemImage: "photo.on.rectangle")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 8, trailing: 16))
+            }
+
+            if let latest = towel.latestConditionCheck {
+                NavigationLink {
+                    ConditionCheckDetailView(conditionCheck: latest)
+                } label: {
+                    ConditionCheckRowView(conditionCheck: latest)
+                }
+            }
+        } header: {
+            Text("状態診断")
+        }
+    }
+
+    private var conditionHistorySection: some View {
+        Section {
+            if viewModel.sortedConditionChecks.isEmpty {
+                Text("診断履歴がありません")
+                    .foregroundStyle(.secondary)
+            } else {
+                ForEach(viewModel.sortedConditionChecks) { check in
+                    NavigationLink {
+                        ConditionCheckDetailView(conditionCheck: check)
+                    } label: {
+                        ConditionCheckRowView(conditionCheck: check)
+                    }
+                }
+                .onDelete { indexSet in
+                    let checks = viewModel.sortedConditionChecks
+                    for index in indexSet {
+                        viewModel.deleteConditionCheck(checks[index], context: modelContext)
+                    }
+                }
+            }
+        } header: {
+            Text("診断履歴")
         }
     }
 
@@ -208,5 +318,5 @@ struct ExchangeRecordSheet: View {
     return NavigationStack {
         TowelDetailView(towel: towel)
     }
-    .modelContainer(for: [Towel.self, ExchangeRecord.self], inMemory: true)
+    .modelContainer(for: [Towel.self, ExchangeRecord.self, ConditionCheck.self], inMemory: true)
 }

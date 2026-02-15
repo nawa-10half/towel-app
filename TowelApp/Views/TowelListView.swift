@@ -90,5 +90,5 @@ struct TowelListView: View {
     NavigationStack {
         TowelListView()
     }
-    .modelContainer(for: [Towel.self, ExchangeRecord.self], inMemory: true)
+    .modelContainer(for: [Towel.self, ExchangeRecord.self, ConditionCheck.self], inMemory: true)
 }
