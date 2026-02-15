@@ -14,7 +14,7 @@ struct TowelApp: App {
         ])
 
         do {
-            let schema = Schema([Towel.self, ExchangeRecord.self])
+            let schema = Schema([Towel.self, ExchangeRecord.self, ConditionCheck.self])
             #if targetEnvironment(simulator)
             let config = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
             #else

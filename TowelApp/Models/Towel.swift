@@ -13,6 +13,10 @@ final class Towel {
     @Relationship(deleteRule: .cascade, inverse: \ExchangeRecord.towel)
     var records: [ExchangeRecord]
 
+
+    @Relationship(deleteRule: .cascade, inverse: \ConditionCheck.towel)
+    var conditionChecks: [ConditionCheck]
+
     init(
         id: UUID = UUID(),
         name: String,
@@ -28,6 +32,7 @@ final class Towel {
         self.exchangeIntervalDays = exchangeIntervalDays
         self.createdAt = createdAt
         self.records = []
+        self.conditionChecks = []
     }
 
     var lastExchangedAt: Date? {
@@ -55,6 +60,10 @@ final class Towel {
         } else {
             return .ok
         }
+    }
+
+    var latestConditionCheck: ConditionCheck? {
+        conditionChecks.max(by: { $0.checkedAt < $1.checkedAt })
     }
 }
 
