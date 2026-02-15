@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 import PhotosUI
+import AVFoundation
 
 struct TowelDetailView: View {
     @Environment(\.modelContext) private var modelContext
@@ -9,6 +10,7 @@ struct TowelDetailView: View {
     @State private var showingEditForm = false
     @State private var showingExchangeSheet = false
     @State private var showingCamera = false
+    @State private var showingCameraPermissionAlert = false
     @State private var selectedPhotoItem: PhotosPickerItem?
     @State private var capturedImage: UIImage?
 
@@ -58,6 +60,16 @@ struct TowelDetailView: View {
             }
             selectedPhotoItem = nil
         }
+        .alert("カメラへのアクセス", isPresented: $showingCameraPermissionAlert) {
+            Button("設定を開く") {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            }
+            Button("キャンセル", role: .cancel) {}
+        } message: {
+            Text("カメラを使用するには、設定からカメラへのアクセスを許可してください。")
+        }
         .alert("エラー", isPresented: Binding(
             get: { viewModel.errorMessage != nil },
             set: { if !$0 { viewModel.errorMessage = nil } }
@@ -65,6 +77,23 @@ struct TowelDetailView: View {
             Button("OK") { viewModel.errorMessage = nil }
         } message: {
             Text(viewModel.errorMessage ?? "")
+        }
+    }
+
+    private func checkCameraPermission() {
+        switch AVCaptureDevice.authorizationStatus(for: .video) {
+        case .authorized:
+            showingCamera = true
+        case .notDetermined:
+            AVCaptureDevice.requestAccess(for: .video) { granted in
+                if granted {
+                    DispatchQueue.main.async { showingCamera = true }
+                }
+            }
+        case .denied, .restricted:
+            showingCameraPermissionAlert = true
+        @unknown default:
+            showingCameraPermissionAlert = true
         }
     }
 
@@ -144,7 +173,7 @@ struct TowelDetailView: View {
                 }
             } else {
                 Button {
-                    showingCamera = true
+                    checkCameraPermission()
                 } label: {
                     Label("カメラで撮影", systemImage: "camera")
                         .font(.headline)
