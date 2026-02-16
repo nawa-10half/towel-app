@@ -1,6 +1,7 @@
 import Foundation
 import SwiftData
 import Observation
+import WidgetKit
 
 @Observable
 final class TowelListViewModel {
@@ -20,6 +21,7 @@ final class TowelListViewModel {
         context.delete(towel)
         do {
             try context.save()
+            WidgetCenter.shared.reloadAllTimelines()
         } catch {
             errorMessage = "タオルの削除に失敗しました: \(error.localizedDescription)"
         }

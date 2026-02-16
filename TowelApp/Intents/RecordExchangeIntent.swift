@@ -1,5 +1,6 @@
 import AppIntents
 import SwiftData
+import WidgetKit
 
 struct RecordExchangeIntent: AppIntent {
     static var title: LocalizedStringResource = "タオルの交換を記録"
@@ -27,6 +28,7 @@ struct RecordExchangeIntent: AppIntent {
         try context.save()
 
         NotificationService.shared.rescheduleNotification(for: foundTowel)
+        WidgetCenter.shared.reloadAllTimelines()
 
         return .result(dialog: "\(foundTowel.name)の交換を記録しました")
     }
