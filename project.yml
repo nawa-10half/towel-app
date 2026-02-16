@@ -53,7 +53,8 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.towel-app.TowelApp
         INFOPLIST_FILE: TowelApp/Info.plist
-        CODE_SIGN_ENTITLEMENTS: TowelApp/TowelApp.entitlements
+        # TODO: Developer Program有効化後にコメントを外す
+        # CODE_SIGN_ENTITLEMENTS: TowelApp/TowelApp.entitlements
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         CONDITION_CHECK_API_URL: https://REDACTED.execute-api.ap-northeast-1.amazonaws.com/prod/assess-nova
