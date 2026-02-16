@@ -1,13 +1,26 @@
 import SwiftData
 
 enum SharedModelContainer {
+    static let schema = Schema([Towel.self, ExchangeRecord.self, ConditionCheck.self])
+
     static let shared: ModelContainer = {
         do {
-            let schema = Schema([Towel.self, ExchangeRecord.self, ConditionCheck.self])
+            let config: ModelConfiguration
             #if targetEnvironment(simulator)
-            let config = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
+            config = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
             #else
-            let config = ModelConfiguration(schema: schema, cloudKitDatabase: .automatic)
+            if let groupURL = FileManager.default.containerURL(
+                forSecurityApplicationGroupIdentifier: "group.com.towel-app"
+            ) {
+                let storeURL = groupURL.appendingPathComponent("default.store")
+                config = ModelConfiguration(
+                    schema: schema,
+                    url: storeURL,
+                    cloudKitDatabase: .automatic
+                )
+            } else {
+                config = ModelConfiguration(schema: schema, cloudKitDatabase: .automatic)
+            }
             #endif
             return try ModelContainer(for: schema, configurations: [config])
         } catch {
