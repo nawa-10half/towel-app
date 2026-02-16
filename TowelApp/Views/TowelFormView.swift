@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import WidgetKit
 
 struct TowelFormView: View {
     @Environment(\.modelContext) private var modelContext
@@ -164,6 +165,7 @@ struct TowelFormView: View {
 
         do {
             try modelContext.save()
+            WidgetCenter.shared.reloadAllTimelines()
             dismiss()
         } catch {
             errorMessage = "保存に失敗しました: \(error.localizedDescription)"

@@ -2,6 +2,7 @@ import SwiftUI
 import SwiftData
 import PhotosUI
 import AVFoundation
+import WidgetKit
 
 struct TowelDetailView: View {
     @Environment(\.modelContext) private var modelContext
@@ -325,6 +326,7 @@ struct ExchangeRecordSheet: View {
                         modelContext.insert(record)
                         try? modelContext.save()
                         NotificationService.shared.rescheduleNotification(for: towel)
+                        WidgetCenter.shared.reloadAllTimelines()
                         dismiss()
                     }
                     .fontWeight(.semibold)
