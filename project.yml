@@ -18,8 +18,9 @@ targets:
     platform: iOS
     sources:
       - TowelApp
-    dependencies:
-      - target: TowelWidgetExtension
+    # TODO: Widget復元 - Developer Program有効化後にコメントを外す
+    # dependencies:
+    #   - target: TowelWidgetExtension
     # TODO: Developer Program有効化後にentitlementsを復元する
     # entitlements:
     #   path: TowelApp/TowelApp.entitlements
@@ -57,33 +58,34 @@ targets:
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         CONDITION_CHECK_API_URL: https://REDACTED.execute-api.ap-northeast-1.amazonaws.com/prod/assess-nova
 
-  TowelWidgetExtension:
-    type: app-extension
-    platform: iOS
-    sources:
-      - path: TowelWidget
-      - path: TowelApp/Models
-        name: SharedModels
-      - path: TowelApp/Services/SharedModelContainer.swift
-        name: SharedModelContainer
-      - path: TowelApp/Utilities/DateExtensions.swift
-        name: DateExtensions
-    info:
-      path: TowelWidget/Info.plist
-      properties:
-        CFBundleDisplayName: TowelWidget
-        CFBundleShortVersionString: "1.0"
-        CFBundleVersion: "1"
-        NSExtension:
-          NSExtensionPointIdentifier: com.apple.widgetkit-extension
-    entitlements:
-      path: TowelWidget/TowelWidget.entitlements
-      properties:
-        com.apple.security.application-groups:
-          - group.com.towel-app
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.towel-app.TowelApp.TowelWidget
-        INFOPLIST_FILE: TowelWidget/Info.plist
-        CODE_SIGN_ENTITLEMENTS: TowelWidget/TowelWidget.entitlements
-        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+  # TODO: Widget復元 - Developer Program有効化後にコメントを外す
+  # TowelWidgetExtension:
+  #   type: app-extension
+  #   platform: iOS
+  #   sources:
+  #     - path: TowelWidget
+  #     - path: TowelApp/Models
+  #       name: SharedModels
+  #     - path: TowelApp/Services/SharedModelContainer.swift
+  #       name: SharedModelContainer
+  #     - path: TowelApp/Utilities/DateExtensions.swift
+  #       name: DateExtensions
+  #   info:
+  #     path: TowelWidget/Info.plist
+  #     properties:
+  #       CFBundleDisplayName: TowelWidget
+  #       CFBundleShortVersionString: "1.0"
+  #       CFBundleVersion: "1"
+  #       NSExtension:
+  #         NSExtensionPointIdentifier: com.apple.widgetkit-extension
+  #   entitlements:
+  #     path: TowelWidget/TowelWidget.entitlements
+  #     properties:
+  #       com.apple.security.application-groups:
+  #         - group.com.towel-app
+  #   settings:
+  #     base:
+  #       PRODUCT_BUNDLE_IDENTIFIER: com.towel-app.TowelApp.TowelWidget
+  #       INFOPLIST_FILE: TowelWidget/Info.plist
+  #       CODE_SIGN_ENTITLEMENTS: TowelWidget/TowelWidget.entitlements
+  #       ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
