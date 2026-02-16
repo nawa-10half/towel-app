@@ -5,7 +5,7 @@ import {
 
 const client = new BedrockRuntimeClient({ region: "ap-northeast-1" });
 
-const MODEL_ID = "jp.amazon.nova-2-lite-v1:0";
+const MODEL_ID = "jp.anthropic.claude-haiku-4-5-20251001-v1:0";
 
 const SYSTEM_PROMPT = `あなたはタオルの状態を診断する専門家です。
 ユーザーが送信したタオルの写真を分析し、以下の4項目を100点満点で評価してください。
