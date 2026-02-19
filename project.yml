@@ -1,6 +1,6 @@
 name: TowelApp
 options:
-  bundleIdPrefix: com.kaetao-app
+  bundleIdPrefix: com.kaetao
   deploymentTarget:
     iOS: "17.0"
   xcodeVersion: "16.0"
@@ -24,12 +24,12 @@ targets:
       path: TowelApp/TowelApp.entitlements
       properties:
         com.apple.developer.icloud-container-identifiers:
-          - iCloud.com.kaetao-app.TowelApp
+          - iCloud.com.kaetao.TowelApp
         com.apple.developer.icloud-services:
           - CloudKit
         aps-environment: development
         com.apple.security.application-groups:
-          - group.com.kaetao-app.TowelApp
+          - group.com.kaetao.TowelApp
     info:
       path: TowelApp/Info.plist
       properties:
@@ -51,7 +51,7 @@ targets:
               - towelapp
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.kaetao-app.TowelApp
+        PRODUCT_BUNDLE_IDENTIFIER: com.kaetao.TowelApp
         INFOPLIST_FILE: TowelApp/Info.plist
         CODE_SIGN_ENTITLEMENTS: TowelApp/TowelApp.entitlements
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
@@ -81,10 +81,10 @@ targets:
       path: TowelWidget/TowelWidget.entitlements
       properties:
         com.apple.security.application-groups:
-          - group.com.kaetao-app.TowelApp
+          - group.com.kaetao.TowelApp
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.kaetao-app.TowelApp.TowelWidget
+        PRODUCT_BUNDLE_IDENTIFIER: com.kaetao.TowelApp.TowelWidget
         INFOPLIST_FILE: TowelWidget/Info.plist
         CODE_SIGN_ENTITLEMENTS: TowelWidget/TowelWidget.entitlements
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
