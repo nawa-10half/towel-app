@@ -4,14 +4,6 @@ import GoogleSignIn
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(
-        _ application: UIApplication,
-        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
-    ) -> Bool {
-        FirebaseApp.configure()
-        return true
-    }
-
-    func application(
         _ app: UIApplication,
         open url: URL,
         options: [UIApplication.OpenURLOptionsKey: Any] = [:]
@@ -23,9 +15,11 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct TowelApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    @State private var authService = AuthService.shared
+    @State private var authService: AuthService
 
     init() {
+        FirebaseApp.configure()
+        _authService = State(initialValue: AuthService.shared)
         UserDefaults.standard.register(defaults: [
             "notificationsEnabled": true,
             "notificationHour": 8,
