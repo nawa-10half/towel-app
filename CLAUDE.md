@@ -58,5 +58,5 @@ towel-app/
 - **MVVM**: Views observe ViewModels via `@Observable` macro
 - **SwiftData**: `@Model` classes with `@Relationship` for Towel ↔ ExchangeRecord
 - **CloudKit**: `ModelConfiguration(cloudKitDatabase: .automatic)` for private + shared DB
-- **Bundle Identifier**: `com.towel-app.TowelApp`
-- **CloudKit Container**: `iCloud.com.towel-app`
+- **Bundle Identifier**: `com.kaetao.TowelApp`
+- **CloudKit Container**: `iCloud.com.kaetao.TowelApp`
