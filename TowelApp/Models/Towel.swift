@@ -3,19 +3,18 @@ import SwiftData
 
 @Model
 final class Towel {
-    @Attribute(.unique) var id: UUID
-    var name: String
-    var location: String
-    var iconName: String
-    var exchangeIntervalDays: Int
-    var createdAt: Date
+    var id: UUID = UUID()
+    var name: String = ""
+    var location: String = ""
+    var iconName: String = "hand.raised.fill"
+    var exchangeIntervalDays: Int = 3
+    var createdAt: Date = Date.now
 
     @Relationship(deleteRule: .cascade, inverse: \ExchangeRecord.towel)
-    var records: [ExchangeRecord]
-
+    var records: [ExchangeRecord]?
 
     @Relationship(deleteRule: .cascade, inverse: \ConditionCheck.towel)
-    var conditionChecks: [ConditionCheck]
+    var conditionChecks: [ConditionCheck]?
 
     init(
         id: UUID = UUID(),
@@ -23,7 +22,7 @@ final class Towel {
         location: String,
         iconName: String = "hand.raised.fill",
         exchangeIntervalDays: Int = 3,
-        createdAt: Date = .now
+        createdAt: Date = Date.now
     ) {
         self.id = id
         self.name = name
@@ -36,7 +35,7 @@ final class Towel {
     }
 
     var lastExchangedAt: Date? {
-        records.max(by: { $0.exchangedAt < $1.exchangedAt })?.exchangedAt
+        (records ?? []).max(by: { $0.exchangedAt < $1.exchangedAt })?.exchangedAt
     }
 
     var daysSinceLastExchange: Int {
@@ -63,7 +62,7 @@ final class Towel {
     }
 
     var latestConditionCheck: ConditionCheck? {
-        conditionChecks.max(by: { $0.checkedAt < $1.checkedAt })
+        (conditionChecks ?? []).max(by: { $0.checkedAt < $1.checkedAt })
     }
 }
 

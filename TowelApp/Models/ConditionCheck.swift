@@ -3,22 +3,22 @@ import SwiftData
 
 @Model
 final class ConditionCheck {
-    @Attribute(.unique) var id: UUID
-    var checkedAt: Date
-    @Attribute(.externalStorage) var photoData: Data
-    var overallScore: Int
-    var colorFadingScore: Int
-    var stainScore: Int
-    var fluffinessScore: Int
-    var frayingScore: Int
-    var comment: String
-    var recommendation: String
+    var id: UUID = UUID()
+    var checkedAt: Date = Date.now
+    @Attribute(.externalStorage) var photoData: Data = Data()
+    var overallScore: Int = 0
+    var colorFadingScore: Int = 0
+    var stainScore: Int = 0
+    var fluffinessScore: Int = 0
+    var frayingScore: Int = 0
+    var comment: String = ""
+    var recommendation: String = ""
 
     var towel: Towel?
 
     init(
         id: UUID = UUID(),
-        checkedAt: Date = .now,
+        checkedAt: Date = Date.now,
         photoData: Data,
         overallScore: Int,
         colorFadingScore: Int,

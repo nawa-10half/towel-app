@@ -5,27 +5,26 @@ enum SharedModelContainer {
     static let schema = Schema([Towel.self, ExchangeRecord.self, ConditionCheck.self])
 
     static let shared: ModelContainer = {
+        #if targetEnvironment(simulator)
+        let config = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
+        #else
+        let config = ModelConfiguration(
+            schema: schema,
+            cloudKitDatabase: .private("iCloud.com.kaetao-app.TowelApp")
+        )
+        #endif
+
         do {
-            let config: ModelConfiguration
-            #if targetEnvironment(simulator)
-            config = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
-            #else
-            if let groupURL = FileManager.default.containerURL(
-                forSecurityApplicationGroupIdentifier: "group.com.kaetao-app.TowelApp"
-            ) {
-                let storeURL = groupURL.appendingPathComponent("default.store")
-                config = ModelConfiguration(
-                    schema: schema,
-                    url: storeURL,
-                    cloudKitDatabase: .none
-                )
-            } else {
-                config = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
-            }
-            #endif
             return try ModelContainer(for: schema, configurations: [config])
         } catch {
-            fatalError("Failed to create ModelContainer: \(error)")
+            print("⚠️ CloudKit ModelContainer failed: \(error)")
+            print("⚠️ Falling back to local-only database")
+            let fallback = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
+            do {
+                return try ModelContainer(for: schema, configurations: [fallback])
+            } catch {
+                fatalError("Failed to create ModelContainer: \(error)")
+            }
         }
     }()
 }
