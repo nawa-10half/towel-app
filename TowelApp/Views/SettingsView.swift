@@ -9,6 +9,9 @@ struct SettingsView: View {
     @Query private var towels: [Towel]
     @State private var showingShareSheet = false
     @State private var notificationPermissionDenied = false
+    @State private var showingSignOutConfirmation = false
+    @State private var showingDeleteAccountConfirmation = false
+    @State private var authService = AuthService.shared
 
     private var notificationTime: Binding<Date> {
         Binding(
@@ -29,9 +32,11 @@ struct SettingsView: View {
 
     var body: some View {
         Form {
+            accountSection
             notificationSection
             sharingSection
             aboutSection
+            dangerSection
         }
         .navigationTitle("設定")
         .alert("通知が許可されていません", isPresented: $notificationPermissionDenied) {
@@ -45,6 +50,49 @@ struct SettingsView: View {
             }
         } message: {
             Text("設定アプリから通知を許可してください")
+        }
+        .confirmationDialog("サインアウトしますか？", isPresented: $showingSignOutConfirmation, titleVisibility: .visible) {
+            Button("サインアウト", role: .destructive) {
+                authService.signOut()
+            }
+        }
+        .confirmationDialog("アカウントを削除しますか？", isPresented: $showingDeleteAccountConfirmation, titleVisibility: .visible) {
+            Button("アカウントを削除", role: .destructive) {
+                Task {
+                    await authService.deleteAccount()
+                }
+            }
+        } message: {
+            Text("この操作は取り消せません。すべてのデータが削除されます。")
+        }
+    }
+
+    private var accountSection: some View {
+        Section {
+            if let user = authService.currentUser {
+                HStack {
+                    Image(systemName: "person.circle.fill")
+                        .font(.title)
+                        .foregroundStyle(.accent)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(user.displayName ?? "名前未設定")
+                            .font(.headline)
+                        if let email = user.email {
+                            Text(email)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+
+                Button {
+                    showingSignOutConfirmation = true
+                } label: {
+                    Label("サインアウト", systemImage: "rectangle.portrait.and.arrow.right")
+                }
+            }
+        } header: {
+            Text("アカウント")
         }
     }
 
@@ -118,6 +166,17 @@ struct SettingsView: View {
             }
         } header: {
             Text("アプリ情報")
+        }
+    }
+
+    private var dangerSection: some View {
+        Section {
+            Button(role: .destructive) {
+                showingDeleteAccountConfirmation = true
+            } label: {
+                Label("アカウント削除", systemImage: "trash")
+                    .foregroundStyle(.red)
+            }
         }
     }
 }
