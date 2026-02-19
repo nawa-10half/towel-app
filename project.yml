@@ -7,6 +7,14 @@ options:
   generateEmptyDirectories: true
   developmentLanguage: ja
 
+packages:
+  firebase-ios-sdk:
+    url: https://github.com/firebase/firebase-ios-sdk.git
+    from: "11.0.0"
+  GoogleSignIn-iOS:
+    url: https://github.com/google/GoogleSignIn-iOS.git
+    from: "8.0.0"
+
 settings:
   base:
     SWIFT_VERSION: "5.9"
@@ -20,6 +28,16 @@ targets:
       - TowelApp
     dependencies:
       - target: TowelWidgetExtension
+      - package: firebase-ios-sdk
+        product: FirebaseAuth
+      - package: firebase-ios-sdk
+        product: FirebaseFirestore
+      - package: firebase-ios-sdk
+        product: FirebaseStorage
+      - package: GoogleSignIn-iOS
+        product: GoogleSignIn
+      - package: GoogleSignIn-iOS
+        product: GoogleSignInSwift
     entitlements:
       path: TowelApp/TowelApp.entitlements
       properties:
@@ -51,6 +69,8 @@ targets:
         CFBundleURLTypes:
           - CFBundleURLSchemes:
               - towelapp
+          - CFBundleURLSchemes:
+              - com.googleusercontent.apps.157027032087-gaehu27c96u1v91tnj6qqdiktfimtaqk
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.kaetao-app.TowelApp
