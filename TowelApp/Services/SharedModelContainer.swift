@@ -17,10 +17,10 @@ enum SharedModelContainer {
                 config = ModelConfiguration(
                     schema: schema,
                     url: storeURL,
-                    cloudKitDatabase: .automatic
+                    cloudKitDatabase: .none
                 )
             } else {
-                config = ModelConfiguration(schema: schema, cloudKitDatabase: .automatic)
+                config = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
             }
             #endif
             return try ModelContainer(for: schema, configurations: [config])
