@@ -51,7 +51,7 @@ towel-app/
 ## TODO (保留タスク)
 
 - [x] ~~**Apple Developer Program有効化後にentitlementsを復元する**~~ → 完了 (2026-02-19)
-- [ ] **CloudKitコンソールで `iCloud.com.towel-app` コンテナを作成する**
+- [x] ~~**CloudKitコンソールで `iCloud.com.towel-app` コンテナを作成する**~~ → 自動作成済み (2026-02-19)
 
 ## Architecture
 
