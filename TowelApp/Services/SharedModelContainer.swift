@@ -8,10 +8,22 @@ enum SharedModelContainer {
         #if targetEnvironment(simulator)
         let config = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
         #else
-        let config = ModelConfiguration(
-            schema: schema,
-            cloudKitDatabase: .private("iCloud.com.kaetao-app.TowelApp")
-        )
+        let config: ModelConfiguration
+        if let groupURL = FileManager.default.containerURL(
+            forSecurityApplicationGroupIdentifier: "group.com.kaetao-app.TowelApp"
+        ) {
+            let storeURL = groupURL.appendingPathComponent("default.store")
+            config = ModelConfiguration(
+                schema: schema,
+                url: storeURL,
+                cloudKitDatabase: .private("iCloud.com.kaetao-app.TowelApp")
+            )
+        } else {
+            config = ModelConfiguration(
+                schema: schema,
+                cloudKitDatabase: .private("iCloud.com.kaetao-app.TowelApp")
+            )
+        }
         #endif
 
         do {
