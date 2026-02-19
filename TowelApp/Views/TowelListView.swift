@@ -1,16 +1,16 @@
 import SwiftUI
-import SwiftData
 
 struct TowelListView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query(sort: \Towel.createdAt, order: .reverse) private var towels: [Towel]
+    @State private var firestoreService = FirestoreService.shared
     @State private var viewModel = TowelListViewModel()
     @State private var showingAddForm = false
     @State private var towelToExchange: Towel?
 
     var body: some View {
         Group {
-            if towels.isEmpty {
+            if firestoreService.isLoading {
+                ProgressView()
+            } else if firestoreService.towels.isEmpty {
                 emptyStateView
             } else {
                 towelList
@@ -55,7 +55,7 @@ struct TowelListView: View {
 
     private var towelList: some View {
         List {
-            let filtered = viewModel.filteredTowels(towels)
+            let filtered = viewModel.filteredTowels(firestoreService.towels)
             let sorted = viewModel.sortedByStatus(filtered)
             ForEach(sorted) { towel in
                 NavigationLink(value: towel) {
@@ -71,7 +71,7 @@ struct TowelListView: View {
                 }
                 .swipeActions(edge: .trailing) {
                     Button(role: .destructive) {
-                        viewModel.deleteTowel(towel, context: modelContext)
+                        viewModel.deleteTowel(towel)
                     } label: {
                         Label("削除", systemImage: "trash")
                     }
@@ -79,10 +79,14 @@ struct TowelListView: View {
             }
         }
         .navigationDestination(for: Towel.self) { towel in
-            TowelDetailView(towel: towel)
+            if let towelId = towel.id {
+                TowelDetailView(towelId: towelId)
+            }
         }
         .sheet(item: $towelToExchange) { towel in
-            ExchangeRecordSheet(towel: towel)
+            if let towelId = towel.id {
+                ExchangeRecordSheet(towelId: towelId, towelName: towel.name)
+            }
         }
     }
 }
@@ -91,5 +95,4 @@ struct TowelListView: View {
     NavigationStack {
         TowelListView()
     }
-    .modelContainer(for: [Towel.self, ExchangeRecord.self, ConditionCheck.self], inMemory: true)
 }

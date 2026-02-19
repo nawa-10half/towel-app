@@ -1,71 +1,99 @@
 import Foundation
-import SwiftData
 import Observation
 import WidgetKit
+import UIKit
 
 @Observable
+@MainActor
 final class TowelDetailViewModel {
-    let towel: Towel
+    let towelId: String
     var errorMessage: String?
     var isAssessing = false
 
-    init(towel: Towel) {
-        self.towel = towel
+    init(towelId: String) {
+        self.towelId = towelId
+    }
+
+    var towel: Towel? {
+        FirestoreService.shared.towels.first(where: { $0.id == towelId })
     }
 
     var sortedRecords: [ExchangeRecord] {
-        (towel.records ?? []).sorted { $0.exchangedAt > $1.exchangedAt }
+        guard let towel else { return [] }
+        return towel.records.sorted { $0.exchangedAt ?? .distantPast > $1.exchangedAt ?? .distantPast }
     }
 
     var sortedConditionChecks: [ConditionCheck] {
-        (towel.conditionChecks ?? []).sorted { $0.checkedAt > $1.checkedAt }
+        guard let towel else { return [] }
+        return towel.conditionChecks.sorted { $0.checkedAt ?? .distantPast > $1.checkedAt ?? .distantPast }
     }
 
-    func deleteRecord(_ record: ExchangeRecord, context: ModelContext) {
-        context.delete(record)
-        do {
-            try context.save()
-            WidgetCenter.shared.reloadAllTimelines()
-        } catch {
-            errorMessage = "交換記録の削除に失敗しました: \(error.localizedDescription)"
+    func deleteRecord(_ record: ExchangeRecord) {
+        guard let recordId = record.id else { return }
+        Task {
+            do {
+                try await FirestoreService.shared.deleteRecord(towelId: towelId, recordId: recordId)
+                WidgetCenter.shared.reloadAllTimelines()
+            } catch {
+                errorMessage = "交換記録の削除に失敗しました: \(error.localizedDescription)"
+            }
         }
     }
 
-    func assessCondition(imageData: Data, context: ModelContext) async {
+    func assessCondition(imageData: Data, image: UIImage) async {
         isAssessing = true
         defer { isAssessing = false }
 
         do {
             let result = try await ConditionCheckService.shared.assessCondition(
                 imageData: imageData,
-                towelName: towel.name,
-                towelLocation: towel.location
+                towelName: towel?.name ?? "",
+                towelLocation: towel?.location ?? ""
             )
 
-            let check = ConditionCheck(
-                photoData: imageData,
+            // Save condition check to Firestore first to get the ID
+            let checkId = try await FirestoreService.shared.saveConditionCheck(
+                towelId: towelId,
+                photoURL: nil,
                 overallScore: result.overallScore,
                 colorFadingScore: result.colorFadingScore,
                 stainScore: result.stainScore,
                 fluffinessScore: result.fluffinessScore,
                 frayingScore: result.frayingScore,
                 comment: result.comment,
-                recommendation: result.recommendation,
-                towel: towel
+                recommendation: result.recommendation
             )
-            context.insert(check)
-            try context.save()
+
+            // Upload photo to Storage and update the check with photoURL
+            let photoURL = try await StorageService.shared.uploadConditionPhoto(
+                towelId: towelId,
+                checkId: checkId,
+                image: image
+            )
+
+            // Update the Firestore document with the photo URL
+            try await FirestoreService.shared.updateConditionCheckPhotoURL(
+                towelId: towelId,
+                checkId: checkId,
+                photoURL: photoURL
+            )
         } catch {
             errorMessage = "状態診断に失敗しました: \(error.localizedDescription)"
         }
     }
 
-    func deleteConditionCheck(_ check: ConditionCheck, context: ModelContext) {
-        context.delete(check)
-        do {
-            try context.save()
-        } catch {
-            errorMessage = "診断記録の削除に失敗しました: \(error.localizedDescription)"
+    func deleteConditionCheck(_ check: ConditionCheck) {
+        guard let checkId = check.id else { return }
+        Task {
+            do {
+                // Delete photo from Storage if exists
+                if check.photoURL != nil {
+                    try? await StorageService.shared.deleteConditionPhoto(towelId: towelId, checkId: checkId)
+                }
+                try await FirestoreService.shared.deleteConditionCheck(towelId: towelId, checkId: checkId)
+            } catch {
+                errorMessage = "診断記録の削除に失敗しました: \(error.localizedDescription)"
+            }
         }
     }
 }

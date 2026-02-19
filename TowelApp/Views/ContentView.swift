@@ -1,9 +1,7 @@
 import SwiftUI
-import SwiftData
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var towels: [Towel]
+    @State private var firestoreService = FirestoreService.shared
     @State private var towelNavigationPath = NavigationPath()
     @State private var selectedTab = 0
 
@@ -25,6 +23,9 @@ struct ContentView: View {
             }
             .tag(1)
         }
+        .task {
+            firestoreService.startListening()
+        }
         .onOpenURL { url in
             handleDeepLink(url)
         }
@@ -33,10 +34,9 @@ struct ContentView: View {
     private func handleDeepLink(_ url: URL) {
         guard url.scheme == "towelapp",
               url.host == "towel",
-              let idString = url.pathComponents.last,
-              let uuid = UUID(uuidString: idString) else { return }
+              let idString = url.pathComponents.last else { return }
 
-        guard let towel = towels.first(where: { $0.id == uuid }) else { return }
+        guard let towel = firestoreService.towels.first(where: { $0.id == idString }) else { return }
 
         selectedTab = 0
         towelNavigationPath = NavigationPath()
@@ -48,5 +48,4 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(for: [Towel.self, ExchangeRecord.self, ConditionCheck.self], inMemory: true)
 }

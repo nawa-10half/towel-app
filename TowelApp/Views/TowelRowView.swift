@@ -59,5 +59,4 @@ struct TowelRowView: View {
     return List {
         TowelRowView(towel: towel)
     }
-    .modelContainer(for: [Towel.self, ExchangeRecord.self, ConditionCheck.self], inMemory: true)
 }

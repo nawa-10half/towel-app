@@ -5,16 +5,30 @@ struct ConditionCheckRowView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            if let uiImage = UIImage(data: conditionCheck.photoData) {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 50, height: 50)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            if let urlString = conditionCheck.photoURL, let url = URL(string: urlString) {
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 50, height: 50)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    case .failure:
+                        imagePlaceholder
+                    case .empty:
+                        ProgressView()
+                            .frame(width: 50, height: 50)
+                    @unknown default:
+                        imagePlaceholder
+                    }
+                }
+            } else {
+                imagePlaceholder
             }
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(conditionCheck.checkedAt.formatted日本語)
+                Text((conditionCheck.checkedAt ?? .now).formatted日本語)
                     .font(.subheadline)
 
                 Text(conditionCheck.recommendation)
@@ -33,6 +47,14 @@ struct ConditionCheckRowView: View {
                 .background(scoreBadgeColor.opacity(0.15))
                 .clipShape(Capsule())
         }
+    }
+
+    private var imagePlaceholder: some View {
+        Image(systemName: "photo")
+            .foregroundStyle(.secondary)
+            .frame(width: 50, height: 50)
+            .background(Color(.systemGray5))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 
     private var scoreBadgeColor: Color {
