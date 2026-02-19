@@ -1,52 +1,42 @@
 import Foundation
-import SwiftData
+import FirebaseFirestore
 
-@Model
-final class Towel {
-    var id: UUID = UUID()
+struct Towel: Codable, Identifiable, Hashable {
+    @DocumentID var id: String?
     var name: String = ""
     var location: String = ""
     var iconName: String = "hand.raised.fill"
     var exchangeIntervalDays: Int = 3
-    var createdAt: Date = Date.now
+    @ServerTimestamp var createdAt: Date?
+    @ServerTimestamp var updatedAt: Date?
 
-    @Relationship(deleteRule: .cascade, inverse: \ExchangeRecord.towel)
-    var records: [ExchangeRecord]?
+    // Not stored in Firestore — populated from subcollections
+    var records: [ExchangeRecord] = []
+    var conditionChecks: [ConditionCheck] = []
 
-    @Relationship(deleteRule: .cascade, inverse: \ConditionCheck.towel)
-    var conditionChecks: [ConditionCheck]?
-
-    init(
-        id: UUID = UUID(),
-        name: String,
-        location: String,
-        iconName: String = "hand.raised.fill",
-        exchangeIntervalDays: Int = 3,
-        createdAt: Date = Date.now
-    ) {
-        self.id = id
-        self.name = name
-        self.location = location
-        self.iconName = iconName
-        self.exchangeIntervalDays = exchangeIntervalDays
-        self.createdAt = createdAt
-        self.records = []
-        self.conditionChecks = []
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case location
+        case iconName
+        case exchangeIntervalDays
+        case createdAt
+        case updatedAt
     }
 
     var lastExchangedAt: Date? {
-        (records ?? []).max(by: { $0.exchangedAt < $1.exchangedAt })?.exchangedAt
+        records.max(by: { $0.exchangedAt ?? .distantPast < $1.exchangedAt ?? .distantPast })?.exchangedAt
     }
 
     var daysSinceLastExchange: Int {
         guard let lastDate = lastExchangedAt else {
-            return Calendar.current.dateComponents([.day], from: createdAt, to: .now).day ?? 0
+            return Calendar.current.dateComponents([.day], from: createdAt ?? .now, to: .now).day ?? 0
         }
         return Calendar.current.dateComponents([.day], from: lastDate, to: .now).day ?? 0
     }
 
     var nextExchangeDate: Date {
-        let baseDate = lastExchangedAt ?? createdAt
+        let baseDate = lastExchangedAt ?? createdAt ?? .now
         return Calendar.current.date(byAdding: .day, value: exchangeIntervalDays, to: baseDate) ?? baseDate
     }
 
@@ -62,7 +52,16 @@ final class Towel {
     }
 
     var latestConditionCheck: ConditionCheck? {
-        (conditionChecks ?? []).max(by: { $0.checkedAt < $1.checkedAt })
+        conditionChecks.max(by: { $0.checkedAt ?? .distantPast < $1.checkedAt ?? .distantPast })
+    }
+
+    // Hashable conformance using id only
+    static func == (lhs: Towel, rhs: Towel) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }
 

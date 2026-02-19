@@ -1,22 +1,9 @@
 import Foundation
-import SwiftData
+import FirebaseFirestore
 
-@Model
-final class ExchangeRecord {
-    var id: UUID = UUID()
-    var exchangedAt: Date = Date.now
+struct ExchangeRecord: Codable, Identifiable {
+    @DocumentID var id: String?
+    @ServerTimestamp var exchangedAt: Date?
     var note: String?
-    var towel: Towel?
-
-    init(
-        id: UUID = UUID(),
-        exchangedAt: Date = Date.now,
-        note: String? = nil,
-        towel: Towel? = nil
-    ) {
-        self.id = id
-        self.exchangedAt = exchangedAt
-        self.note = note
-        self.towel = towel
-    }
+    @ServerTimestamp var createdAt: Date?
 }
