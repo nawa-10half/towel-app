@@ -6,7 +6,6 @@ struct SettingsView: View {
     @AppStorage("notificationMinute") private var notificationMinute = 0
     @AppStorage("overdueNotificationEnabled") private var overdueNotificationEnabled = true
     @State private var firestoreService = FirestoreService.shared
-    @State private var showingShareSheet = false
     @State private var notificationPermissionDenied = false
     @State private var showingSignOutConfirmation = false
     @State private var showingDeleteAccountConfirmation = false
@@ -33,7 +32,6 @@ struct SettingsView: View {
         Form {
             accountSection
             notificationSection
-            sharingSection
             aboutSection
             dangerSection
         }
@@ -135,23 +133,6 @@ struct SettingsView: View {
             } else {
                 Text("交換時期が近づくとリマインダーが届きます")
             }
-        }
-    }
-
-    private var sharingSection: some View {
-        Section {
-            Button {
-                showingShareSheet = true
-            } label: {
-                Label("iCloudで家族と共有", systemImage: "person.2.fill")
-            }
-        } header: {
-            Text("データ共有")
-        } footer: {
-            Text("iCloud経由で家族メンバーとタオルデータを共有できます")
-        }
-        .sheet(isPresented: $showingShareSheet) {
-            CloudSharingView()
         }
     }
 

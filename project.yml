@@ -25,9 +25,10 @@ targets:
     type: application
     platform: iOS
     sources:
-      - TowelApp
+      - path: TowelApp
+        excludes:
+          - "Intents/**"
     dependencies:
-      - target: TowelWidgetExtension
       - package: firebase-ios-sdk
         product: FirebaseAuth
       - package: firebase-ios-sdk
@@ -41,10 +42,6 @@ targets:
     entitlements:
       path: TowelApp/TowelApp.entitlements
       properties:
-        com.apple.developer.icloud-container-identifiers:
-          - iCloud.com.kaetao-app.TowelApp
-        com.apple.developer.icloud-services:
-          - CloudKit
         aps-environment: development
         com.apple.security.application-groups:
           - group.com.kaetao-app.TowelApp
@@ -80,33 +77,33 @@ targets:
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         CONDITION_CHECK_API_URL: https://REDACTED.execute-api.ap-northeast-1.amazonaws.com/prod/assess-nova
 
-  TowelWidgetExtension:
-    type: app-extension
-    platform: iOS
-    sources:
-      - path: TowelWidget
-      - path: TowelApp/Models
-        name: SharedModels
-      - path: TowelApp/Services/SharedModelContainer.swift
-        name: SharedModelContainer
-      - path: TowelApp/Utilities/DateExtensions.swift
-        name: DateExtensions
-    info:
-      path: TowelWidget/Info.plist
-      properties:
-        CFBundleDisplayName: TowelWidget
-        CFBundleShortVersionString: "1.0"
-        CFBundleVersion: "1"
-        NSExtension:
-          NSExtensionPointIdentifier: com.apple.widgetkit-extension
-    entitlements:
-      path: TowelWidget/TowelWidget.entitlements
-      properties:
-        com.apple.security.application-groups:
-          - group.com.kaetao-app.TowelApp
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.kaetao-app.TowelApp.TowelWidget
-        INFOPLIST_FILE: TowelWidget/Info.plist
-        CODE_SIGN_ENTITLEMENTS: TowelWidget/TowelWidget.entitlements
-        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+  # Widget temporarily disabled — depends on SwiftData which has been removed.
+  # Will be re-implemented using App Groups cache approach.
+  # TowelWidgetExtension:
+  #   type: app-extension
+  #   platform: iOS
+  #   sources:
+  #     - path: TowelWidget
+  #     - path: TowelApp/Models
+  #       name: SharedModels
+  #     - path: TowelApp/Utilities/DateExtensions.swift
+  #       name: DateExtensions
+  #   info:
+  #     path: TowelWidget/Info.plist
+  #     properties:
+  #       CFBundleDisplayName: TowelWidget
+  #       CFBundleShortVersionString: "1.0"
+  #       CFBundleVersion: "1"
+  #       NSExtension:
+  #         NSExtensionPointIdentifier: com.apple.widgetkit-extension
+  #   entitlements:
+  #     path: TowelWidget/TowelWidget.entitlements
+  #     properties:
+  #       com.apple.security.application-groups:
+  #         - group.com.kaetao-app.TowelApp
+  #   settings:
+  #     base:
+  #       PRODUCT_BUNDLE_IDENTIFIER: com.kaetao-app.TowelApp.TowelWidget
+  #       INFOPLIST_FILE: TowelWidget/Info.plist
+  #       CODE_SIGN_ENTITLEMENTS: TowelWidget/TowelWidget.entitlements
+  #       ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
