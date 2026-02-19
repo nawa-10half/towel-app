@@ -1,9 +1,7 @@
 import SwiftUI
-import SwiftData
 import WidgetKit
 
 struct TowelFormView: View {
-    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
     let towel: Towel?
@@ -14,6 +12,7 @@ struct TowelFormView: View {
     @State private var exchangeIntervalDays: Int
     @State private var showingIconPicker = false
     @State private var errorMessage: String?
+    @State private var isSaving = false
 
     private var isEditing: Bool { towel != nil }
 
@@ -73,7 +72,8 @@ struct TowelFormView: View {
                         save()
                     }
                     .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty ||
-                              location.trimmingCharacters(in: .whitespaces).isEmpty)
+                              location.trimmingCharacters(in: .whitespaces).isEmpty ||
+                              isSaving)
                 }
             }
         }
@@ -147,33 +147,35 @@ struct TowelFormView: View {
         let trimmedName = name.trimmingCharacters(in: .whitespaces)
         let trimmedLocation = location.trimmingCharacters(in: .whitespaces)
 
-        if let towel {
-            towel.name = trimmedName
-            towel.location = trimmedLocation
-            towel.iconName = iconName
-            towel.exchangeIntervalDays = exchangeIntervalDays
-        } else {
-            let newTowel = Towel(
-                name: trimmedName,
-                location: trimmedLocation,
-                iconName: iconName,
-                exchangeIntervalDays: exchangeIntervalDays
-            )
-            modelContext.insert(newTowel)
-            NotificationService.shared.scheduleNotification(for: newTowel)
-        }
-
-        do {
-            try modelContext.save()
-            WidgetCenter.shared.reloadAllTimelines()
-            dismiss()
-        } catch {
-            errorMessage = "保存に失敗しました: \(error.localizedDescription)"
+        isSaving = true
+        Task {
+            do {
+                if let towel, let towelId = towel.id {
+                    try await FirestoreService.shared.updateTowel(
+                        towelId,
+                        name: trimmedName,
+                        location: trimmedLocation,
+                        iconName: iconName,
+                        exchangeIntervalDays: exchangeIntervalDays
+                    )
+                } else {
+                    _ = try await FirestoreService.shared.addTowel(
+                        name: trimmedName,
+                        location: trimmedLocation,
+                        iconName: iconName,
+                        exchangeIntervalDays: exchangeIntervalDays
+                    )
+                }
+                WidgetCenter.shared.reloadAllTimelines()
+                dismiss()
+            } catch {
+                isSaving = false
+                errorMessage = "保存に失敗しました: \(error.localizedDescription)"
+            }
         }
     }
 }
 
 #Preview {
     TowelFormView()
-        .modelContainer(for: [Towel.self, ExchangeRecord.self, ConditionCheck.self], inMemory: true)
 }

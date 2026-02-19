@@ -247,6 +247,16 @@ final class FirestoreService {
         return docRef.documentID
     }
 
+    func updateConditionCheckPhotoURL(towelId: String, checkId: String, photoURL: String) async throws {
+        guard let collection = userTowelsCollection() else {
+            throw FirestoreError.notAuthenticated
+        }
+
+        try await collection.document(towelId).collection("conditionChecks").document(checkId).updateData([
+            "photoURL": photoURL
+        ])
+    }
+
     func deleteConditionCheck(towelId: String, checkId: String) async throws {
         guard let collection = userTowelsCollection() else {
             throw FirestoreError.notAuthenticated

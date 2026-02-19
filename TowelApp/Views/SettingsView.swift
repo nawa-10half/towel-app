@@ -1,12 +1,11 @@
 import SwiftUI
-import SwiftData
 
 struct SettingsView: View {
     @AppStorage("notificationsEnabled") private var notificationsEnabled = true
     @AppStorage("notificationHour") private var notificationHour = 8
     @AppStorage("notificationMinute") private var notificationMinute = 0
     @AppStorage("overdueNotificationEnabled") private var overdueNotificationEnabled = true
-    @Query private var towels: [Towel]
+    @State private var firestoreService = FirestoreService.shared
     @State private var showingShareSheet = false
     @State private var notificationPermissionDenied = false
     @State private var showingSignOutConfirmation = false
@@ -25,7 +24,7 @@ struct SettingsView: View {
                 let components = Calendar.current.dateComponents([.hour, .minute], from: newValue)
                 notificationHour = components.hour ?? 8
                 notificationMinute = components.minute ?? 0
-                NotificationService.shared.rescheduleAllNotifications(for: towels)
+                NotificationService.shared.rescheduleAllNotifications(for: firestoreService.towels)
             }
         )
     }
@@ -104,7 +103,7 @@ struct SettingsView: View {
                         Task {
                             let granted = await NotificationService.shared.requestPermission()
                             if granted {
-                                NotificationService.shared.rescheduleAllNotifications(for: towels)
+                                NotificationService.shared.rescheduleAllNotifications(for: firestoreService.towels)
                             } else {
                                 await MainActor.run {
                                     notificationPermissionDenied = true
@@ -125,7 +124,7 @@ struct SettingsView: View {
 
                 Toggle("期限切れリマインド", isOn: $overdueNotificationEnabled)
                     .onChange(of: overdueNotificationEnabled) { _, _ in
-                        NotificationService.shared.rescheduleAllNotifications(for: towels)
+                        NotificationService.shared.rescheduleAllNotifications(for: firestoreService.towels)
                     }
             }
         } header: {

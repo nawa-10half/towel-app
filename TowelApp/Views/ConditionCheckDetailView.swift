@@ -20,11 +20,26 @@ struct ConditionCheckDetailView: View {
 
     private var photoSection: some View {
         Group {
-            if let uiImage = UIImage(data: conditionCheck.photoData) {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .scaledToFit()
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+            if let urlString = conditionCheck.photoURL, let url = URL(string: urlString) {
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFit()
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                    case .failure:
+                        Image(systemName: "photo")
+                            .font(.largeTitle)
+                            .foregroundStyle(.secondary)
+                            .frame(height: 200)
+                    case .empty:
+                        ProgressView()
+                            .frame(height: 200)
+                    @unknown default:
+                        EmptyView()
+                    }
+                }
             }
         }
     }
@@ -51,7 +66,7 @@ struct ConditionCheckDetailView: View {
                     .foregroundStyle(scoreColor(conditionCheck.overallScore))
             }
 
-            Text(conditionCheck.checkedAt.formatted日本語)
+            Text((conditionCheck.checkedAt ?? .now).formatted日本語)
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }

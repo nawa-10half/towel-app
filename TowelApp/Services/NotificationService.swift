@@ -17,6 +17,7 @@ final class NotificationService: @unchecked Sendable {
 
     func scheduleNotification(for towel: Towel) {
         guard UserDefaults.standard.bool(forKey: "notificationsEnabled") else { return }
+        guard let towelId = towel.id else { return }
 
         center.getNotificationSettings { [weak self] settings in
             guard let self, settings.authorizationStatus == .authorized else { return }
@@ -46,7 +47,7 @@ final class NotificationService: @unchecked Sendable {
             }
 
             let request = UNNotificationRequest(
-                identifier: "towel-\(towel.id.uuidString)",
+                identifier: "towel-\(towelId)",
                 content: content,
                 trigger: trigger
             )
@@ -68,8 +69,9 @@ final class NotificationService: @unchecked Sendable {
     }
 
     func cancelNotification(for towel: Towel) {
+        guard let towelId = towel.id else { return }
         center.removePendingNotificationRequests(
-            withIdentifiers: ["towel-\(towel.id.uuidString)"]
+            withIdentifiers: ["towel-\(towelId)"]
         )
     }
 

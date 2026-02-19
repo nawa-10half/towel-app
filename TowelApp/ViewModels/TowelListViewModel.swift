@@ -1,5 +1,4 @@
 import Foundation
-import SwiftData
 import Observation
 import WidgetKit
 
@@ -16,14 +15,17 @@ final class TowelListViewModel {
         }
     }
 
-    func deleteTowel(_ towel: Towel, context: ModelContext) {
+    @MainActor
+    func deleteTowel(_ towel: Towel) {
+        guard let towelId = towel.id else { return }
         NotificationService.shared.cancelNotification(for: towel)
-        context.delete(towel)
-        do {
-            try context.save()
-            WidgetCenter.shared.reloadAllTimelines()
-        } catch {
-            errorMessage = "タオルの削除に失敗しました: \(error.localizedDescription)"
+        Task {
+            do {
+                try await FirestoreService.shared.deleteTowel(towelId)
+                WidgetCenter.shared.reloadAllTimelines()
+            } catch {
+                errorMessage = "タオルの削除に失敗しました: \(error.localizedDescription)"
+            }
         }
     }
 

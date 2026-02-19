@@ -1,12 +1,10 @@
 import SwiftUI
-import SwiftData
 import PhotosUI
 import AVFoundation
 import WidgetKit
 
 struct TowelDetailView: View {
-    @Environment(\.modelContext) private var modelContext
-    let towel: Towel
+    let towelId: String
     @State private var viewModel: TowelDetailViewModel
     @State private var showingEditForm = false
     @State private var showingExchangeSheet = false
@@ -15,20 +13,20 @@ struct TowelDetailView: View {
     @State private var selectedPhotoItem: PhotosPickerItem?
     @State private var capturedImage: UIImage?
 
-    init(towel: Towel) {
-        self.towel = towel
-        self._viewModel = State(initialValue: TowelDetailViewModel(towel: towel))
+    init(towelId: String) {
+        self.towelId = towelId
+        self._viewModel = State(initialValue: TowelDetailViewModel(towelId: towelId))
     }
 
     var body: some View {
-        List {
-            statusSection
-            actionSection
-            conditionCheckSection
-            conditionHistorySection
-            historySection
+        Group {
+            if let towel = viewModel.towel {
+                towelDetailContent(towel)
+            } else {
+                ProgressView()
+            }
         }
-        .navigationTitle(towel.name)
+        .navigationTitle(viewModel.towel?.name ?? "")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button("編集") {
@@ -37,10 +35,12 @@ struct TowelDetailView: View {
             }
         }
         .sheet(isPresented: $showingEditForm) {
-            TowelFormView(towel: towel)
+            if let towel = viewModel.towel {
+                TowelFormView(towel: towel)
+            }
         }
         .sheet(isPresented: $showingExchangeSheet) {
-            ExchangeRecordSheet(towel: towel)
+            ExchangeRecordSheet(towelId: towelId, towelName: viewModel.towel?.name ?? "")
         }
         .fullScreenCover(isPresented: $showingCamera) {
             CameraPickerView(image: $capturedImage)
@@ -81,6 +81,17 @@ struct TowelDetailView: View {
         }
     }
 
+    @ViewBuilder
+    private func towelDetailContent(_ towel: Towel) -> some View {
+        List {
+            statusSection(towel)
+            actionSection
+            conditionCheckSection(towel)
+            conditionHistorySection
+            historySection
+        }
+    }
+
     private func checkCameraPermission() {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
@@ -101,11 +112,11 @@ struct TowelDetailView: View {
     private func processImage(_ image: UIImage) {
         guard let imageData = image.jpegDataResized() else { return }
         Task {
-            await viewModel.assessCondition(imageData: imageData, context: modelContext)
+            await viewModel.assessCondition(imageData: imageData, image: image)
         }
     }
 
-    private var statusSection: some View {
+    private func statusSection(_ towel: Towel) -> some View {
         Section {
             HStack {
                 Label(towel.location, systemImage: "mappin")
@@ -124,7 +135,7 @@ struct TowelDetailView: View {
             HStack {
                 Label("\(towel.daysSinceLastExchange)日経過", systemImage: "clock")
                 Spacer()
-                statusBadge
+                statusBadge(towel)
             }
 
             if let lastDate = towel.lastExchangedAt {
@@ -163,7 +174,8 @@ struct TowelDetailView: View {
         }
     }
 
-    private var conditionCheckSection: some View {
+    @ViewBuilder
+    private func conditionCheckSection(_ towel: Towel) -> some View {
         Section {
             if viewModel.isAssessing {
                 HStack {
@@ -224,7 +236,7 @@ struct TowelDetailView: View {
                 .onDelete { indexSet in
                     let checks = viewModel.sortedConditionChecks
                     for index in indexSet {
-                        viewModel.deleteConditionCheck(checks[index], context: modelContext)
+                        viewModel.deleteConditionCheck(checks[index])
                     }
                 }
             }
@@ -241,7 +253,7 @@ struct TowelDetailView: View {
             } else {
                 ForEach(viewModel.sortedRecords) { record in
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(record.exchangedAt.formatted日本語)
+                        Text((record.exchangedAt ?? .now).formatted日本語)
                             .font(.subheadline)
                         if let note = record.note, !note.isEmpty {
                             Text(note)
@@ -253,7 +265,7 @@ struct TowelDetailView: View {
                 .onDelete { indexSet in
                     let records = viewModel.sortedRecords
                     for index in indexSet {
-                        viewModel.deleteRecord(records[index], context: modelContext)
+                        viewModel.deleteRecord(records[index])
                     }
                 }
             }
@@ -262,17 +274,17 @@ struct TowelDetailView: View {
         }
     }
 
-    private var statusBadge: some View {
+    private func statusBadge(_ towel: Towel) -> some View {
         Text(towel.status.label)
             .font(.caption)
             .padding(.horizontal, 8)
             .padding(.vertical, 3)
-            .background(statusColor.opacity(0.15))
-            .foregroundStyle(statusColor)
+            .background(statusColor(for: towel).opacity(0.15))
+            .foregroundStyle(statusColor(for: towel))
             .clipShape(Capsule())
     }
 
-    private var statusColor: Color {
+    private func statusColor(for towel: Towel) -> Color {
         switch towel.status {
         case .ok: return .green
         case .soon: return .orange
@@ -284,11 +296,12 @@ struct TowelDetailView: View {
 // MARK: - Exchange Record Sheet
 
 struct ExchangeRecordSheet: View {
-    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    let towel: Towel
+    let towelId: String
+    let towelName: String
     @State private var exchangeDate = Date.now
     @State private var exchangeNote = ""
+    @State private var isSaving = false
 
     var body: some View {
         NavigationStack {
@@ -318,29 +331,36 @@ struct ExchangeRecordSheet: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("記録する") {
-                        let record = ExchangeRecord(
-                            exchangedAt: exchangeDate,
-                            note: exchangeNote.isEmpty ? nil : exchangeNote,
-                            towel: towel
-                        )
-                        modelContext.insert(record)
-                        try? modelContext.save()
-                        NotificationService.shared.rescheduleNotification(for: towel)
-                        WidgetCenter.shared.reloadAllTimelines()
-                        dismiss()
+                        saveRecord()
                     }
                     .fontWeight(.semibold)
+                    .disabled(isSaving)
                 }
             }
         }
         .presentationDetents([.medium])
     }
+
+    private func saveRecord() {
+        isSaving = true
+        Task {
+            do {
+                _ = try await FirestoreService.shared.addRecord(
+                    towelId: towelId,
+                    exchangedAt: exchangeDate,
+                    note: exchangeNote.isEmpty ? nil : exchangeNote
+                )
+                WidgetCenter.shared.reloadAllTimelines()
+                dismiss()
+            } catch {
+                isSaving = false
+            }
+        }
+    }
 }
 
 #Preview {
-    let towel = Towel(name: "バスタオル", location: "浴室", iconName: "shower.fill", exchangeIntervalDays: 3)
-    return NavigationStack {
-        TowelDetailView(towel: towel)
+    NavigationStack {
+        TowelDetailView(towelId: "preview-id")
     }
-    .modelContainer(for: [Towel.self, ExchangeRecord.self, ConditionCheck.self], inMemory: true)
 }
