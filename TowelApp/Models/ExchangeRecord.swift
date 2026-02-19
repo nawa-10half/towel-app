@@ -3,14 +3,14 @@ import SwiftData
 
 @Model
 final class ExchangeRecord {
-    @Attribute(.unique) var id: UUID
-    var exchangedAt: Date
+    var id: UUID = UUID()
+    var exchangedAt: Date = Date.now
     var note: String?
     var towel: Towel?
 
     init(
         id: UUID = UUID(),
-        exchangedAt: Date = .now,
+        exchangedAt: Date = Date.now,
         note: String? = nil,
         towel: Towel? = nil
     ) {

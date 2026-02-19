@@ -14,11 +14,11 @@ final class TowelDetailViewModel {
     }
 
     var sortedRecords: [ExchangeRecord] {
-        towel.records.sorted { $0.exchangedAt > $1.exchangedAt }
+        (towel.records ?? []).sorted { $0.exchangedAt > $1.exchangedAt }
     }
 
     var sortedConditionChecks: [ConditionCheck] {
-        towel.conditionChecks.sorted { $0.checkedAt > $1.checkedAt }
+        (towel.conditionChecks ?? []).sorted { $0.checkedAt > $1.checkedAt }
     }
 
     func deleteRecord(_ record: ExchangeRecord, context: ModelContext) {
