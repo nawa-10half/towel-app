@@ -43,6 +43,8 @@ targets:
       path: TowelApp/TowelApp.entitlements
       properties:
         aps-environment: development
+        com.apple.developer.applesignin:
+          - Default
         com.apple.security.application-groups:
           - group.com.kaetao-app.TowelApp
     info:
@@ -52,6 +54,8 @@ targets:
         CFBundleShortVersionString: "1.0"
         CFBundleVersion: "1"
         NSCameraUsageDescription: タオルの状態を診断するために写真を撮影します
+        GIDClientID: 157027032087-gaehu27c96u1v91tnj6qqdiktfimtaqk.apps.googleusercontent.com
+        GIDServerClientID: 157027032087-gaehu27c96u1v91tnj6qqdiktfimtaqk.apps.googleusercontent.com
         ConditionCheckAPIURL: $(CONDITION_CHECK_API_URL)
         UIRequiresFullScreen: true
         UILaunchScreen: {}

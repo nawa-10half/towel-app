@@ -70,7 +70,7 @@ struct SettingsView: View {
                 HStack {
                     Image(systemName: "person.circle.fill")
                         .font(.title)
-                        .foregroundStyle(.accent)
+                        .foregroundStyle(.tint)
                     VStack(alignment: .leading, spacing: 2) {
                         Text(user.displayName ?? "名前未設定")
                             .font(.headline)

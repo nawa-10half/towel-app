@@ -11,7 +11,7 @@ struct SignInView: View {
             VStack(spacing: 12) {
                 Image(systemName: "hand.raised.fill")
                     .font(.system(size: 64))
-                    .foregroundStyle(.accent)
+                    .foregroundStyle(.tint)
 
                 Text("かえたお")
                     .font(.largeTitle)
