@@ -33,7 +33,7 @@ struct TowelApp: App {
         guard !UserDefaults.standard.bool(forKey: migrationKey) else { return }
 
         guard let groupURL = FileManager.default.containerURL(
-            forSecurityApplicationGroupIdentifier: "group.com.kaetao.TowelApp"
+            forSecurityApplicationGroupIdentifier: "group.com.kaetao-app.TowelApp"
         ) else { return }
 
         let fileManager = FileManager.default
