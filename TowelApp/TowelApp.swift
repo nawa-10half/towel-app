@@ -1,5 +1,4 @@
 import SwiftUI
-import SwiftData
 import FirebaseCore
 import GoogleSignIn
 
@@ -25,7 +24,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct TowelApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @State private var authService = AuthService.shared
-    let modelContainer: ModelContainer
 
     init() {
         UserDefaults.standard.register(defaults: [
@@ -34,9 +32,6 @@ struct TowelApp: App {
             "notificationMinute": 0,
             "overdueNotificationEnabled": true
         ])
-
-        Self.migrateStoreToAppGroupIfNeeded()
-        modelContainer = SharedModelContainer.shared
     }
 
     var body: some Scene {
@@ -57,40 +52,5 @@ struct TowelApp: App {
                 GIDSignIn.sharedInstance.handle(url)
             }
         }
-        .modelContainer(modelContainer)
-    }
-
-    private static func migrateStoreToAppGroupIfNeeded() {
-        #if !targetEnvironment(simulator)
-        let migrationKey = "hasCompletedAppGroupMigration"
-        guard !UserDefaults.standard.bool(forKey: migrationKey) else { return }
-
-        guard let groupURL = FileManager.default.containerURL(
-            forSecurityApplicationGroupIdentifier: "group.com.kaetao-app.TowelApp"
-        ) else { return }
-
-        let fileManager = FileManager.default
-        let appSupportURL = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
-        guard let oldStoreURL = appSupportURL?.appendingPathComponent("default.store") else { return }
-
-        let newStoreURL = groupURL.appendingPathComponent("default.store")
-
-        guard fileManager.fileExists(atPath: oldStoreURL.path),
-              !fileManager.fileExists(atPath: newStoreURL.path) else {
-            UserDefaults.standard.set(true, forKey: migrationKey)
-            return
-        }
-
-        let suffixes = ["", "-wal", "-shm"]
-        for suffix in suffixes {
-            let source = URL(fileURLWithPath: oldStoreURL.path + suffix)
-            let dest = URL(fileURLWithPath: newStoreURL.path + suffix)
-            if fileManager.fileExists(atPath: source.path) {
-                try? fileManager.copyItem(at: source, to: dest)
-            }
-        }
-
-        UserDefaults.standard.set(true, forKey: migrationKey)
-        #endif
     }
 }
