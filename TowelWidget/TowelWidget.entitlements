@@ -4,7 +4,7 @@
 <dict>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.com.kaetao-app.TowelApp</string>
+		<string>group.com.kaetao.TowelApp</string>
 	</array>
 </dict>
 </plist>

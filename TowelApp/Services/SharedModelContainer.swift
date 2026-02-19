@@ -11,7 +11,7 @@ enum SharedModelContainer {
             config = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
             #else
             if let groupURL = FileManager.default.containerURL(
-                forSecurityApplicationGroupIdentifier: "group.com.kaetao-app.TowelApp"
+                forSecurityApplicationGroupIdentifier: "group.com.kaetao.TowelApp"
             ) {
                 let storeURL = groupURL.appendingPathComponent("default.store")
                 config = ModelConfiguration(
