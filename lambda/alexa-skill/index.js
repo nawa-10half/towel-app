@@ -136,7 +136,9 @@ const LaunchRequestHandler = {
     return Alexa.getRequestType(input.requestEnvelope) === 'LaunchRequest';
   },
   async handle(input) {
+    console.log('LaunchRequest received. requestEnvelope:', JSON.stringify(input.requestEnvelope, null, 2));
     const token = getAccessToken(input);
+    console.log('accessToken present:', !!token);
     if (!token) return accountNotLinkedResponse(input);
 
     try {
@@ -301,6 +303,7 @@ const ErrorHandler = {
   canHandle() { return true; },
   handle(input, error) {
     console.error('Error:', error);
+    console.error('Error stack:', error?.stack);
     return input.responseBuilder
       .speak('エラーが発生しました。もう一度お試しください。')
       .getResponse();
