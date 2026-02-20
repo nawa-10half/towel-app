@@ -139,11 +139,15 @@ final class AuthService {
     // MARK: - Sign Out
 
     func signOut() {
+        // リスナーを先に停止（サインアウト後の権限エラーを防ぐ）
+        FirestoreService.shared.stopListening()
+        GroupService.shared.stopListening()
         do {
             try Auth.auth().signOut()
-            // hasAttemptedAutoSignIn はリセットしない
-            // → リスナーが nil で再発火しても else 分岐に入り自動サインインしない
+            displayName = ""
         } catch {
+            // サインアウト失敗時はリスナーを再開
+            FirestoreService.shared.startListening()
             errorMessage = "サインアウトに失敗しました: \(error.localizedDescription)"
         }
     }
