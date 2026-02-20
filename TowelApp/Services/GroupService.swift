@@ -198,6 +198,10 @@ final class GroupService {
         isLoading = true
         defer { isLoading = false }
 
+        // リスナーを先に停止（削除処理中に権限エラーが発火するのを防ぐ）
+        stopListening()
+        FirestoreService.shared.stopListening()
+
         let memberCount = group?.memberCount ?? members.count
 
         if memberCount <= 1 {
@@ -216,13 +220,11 @@ final class GroupService {
             try await batch.commit()
         }
 
-        stopListening()
         self.groupId = nil
         self.group = nil
         self.members = []
 
         // Restart Firestore listener on personal path
-        FirestoreService.shared.stopListening()
         FirestoreService.shared.startListening()
     }
 
@@ -367,25 +369,25 @@ final class GroupService {
             try await towelDoc.reference.delete()
         }
 
-        // Delete all members
-        let membersSnapshot = try await db.collection("groups").document(groupId)
-            .collection("members").getDocuments()
-        for member in membersSnapshot.documents {
-            try await member.reference.delete()
-        }
-
-        // Delete invite code
+        // Delete invite code（まだメンバーのうちに削除）
         if let inviteCode = group?.inviteCode {
             try await db.collection("inviteCodes").document(inviteCode).delete()
         }
 
-        // Delete group document
+        // Delete group document（まだメンバーのうちに削除）
         try await db.collection("groups").document(groupId).delete()
 
         // Clear user's groupId
         try await db.collection("users").document(userId).updateData([
             "groupId": FieldValue.delete()
         ])
+
+        // Delete all members（グループ削除後に孤立ドキュメントとして削除）
+        let membersSnapshot = try await db.collection("groups").document(groupId)
+            .collection("members").getDocuments()
+        for member in membersSnapshot.documents {
+            try await member.reference.delete()
+        }
     }
 }
 
