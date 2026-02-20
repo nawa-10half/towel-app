@@ -1,0 +1,9 @@
+{
+  "name": "alexa-skill-kaetao",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "dependencies": {
+    "ask-sdk-core": "^2.14.0",
+    "firebase-admin": "^12.0.0"
+  }
+}
