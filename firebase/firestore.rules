@@ -58,5 +58,10 @@ service cloud.firestore {
     match /inviteCodes/{code} {
       allow read, create, delete: if request.auth != null;
     }
+
+    // Restore codes: クライアントからのアクセス不可 (Admin SDK のみ)
+    match /restoreCodes/{code} {
+      allow read, write: if false;
+    }
   }
 }

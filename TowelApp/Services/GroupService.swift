@@ -99,10 +99,8 @@ final class GroupService {
             "updatedAt": FieldValue.serverTimestamp()
         ]
 
-        let user = Auth.auth().currentUser
         let memberData: [String: Any] = [
-            "displayName": user?.displayName as Any,
-            "email": user?.email as Any,
+            "displayName": AuthService.shared.displayName,
             "role": "owner",
             "joinedAt": FieldValue.serverTimestamp()
         ]
@@ -155,10 +153,8 @@ final class GroupService {
         let currentCount = groupData["memberCount"] as? Int ?? 0
         guard currentCount < Self.maxMembers else { throw GroupError.groupFull }
 
-        let user = Auth.auth().currentUser
         let memberData: [String: Any] = [
-            "displayName": user?.displayName as Any,
-            "email": user?.email as Any,
+            "displayName": AuthService.shared.displayName,
             "role": "member",
             "joinedAt": FieldValue.serverTimestamp()
         ]
