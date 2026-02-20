@@ -317,5 +317,4 @@ exports.handler = Alexa.SkillBuilders.custom()
     SessionEndedHandler,
   )
   .addErrorHandlers(ErrorHandler)
-  .create()
-  .invoke;
+  .lambda();
