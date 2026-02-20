@@ -166,31 +166,40 @@ final class AuthService {
         isDeletingAccount = true
         defer { isDeletingAccount = false }
 
-        do {
-            // 1. Delete all photos from Storage (needs auth for userId path resolution)
-            await StorageService.shared.deleteAllUserPhotos(towels: FirestoreService.shared.towels)
+        // 1. Stop Firestore listeners to prevent UI issues during deletion
+        FirestoreService.shared.stopListening()
 
-            // 2. Stop Firestore listeners to prevent UI crashes during deletion
-            FirestoreService.shared.stopListening()
-
-            // 3. Delete all towels + subcollections
-            try await FirestoreService.shared.deleteAllTowels()
-
-            // 4. Delete user document
-            try await FirestoreService.shared.deleteUserDocument()
-
-            // 5. Revoke Apple token if authorization code is available
-            if let authCode = appleAuthorizationCode {
+        // 2. Revoke Apple token FIRST (before data deletion)
+        //    If this fails, we can safely abort with data intact
+        if let authCode = appleAuthorizationCode {
+            do {
                 try await Auth.auth().revokeToken(withAuthorizationCode: authCode)
                 appleAuthorizationCode = nil
+            } catch {
+                errorMessage = "Appleトークンの取り消しに失敗しました: \(error.localizedDescription)"
+                FirestoreService.shared.startListening()
+                return
             }
+        }
 
-            // 6. Delete the Firebase Auth user
+        // 3. Delete Storage photos (best effort — continue on failure)
+        let towelsSnapshot = FirestoreService.shared.towels
+        await StorageService.shared.deleteAllUserPhotos(towels: towelsSnapshot)
+
+        // 4. Delete all Firestore data (towels + subcollections + user document)
+        do {
+            try await FirestoreService.shared.deleteAllTowels()
+            try await FirestoreService.shared.deleteUserDocument()
+        } catch {
+            // Data deletion partially failed, but continue with user deletion
+            // Orphaned data is preferable to a user with revoked tokens
+        }
+
+        // 5. Delete the Firebase Auth user
+        do {
             try await user.delete()
         } catch {
             errorMessage = "アカウント削除に失敗しました: \(error.localizedDescription)"
-            // Re-start listeners since deletion failed
-            FirestoreService.shared.startListening()
         }
     }
 
