@@ -102,15 +102,8 @@ struct GroupSettingsView: View {
                     HStack {
                         Image(systemName: member.role == "owner" ? "star.circle.fill" : "person.circle")
                             .foregroundStyle(member.role == "owner" ? .orange : .secondary)
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(member.displayName ?? "名前未設定")
-                                .font(.subheadline)
-                            if let email = member.email {
-                                Text(email)
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
+                        Text(member.displayName ?? "名前未設定")
+                            .font(.subheadline)
                     }
                 }
             }
