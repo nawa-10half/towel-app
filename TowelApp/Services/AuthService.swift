@@ -13,7 +13,11 @@ final class AuthService {
     var currentUser: FirebaseAuth.User?
     var isAuthenticated = false
     var isLoading = true
+    var isDeletingAccount = false
     var errorMessage: String?
+
+    /// Authorization code obtained during Apple reauthentication (for token revocation)
+    var appleAuthorizationCode: String?
 
     private var authStateListener: AuthStateDidChangeListenerHandle?
     private var currentNonce: String?
@@ -112,17 +116,81 @@ final class AuthService {
         }
     }
 
+    // MARK: - Apple Reauthentication
+
+    /// Handle Apple reauthentication for account deletion (reuses nonce logic)
+    func reauthenticateWithApple(_ result: Result<ASAuthorization, Error>) async -> Bool {
+        switch result {
+        case .success(let authorization):
+            guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential,
+                  let appleIDToken = appleIDCredential.identityToken,
+                  let idTokenString = String(data: appleIDToken, encoding: .utf8),
+                  let nonce = currentNonce else {
+                errorMessage = "Apple再認証の処理に失敗しました"
+                return false
+            }
+
+            // Store authorization code for token revocation
+            if let authCode = appleIDCredential.authorizationCode,
+               let authCodeString = String(data: authCode, encoding: .utf8) {
+                appleAuthorizationCode = authCodeString
+            }
+
+            let credential = OAuthProvider.appleCredential(
+                withIDToken: idTokenString,
+                rawNonce: nonce,
+                fullName: appleIDCredential.fullName
+            )
+
+            do {
+                try await Auth.auth().currentUser?.reauthenticate(with: credential)
+                return true
+            } catch {
+                errorMessage = "再認証に失敗しました: \(error.localizedDescription)"
+                return false
+            }
+
+        case .failure(let error):
+            if (error as NSError).code != ASAuthorizationError.canceled.rawValue {
+                errorMessage = "Apple再認証に失敗しました: \(error.localizedDescription)"
+            }
+            return false
+        }
+    }
+
     // MARK: - Delete Account
 
     func deleteAccount() async {
         guard let user = Auth.auth().currentUser else { return }
 
+        isDeletingAccount = true
+        defer { isDeletingAccount = false }
+
         do {
-            let db = Firestore.firestore()
-            try await db.collection("users").document(user.uid).delete()
+            // 1. Delete all photos from Storage (needs auth for userId path resolution)
+            await StorageService.shared.deleteAllUserPhotos(towels: FirestoreService.shared.towels)
+
+            // 2. Stop Firestore listeners to prevent UI crashes during deletion
+            FirestoreService.shared.stopListening()
+
+            // 3. Delete all towels + subcollections
+            try await FirestoreService.shared.deleteAllTowels()
+
+            // 4. Delete user document
+            try await FirestoreService.shared.deleteUserDocument()
+
+            // 5. Revoke Apple token if authorization code is available
+            if let authCode = appleAuthorizationCode {
+                try await Auth.auth().revokeToken(withAuthorizationCode: authCode)
+                appleAuthorizationCode = nil
+            }
+
+            // 6. Delete the Firebase Auth user
             try await user.delete()
         } catch {
             errorMessage = "アカウント削除に失敗しました: \(error.localizedDescription)"
+            // Re-start listeners since deletion failed
+            FirestoreService.shared.startListening()
         }
     }
 

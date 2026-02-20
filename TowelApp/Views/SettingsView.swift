@@ -9,6 +9,7 @@ struct SettingsView: View {
     @State private var notificationPermissionDenied = false
     @State private var showingSignOutConfirmation = false
     @State private var showingDeleteAccountConfirmation = false
+    @State private var showingAppleReauth = false
     @State private var authService = AuthService.shared
 
     private var notificationTime: Binding<Date> {
@@ -52,15 +53,6 @@ struct SettingsView: View {
             Button("サインアウト", role: .destructive) {
                 authService.signOut()
             }
-        }
-        .confirmationDialog("アカウントを削除しますか？", isPresented: $showingDeleteAccountConfirmation, titleVisibility: .visible) {
-            Button("アカウントを削除", role: .destructive) {
-                Task {
-                    await authService.deleteAccount()
-                }
-            }
-        } message: {
-            Text("この操作は取り消せません。すべてのデータが削除されます。")
         }
     }
 
@@ -149,13 +141,48 @@ struct SettingsView: View {
         }
     }
 
+    private var isAppleProvider: Bool {
+        authService.currentUser?.providerData.contains(where: { $0.providerID == "apple.com" }) ?? false
+    }
+
     private var dangerSection: some View {
         Section {
-            Button(role: .destructive) {
-                showingDeleteAccountConfirmation = true
-            } label: {
-                Label("アカウント削除", systemImage: "trash")
-                    .foregroundStyle(.red)
+            if authService.isDeletingAccount {
+                HStack {
+                    ProgressView()
+                    Text("アカウントを削除中...")
+                        .foregroundStyle(.secondary)
+                        .padding(.leading, 8)
+                }
+            } else {
+                Button(role: .destructive) {
+                    showingDeleteAccountConfirmation = true
+                } label: {
+                    Label("アカウント削除", systemImage: "trash")
+                        .foregroundStyle(.red)
+                }
+                .disabled(authService.isDeletingAccount)
+            }
+        }
+        .confirmationDialog("アカウントを削除しますか？", isPresented: $showingDeleteAccountConfirmation, titleVisibility: .visible) {
+            Button("アカウントを削除", role: .destructive) {
+                if isAppleProvider {
+                    showingAppleReauth = true
+                } else {
+                    Task {
+                        await authService.deleteAccount()
+                    }
+                }
+            }
+        } message: {
+            Text("この操作は取り消せません。すべてのデータが削除されます。")
+        }
+        .sheet(isPresented: $showingAppleReauth) {
+            AppleReauthView {
+                showingAppleReauth = false
+                Task {
+                    await authService.deleteAccount()
+                }
             }
         }
     }
