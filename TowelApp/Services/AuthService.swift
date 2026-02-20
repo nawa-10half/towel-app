@@ -141,7 +141,8 @@ final class AuthService {
     func signOut() {
         do {
             try Auth.auth().signOut()
-            hasAttemptedAutoSignIn = false
+            // hasAttemptedAutoSignIn はリセットしない
+            // → リスナーが nil で再発火しても else 分岐に入り自動サインインしない
         } catch {
             errorMessage = "サインアウトに失敗しました: \(error.localizedDescription)"
         }
