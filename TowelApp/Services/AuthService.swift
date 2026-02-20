@@ -82,6 +82,8 @@ final class AuthService {
                 return
             }
 
+            // サインイン前にフラグを立てる（手動サインイン後もauthリスナーの自動サインインを防ぐ）
+            hasAttemptedAutoSignIn = true
             try await Auth.auth().signIn(withCustomToken: customToken)
             saveToKeychain(code, key: Self.keychainKeyRestoreCode)
             self.restoreCode = code
@@ -184,11 +186,13 @@ final class AuthService {
         }
 
         // 6. Firebase Auth ユーザー削除
+        // user.delete() が auth リスナーをトリガーし SignInView が表示されるため、
+        // その前に restoreCode をクリアしておく（onAppear が正しく新規フローを開始できるよう）
+        deleteFromKeychain(key: Self.keychainKeyRestoreCode)
+        restoreCode = nil
+        displayName = ""
         do {
             try await user.delete()
-            deleteFromKeychain(key: Self.keychainKeyRestoreCode)
-            restoreCode = nil
-            displayName = ""
         } catch {
             errorMessage = "アカウント削除に失敗しました: \(error.localizedDescription)"
         }
