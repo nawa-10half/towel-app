@@ -1,0 +1,62 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Personal user data
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      match /towels/{towelId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+
+        match /records/{recordId} {
+          allow read, write: if request.auth != null && request.auth.uid == userId;
+        }
+
+        match /conditionChecks/{checkId} {
+          allow read, write: if request.auth != null && request.auth.uid == userId;
+        }
+      }
+    }
+
+    // Groups
+    match /groups/{groupId} {
+      function isMember() {
+        return request.auth != null
+          && exists(/databases/$(database)/documents/groups/$(groupId)/members/$(request.auth.uid));
+      }
+
+      // Group document: any authenticated user can read (needed for join flow),
+      // create, and members can update
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if isMember();
+      allow delete: if isMember();
+
+      // Members subcollection: can only add/remove your own membership
+      match /members/{memberId} {
+        allow read: if isMember();
+        allow create, delete: if request.auth != null && request.auth.uid == memberId;
+        allow update: if request.auth != null && request.auth.uid == memberId;
+      }
+
+      // Group towels: all members have full access
+      match /towels/{towelId} {
+        allow read, write: if isMember();
+
+        match /records/{recordId} {
+          allow read, write: if isMember();
+        }
+
+        match /conditionChecks/{checkId} {
+          allow read, write: if isMember();
+        }
+      }
+    }
+
+    // Invite codes: authenticated users can read, create, delete
+    match /inviteCodes/{code} {
+      allow read, create, delete: if request.auth != null;
+    }
+  }
+}
