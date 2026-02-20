@@ -166,10 +166,13 @@ final class AuthService {
         isDeletingAccount = true
         defer { isDeletingAccount = false }
 
-        // 1. Stop Firestore listeners to prevent UI issues during deletion
+        // 1. Leave group if in one (before stopping listeners)
+        await GroupService.shared.handleAccountDeletion()
+
+        // 2. Stop Firestore listeners to prevent UI issues during deletion
         FirestoreService.shared.stopListening()
 
-        // 2. Revoke Apple token FIRST (before data deletion)
+        // 3. Revoke Apple token FIRST (before data deletion)
         //    If this fails, we can safely abort with data intact
         if let authCode = appleAuthorizationCode {
             do {
@@ -182,11 +185,11 @@ final class AuthService {
             }
         }
 
-        // 3. Delete Storage photos (best effort — continue on failure)
+        // 4. Delete Storage photos (best effort — continue on failure)
         let towelsSnapshot = FirestoreService.shared.towels
         await StorageService.shared.deleteAllUserPhotos(towels: towelsSnapshot)
 
-        // 4. Delete all Firestore data (towels + subcollections + user document)
+        // 5. Delete all Firestore data (towels + subcollections + user document)
         do {
             try await FirestoreService.shared.deleteAllTowels()
             try await FirestoreService.shared.deleteUserDocument()
@@ -195,7 +198,7 @@ final class AuthService {
             // Orphaned data is preferable to a user with revoked tokens
         }
 
-        // 5. Delete the Firebase Auth user
+        // 6. Delete the Firebase Auth user
         do {
             try await user.delete()
         } catch {

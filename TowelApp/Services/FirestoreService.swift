@@ -24,7 +24,17 @@ final class FirestoreService {
         Auth.auth().currentUser?.uid
     }
 
-    private func userTowelsCollection() -> CollectionReference? {
+    private func towelsCollection() -> CollectionReference? {
+        guard let userId else { return nil }
+
+        if let groupId = GroupService.shared.groupId {
+            return db.collection("groups").document(groupId).collection("towels")
+        }
+        return db.collection("users").document(userId).collection("towels")
+    }
+
+    /// Personal towels collection (for account deletion only — always uses solo path)
+    private func personalTowelsCollection() -> CollectionReference? {
         guard let userId else { return nil }
         return db.collection("users").document(userId).collection("towels")
     }
@@ -32,7 +42,7 @@ final class FirestoreService {
     // MARK: - Subscribe
 
     func startListening() {
-        guard let collection = userTowelsCollection() else { return }
+        guard let collection = towelsCollection() else { return }
 
         stopListening()
         isLoading = true
@@ -100,7 +110,7 @@ final class FirestoreService {
 
     private func subscribeToRecords(towelId: String) {
         guard recordListeners[towelId] == nil,
-              let collection = userTowelsCollection() else { return }
+              let collection = towelsCollection() else { return }
 
         let listener = collection.document(towelId).collection("records")
             .order(by: "exchangedAt", descending: true)
@@ -117,7 +127,7 @@ final class FirestoreService {
 
     private func subscribeToConditionChecks(towelId: String) {
         guard conditionCheckListeners[towelId] == nil,
-              let collection = userTowelsCollection() else { return }
+              let collection = towelsCollection() else { return }
 
         let listener = collection.document(towelId).collection("conditionChecks")
             .order(by: "checkedAt", descending: true)
@@ -135,7 +145,7 @@ final class FirestoreService {
     // MARK: - Towel CRUD
 
     func addTowel(name: String, location: String, iconName: String, exchangeIntervalDays: Int) async throws -> String {
-        guard let collection = userTowelsCollection() else {
+        guard let collection = towelsCollection() else {
             throw FirestoreError.notAuthenticated
         }
 
@@ -153,7 +163,7 @@ final class FirestoreService {
     }
 
     func updateTowel(_ towelId: String, name: String, location: String, iconName: String, exchangeIntervalDays: Int) async throws {
-        guard let collection = userTowelsCollection() else {
+        guard let collection = towelsCollection() else {
             throw FirestoreError.notAuthenticated
         }
 
@@ -167,7 +177,7 @@ final class FirestoreService {
     }
 
     func deleteTowel(_ towelId: String) async throws {
-        guard let collection = userTowelsCollection() else {
+        guard let collection = towelsCollection() else {
             throw FirestoreError.notAuthenticated
         }
 
@@ -204,7 +214,7 @@ final class FirestoreService {
     // MARK: - Exchange Record
 
     func addRecord(towelId: String, exchangedAt: Date, note: String?) async throws -> String {
-        guard let collection = userTowelsCollection() else {
+        guard let collection = towelsCollection() else {
             throw FirestoreError.notAuthenticated
         }
 
@@ -221,7 +231,7 @@ final class FirestoreService {
     }
 
     func deleteRecord(towelId: String, recordId: String) async throws {
-        guard let collection = userTowelsCollection() else {
+        guard let collection = towelsCollection() else {
             throw FirestoreError.notAuthenticated
         }
 
@@ -241,7 +251,7 @@ final class FirestoreService {
         comment: String,
         recommendation: String
     ) async throws -> String {
-        guard let collection = userTowelsCollection() else {
+        guard let collection = towelsCollection() else {
             throw FirestoreError.notAuthenticated
         }
 
@@ -264,7 +274,7 @@ final class FirestoreService {
     }
 
     func updateConditionCheckPhotoURL(towelId: String, checkId: String, photoURL: String) async throws {
-        guard let collection = userTowelsCollection() else {
+        guard let collection = towelsCollection() else {
             throw FirestoreError.notAuthenticated
         }
 
@@ -274,7 +284,7 @@ final class FirestoreService {
     }
 
     func deleteConditionCheck(towelId: String, checkId: String) async throws {
-        guard let collection = userTowelsCollection() else {
+        guard let collection = towelsCollection() else {
             throw FirestoreError.notAuthenticated
         }
 

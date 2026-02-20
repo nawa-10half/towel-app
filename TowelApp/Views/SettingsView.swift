@@ -32,6 +32,7 @@ struct SettingsView: View {
     var body: some View {
         Form {
             accountSection
+            GroupSettingsView()
             notificationSection
             aboutSection
             dangerSection
