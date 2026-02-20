@@ -46,6 +46,21 @@ final class StorageService: Sendable {
 
         try await ref.delete()
     }
+
+    /// Delete all condition photos for a user's towels
+    func deleteAllUserPhotos(towels: [Towel]) async {
+        guard let userId = Auth.auth().currentUser?.uid else { return }
+
+        for towel in towels {
+            guard let towelId = towel.id else { continue }
+            for check in towel.conditionChecks where check.photoURL != nil {
+                guard let checkId = check.id else { continue }
+                let path = "users/\(userId)/towels/\(towelId)/conditions/\(checkId).jpg"
+                let ref = storage.reference().child(path)
+                try? await ref.delete()
+            }
+        }
+    }
 }
 
 enum StorageError: LocalizedError {

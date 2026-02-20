@@ -185,6 +185,22 @@ final class FirestoreService {
         try await collection.document(towelId).delete()
     }
 
+    /// Delete all towels and their subcollections for the current user
+    func deleteAllTowels() async throws {
+        let towelIds = towels.compactMap(\.id)
+        for towelId in towelIds {
+            try await deleteTowel(towelId)
+        }
+    }
+
+    /// Delete the user document itself
+    func deleteUserDocument() async throws {
+        guard let userId else {
+            throw FirestoreError.notAuthenticated
+        }
+        try await db.collection("users").document(userId).delete()
+    }
+
     // MARK: - Exchange Record
 
     func addRecord(towelId: String, exchangedAt: Date, note: String?) async throws -> String {
