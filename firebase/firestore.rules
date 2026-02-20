@@ -59,9 +59,10 @@ service cloud.firestore {
       allow read, create, delete: if request.auth != null;
     }
 
-    // Restore codes: クライアントからのアクセス不可 (Admin SDK のみ)
+    // Restore codes: 作成・読み取りは Admin SDK のみ。自分のコードのみ削除可
     match /restoreCodes/{code} {
-      allow read, write: if false;
+      allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
+      allow read, create, update: if false;
     }
   }
 }
