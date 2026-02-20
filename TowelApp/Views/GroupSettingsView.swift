@@ -26,7 +26,7 @@ struct GroupSettingsView: View {
                 groupName = ""
                 showingCreateAlert = true
             } label: {
-                Label("家族グループを作成", systemImage: "person.3.fill")
+                Label("タオルグループを作成", systemImage: "person.3.fill")
             }
 
             Button {
@@ -50,9 +50,9 @@ struct GroupSettingsView: View {
                     .foregroundStyle(.red)
             }
         } header: {
-            Text("家族グループ")
+            Text("タオルグループ")
         } footer: {
-            Text("家族グループを作成すると、メンバー全員でタオルを共同管理できます")
+            Text("タオルグループを作成すると、メンバー全員でタオルを共同管理できます")
         }
         .alert("グループを作成", isPresented: $showingCreateAlert) {
             TextField("グループ名（例: 我が家）", text: $groupName)
@@ -144,7 +144,7 @@ struct GroupSettingsView: View {
                     .foregroundStyle(.red)
             }
         } header: {
-            Text("家族グループ")
+            Text("タオルグループ")
         }
         .confirmationDialog("グループから退出しますか？", isPresented: $showingLeaveConfirmation, titleVisibility: .visible) {
             Button("退出", role: .destructive) {
