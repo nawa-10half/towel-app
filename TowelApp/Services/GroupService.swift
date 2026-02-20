@@ -163,9 +163,13 @@ final class GroupService {
             "joinedAt": FieldValue.serverTimestamp()
         ]
 
-        let batch = db.batch()
         let groupRef = db.collection("groups").document(targetGroupId)
-        batch.setData(memberData, forDocument: groupRef.collection("members").document(userId))
+
+        // Step 1: Add self as member first (rules allow create on own memberId)
+        try await groupRef.collection("members").document(userId).setData(memberData)
+
+        // Step 2: Now isMember() passes — update group and user docs
+        let batch = db.batch()
         batch.updateData([
             "memberCount": FieldValue.increment(Int64(1)),
             "updatedAt": FieldValue.serverTimestamp()
