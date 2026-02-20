@@ -27,7 +27,15 @@ struct SignInView: View {
             }
         }
         .onAppear {
-            generatedCode = authService.generateRestoreCode()
+            if let existingCode = authService.restoreCode {
+                // サインアウト後など: 既存コードを使って復帰フローへ
+                restoreCodeInput = existingCode
+                step = .restoreInput
+            } else {
+                // 新規ユーザー: コードを生成して表示フローへ
+                generatedCode = authService.generateRestoreCode()
+                step = .codeDisplay
+            }
         }
     }
 
@@ -260,14 +268,19 @@ struct SignInView: View {
 
             Spacer()
 
-            Button {
-                authService.errorMessage = nil
-                step = .codeDisplay
-            } label: {
-                Text("戻る")
-                    .foregroundStyle(.secondary)
+            // サインアウト後（既存コードあり）は新規フローに戻る必要がない
+            if authService.restoreCode == nil {
+                Button {
+                    authService.errorMessage = nil
+                    step = .codeDisplay
+                } label: {
+                    Text("戻る")
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.bottom, 40)
+            } else {
+                Spacer().frame(height: 40)
             }
-            .padding(.bottom, 40)
         }
     }
 
