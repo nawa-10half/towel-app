@@ -7,6 +7,7 @@ struct SettingsView: View {
     @AppStorage("overdueNotificationEnabled") private var overdueNotificationEnabled = true
     @State private var firestoreService = FirestoreService.shared
     @State private var notificationPermissionDenied = false
+    @State private var showingJoinSheet = false
     @State private var showingSignOutConfirmation = false
     @State private var showingDeleteAccountConfirmation = false
     @State private var showingAppleReauth = false
@@ -32,12 +33,15 @@ struct SettingsView: View {
     var body: some View {
         Form {
             accountSection
-            GroupSettingsView()
+            GroupSettingsView(onJoinGroupTapped: { showingJoinSheet = true })
             notificationSection
             aboutSection
             dangerSection
         }
         .navigationTitle("設定")
+        .sheet(isPresented: $showingJoinSheet) {
+            JoinGroupView()
+        }
         .alert("通知が許可されていません", isPresented: $notificationPermissionDenied) {
             Button("設定を開く") {
                 if let url = URL(string: UIApplication.openSettingsURLString) {

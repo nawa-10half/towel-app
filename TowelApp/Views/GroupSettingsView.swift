@@ -1,9 +1,10 @@
 import SwiftUI
 
 struct GroupSettingsView: View {
+    var onJoinGroupTapped: () -> Void = {}
+
     @State private var groupService = GroupService.shared
     @State private var showingCreateAlert = false
-    @State private var showingJoinSheet = false
     @State private var showingLeaveConfirmation = false
     @State private var showingRegenerateConfirmation = false
     @State private var groupName = ""
@@ -29,7 +30,7 @@ struct GroupSettingsView: View {
             }
 
             Button {
-                showingJoinSheet = true
+                onJoinGroupTapped()
             } label: {
                 Label("招待コードで参加", systemImage: "person.badge.plus")
             }
@@ -67,9 +68,6 @@ struct GroupSettingsView: View {
                 }
             }
             Button("キャンセル", role: .cancel) {}
-        }
-        .sheet(isPresented: $showingJoinSheet) {
-            JoinGroupView()
         }
     }
 
