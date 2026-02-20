@@ -24,6 +24,7 @@ struct ContentView: View {
             .tag(1)
         }
         .task {
+            await GroupService.shared.loadGroupForCurrentUser()
             firestoreService.startListening()
         }
         .onOpenURL { url in
