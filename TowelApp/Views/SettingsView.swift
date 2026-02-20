@@ -11,6 +11,8 @@ struct SettingsView: View {
     @State private var showingJoinSheet = false
     @State private var showingSignOutConfirmation = false
     @State private var showingDeleteAccountConfirmation = false
+    @State private var pendingSignOut = false
+    @State private var pendingDeleteAccount = false
     @State private var editingDisplayName: String = ""
     @State private var codeCopied = false
 
@@ -57,8 +59,19 @@ struct SettingsView: View {
         }
         .confirmationDialog("サインアウトしますか？", isPresented: $showingSignOutConfirmation, titleVisibility: .visible) {
             Button("サインアウト", role: .destructive) {
-                authService.signOut()
+                pendingSignOut = true
             }
+        }
+        // ダイアログが完全に閉じた後に実行（閉じる途中での状態変化を避ける）
+        .onChange(of: showingSignOutConfirmation) { _, isShowing in
+            guard !isShowing, pendingSignOut else { return }
+            pendingSignOut = false
+            authService.signOut()
+        }
+        .onChange(of: showingDeleteAccountConfirmation) { _, isShowing in
+            guard !isShowing, pendingDeleteAccount else { return }
+            pendingDeleteAccount = false
+            Task { await authService.deleteAccount() }
         }
         .task {
             editingDisplayName = authService.displayName
@@ -200,7 +213,7 @@ struct SettingsView: View {
             titleVisibility: .visible
         ) {
             Button("アカウントを削除", role: .destructive) {
-                Task { await authService.deleteAccount() }
+                pendingDeleteAccount = true
             }
         } message: {
             Text("この操作は取り消せません。すべてのデータが削除されます。")
