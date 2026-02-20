@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>かえたお – Alexa アカウント連携</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f5f7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 40px 32px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+    .logo { font-size: 48px; margin-bottom: 12px; }
+    h1 { font-size: 22px; font-weight: 700; color: #1d1d1f; margin-bottom: 8px; }
+    p { font-size: 14px; color: #6e6e73; line-height: 1.6; margin-bottom: 28px; }
+    .btn-google {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 13px 20px;
+      border: 1.5px solid #dadce0;
+      border-radius: 10px;
+      background: #fff;
+      font-size: 15px;
+      font-weight: 500;
+      color: #3c4043;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-google:hover { background: #f8f9fa; }
+    .btn-google:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-google svg { flex-shrink: 0; }
+    .status {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #6e6e73;
+      min-height: 20px;
+    }
+    .status.error { color: #d93025; }
+    .status.success { color: #1e8e3e; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">🏠</div>
+    <h1>かえたお</h1>
+    <p>Alexa でタオル管理を使うために<br>Google アカウントでサインインしてください</p>
+
+    <button class="btn-google" id="signInBtn" onclick="signIn()">
+      <svg width="18" height="18" viewBox="0 0 18 18">
+        <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
+        <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+        <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z"/>
+        <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.293C4.672 5.166 6.656 3.58 9 3.58z"/>
+      </svg>
+      Google でサインイン
+    </button>
+
+    <div class="status" id="status"></div>
+  </div>
+
+  <!-- Firebase JS SDK (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyC-pymNvwt5DJSIo9hkiLtSvVVB7ZoIwhI",
+      authDomain: "kaetao-c43f1.web.app",
+      projectId: "kaetao-c43f1",
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    // Alexaからのクエリパラメータを取得・保存
+    // signInWithRedirect 後はURLパラメータが消えるため sessionStorage に退避
+    const params = new URLSearchParams(location.search);
+    if (params.get('redirect_uri')) {
+      sessionStorage.setItem('alexa_redirect_uri', params.get('redirect_uri'));
+      sessionStorage.setItem('alexa_state', params.get('state') || '');
+    }
+
+    function setStatus(msg, type = '') {
+      const el = document.getElementById('status');
+      el.textContent = msg;
+      el.className = 'status ' + type;
+    }
+
+    let linkingInProgress = false;
+
+    function completeAccountLinking(user) {
+      if (linkingInProgress) return;
+      const redirectUri = sessionStorage.getItem('alexa_redirect_uri');
+      const state = sessionStorage.getItem('alexa_state');
+
+      if (!redirectUri) {
+        setStatus('エラー: Alexaの連携情報が見つかりません。Alexaアプリからやり直してください。', 'error');
+        return;
+      }
+
+      linkingInProgress = true;
+      const refreshToken = user.refreshToken;
+      console.log('Account linking: got refresh token, redirecting to Alexa');
+      setStatus('連携完了！Alexaアプリに戻ります...', 'success');
+      document.getElementById('signInBtn').disabled = true;
+
+      // 使用済みのセッションデータをクリア
+      sessionStorage.removeItem('alexa_redirect_uri');
+      sessionStorage.removeItem('alexa_state');
+      sessionStorage.removeItem('alexa_auth_pending');
+
+      const tokenUri =
+        `${redirectUri}#access_token=${encodeURIComponent(refreshToken)}&token_type=Bearer&state=${encodeURIComponent(state || '')}`;
+
+      setTimeout(() => { window.location.href = tokenUri; }, 800);
+    }
+
+    // getRedirectResult で認証結果を処理
+    firebase.auth().getRedirectResult().then((result) => {
+      if (result.user) {
+        console.log('getRedirectResult: user found');
+        completeAccountLinking(result.user);
+      }
+    }).catch((err) => {
+      console.error('Redirect result error:', err);
+      setStatus('エラーが発生しました: ' + err.message, 'error');
+    });
+
+    // onAuthStateChanged をバックアップとして使用
+    // WebView で getRedirectResult が null を返す場合のフォールバック
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user && sessionStorage.getItem('alexa_auth_pending') === 'true') {
+        console.log('onAuthStateChanged: user found (fallback)');
+        completeAccountLinking(user);
+      }
+    });
+
+    function signIn() {
+      const btn = document.getElementById('signInBtn');
+      btn.disabled = true;
+      setStatus('サインイン中...');
+
+      sessionStorage.setItem('alexa_auth_pending', 'true');
+      const provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithRedirect(provider);
+    }
+  </script>
+</body>
+</html>

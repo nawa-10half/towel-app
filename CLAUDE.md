@@ -26,7 +26,7 @@ xcodegen generate
 
 # Build via Xcode (open TowelApp.xcodeproj)
 
-# Firebase (kaetao-app リポジトリで実行)
+# Firebase CLI (towel-app ルートで実行)
 firebase deploy --only firestore:rules   # Firestoreルールデプロイ
 firebase deploy --only storage           # Storageルールデプロイ
 firebase deploy --only hosting           # Hosting (alexa-auth.html等) デプロイ
@@ -86,6 +86,13 @@ towel-app/
 │   ├── Intents/                   # ⚠️ 一時ビルド除外 (SwiftData依存)
 │   └── Assets.xcassets/
 ├── TowelWidget/                   # ⚠️ 一時無効化 (SwiftData依存)
+├── firebase/
+│   ├── firestore.rules            # Firestore セキュリティルール
+│   └── storage.rules              # Storage セキュリティルール
+├── public/
+│   └── alexa-auth.html            # Alexa アカウントリンクページ (Firebase Hosting)
+├── firebase.json                  # Firebase CLI 設定
+├── .firebaserc                    # Firebase プロジェクト紐付け
 ├── lambda/
 │   ├── alexa-skill/               # Alexa スキル Lambda (ask-sdk-core + firebase-admin)
 │   ├── towel-condition-assess-nova/ # 状態診断 Lambda (Claude Haiku 4.5)
@@ -117,7 +124,7 @@ Storage path: `users/{userId}/towels/{towelId}/conditions/{checkId}.jpg`
 - **iOS App ID**: `1:157027032087:ios:cdd267ab3bea06d0121052`
 - **Bundle ID**: `com.kaetao-app.TowelApp`
 - **Auth providers**: Apple, Google
-- **Security rules**: `/firebase/` ディレクトリ (RN版リポジトリ kaetao-app 内)
+- **Security rules**: `firebase/` ディレクトリ (firestore.rules, storage.rules)
 - **Hosting**: `kaetao-c43f1.web.app` (Alexa アカウントリンクページ等)
 
 ## Git / GitHub
@@ -143,5 +150,5 @@ Storage path: `users/{userId}/towels/{towelId}/conditions/{checkId}.jpg`
 
 ## Related
 
-- **RN版 (凍結)**: https://github.com/nawa-10half/kaetao-app — `/Users/takahironawa/Developer/kaetao-app`
-- Firebase設定、セキュリティルール、Hosting、Lambda APIは両版で共用
+- **RN版 (凍結)**: https://github.com/nawa-10half/kaetao-app — 完全凍結、更新不要
+- Firebase設定、セキュリティルール、Hosting はすべて towel-app リポジトリで管理
