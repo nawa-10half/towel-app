@@ -26,23 +26,15 @@
 				<string>towelapp</string>
 			</array>
 		</dict>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.googleusercontent.apps.157027032087-gaehu27c96u1v91tnj6qqdiktfimtaqk</string>
-			</array>
-		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>ConditionCheckAPIURL</key>
 	<string>$(CONDITION_CHECK_API_URL)</string>
-	<key>GIDClientID</key>
-	<string>157027032087-gaehu27c96u1v91tnj6qqdiktfimtaqk.apps.googleusercontent.com</string>
-	<key>GIDServerClientID</key>
-	<string>157027032087-gaehu27c96u1v91tnj6qqdiktfimtaqk.apps.googleusercontent.com</string>
 	<key>NSCameraUsageDescription</key>
 	<string>タオルの状態を診断するために写真を撮影します</string>
+	<key>RestoreCodeAuthURL</key>
+	<string>$(RESTORE_CODE_AUTH_URL)</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

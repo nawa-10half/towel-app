@@ -1,9 +1,7 @@
 import Foundation
 import FirebaseAuth
 import FirebaseFirestore
-import AuthenticationServices
-import GoogleSignIn
-import CryptoKit
+import Security
 
 @Observable
 @MainActor
@@ -15,93 +13,126 @@ final class AuthService {
     var isLoading = true
     var isDeletingAccount = false
     var errorMessage: String?
-
-    /// Authorization code obtained during Apple reauthentication (for token revocation)
-    var appleAuthorizationCode: String?
+    var displayName: String = ""
+    var restoreCode: String?
 
     private var authStateListener: AuthStateDidChangeListenerHandle?
-    private var currentNonce: String?
+    private let db = Firestore.firestore()
+    private var hasAttemptedAutoSignIn = false
+
+    private static let keychainService = "com.kaetao-app.TowelApp"
+    private static let keychainKeyRestoreCode = "restoreCode"
+    // 紛らわしい文字 (0/O, 1/I/L) を除いた文字セット
+    static let codeCharacters = Array("23456789ABCDEFGHJKLMNPQRSTUVWXYZ")
 
     private init() {
+        restoreCode = loadFromKeychain(key: Self.keychainKeyRestoreCode)
         setupAuthListener()
     }
 
     private func setupAuthListener() {
         authStateListener = Auth.auth().addStateDidChangeListener { [weak self] _, user in
             guard let self else { return }
-            self.currentUser = user
-            self.isAuthenticated = user != nil
-            self.isLoading = false
-        }
-    }
-
-    // MARK: - Apple Sign In
-
-    func handleAppleSignInRequest(_ request: ASAuthorizationAppleIDRequest) {
-        let nonce = randomNonceString()
-        currentNonce = nonce
-        request.requestedScopes = [.fullName, .email]
-        request.nonce = sha256(nonce)
-    }
-
-    func handleAppleSignInCompletion(_ result: Result<ASAuthorization, Error>) async {
-        switch result {
-        case .success(let authorization):
-            guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential,
-                  let appleIDToken = appleIDCredential.identityToken,
-                  let idTokenString = String(data: appleIDToken, encoding: .utf8),
-                  let nonce = currentNonce else {
-                errorMessage = "Appleサインインの処理に失敗しました"
-                return
-            }
-
-            let credential = OAuthProvider.appleCredential(
-                withIDToken: idTokenString,
-                rawNonce: nonce,
-                fullName: appleIDCredential.fullName
-            )
-
-            do {
-                let authResult = try await Auth.auth().signIn(with: credential)
-                try await ensureUserDocument(for: authResult.user)
-            } catch {
-                errorMessage = "サインインに失敗しました: \(error.localizedDescription)"
-            }
-
-        case .failure(let error):
-            if (error as NSError).code != ASAuthorizationError.canceled.rawValue {
-                errorMessage = "Appleサインインに失敗しました: \(error.localizedDescription)"
+            if let user {
+                self.currentUser = user
+                self.isAuthenticated = true
+                self.isLoading = false
+                Task { await self.loadDisplayName(uid: user.uid) }
+            } else if !self.hasAttemptedAutoSignIn, let code = self.restoreCode {
+                // Keychain にコードがあれば自動サインイン
+                self.hasAttemptedAutoSignIn = true
+                Task {
+                    await self.signInWithRestoreCode(code)
+                    if !self.isAuthenticated {
+                        self.isLoading = false
+                    }
+                }
+            } else {
+                self.currentUser = nil
+                self.isAuthenticated = false
+                self.isLoading = false
             }
         }
     }
 
-    // MARK: - Google Sign In
+    // MARK: - Sign In with Restore Code
 
-    func signInWithGoogle() async {
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let rootViewController = windowScene.windows.first?.rootViewController else {
-            errorMessage = "画面の取得に失敗しました"
+    func signInWithRestoreCode(_ code: String) async {
+        guard let urlString = Bundle.main.infoDictionary?["RestoreCodeAuthURL"] as? String,
+              let apiURL = URL(string: urlString) else {
+            errorMessage = "API URLの設定が見つかりません"
             return
         }
 
         do {
-            let result = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
-            guard let idToken = result.user.idToken?.tokenString else {
-                errorMessage = "Google IDトークンの取得に失敗しました"
+            var request = URLRequest(url: apiURL)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpBody = try JSONEncoder().encode(["code": code])
+
+            let (data, response) = try await URLSession.shared.data(for: request)
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                errorMessage = "コードが無効です"
                 return
             }
 
-            let credential = GoogleAuthProvider.credential(
-                withIDToken: idToken,
-                accessToken: result.user.accessToken.tokenString
-            )
-
-            let authResult = try await Auth.auth().signIn(with: credential)
-            try await ensureUserDocument(for: authResult.user)
-        } catch {
-            if (error as NSError).code != GIDSignInError.canceled.rawValue {
-                errorMessage = "Googleサインインに失敗しました: \(error.localizedDescription)"
+            let json = try JSONDecoder().decode([String: String].self, from: data)
+            guard let customToken = json["customToken"] else {
+                errorMessage = "認証トークンの取得に失敗しました"
+                return
             }
+
+            try await Auth.auth().signIn(withCustomToken: customToken)
+            saveToKeychain(code, key: Self.keychainKeyRestoreCode)
+            self.restoreCode = code
+        } catch {
+            errorMessage = "サインインに失敗しました: \(error.localizedDescription)"
+        }
+    }
+
+    // MARK: - Display Name
+
+    func loadDisplayName(uid: String) async {
+        do {
+            let doc = try await db.collection("users").document(uid).getDocument()
+            self.displayName = doc.data()?["displayName"] as? String ?? ""
+        } catch {
+            // ネットワークエラー等は無視
+        }
+    }
+
+    func updateDisplayName(_ name: String) async throws {
+        guard let uid = currentUser?.uid else { return }
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+
+        try await db.collection("users").document(uid).updateData(["displayName": trimmed])
+        self.displayName = trimmed
+
+        // グループメンバードキュメントにも同期
+        if let groupId = GroupService.shared.groupId {
+            try await db.collection("groups").document(groupId)
+                .collection("members").document(uid)
+                .updateData(["displayName": trimmed])
+        }
+    }
+
+    // MARK: - Ensure User Document (初回サインイン時)
+
+    func ensureUserDocument(displayName: String) async throws {
+        guard let uid = currentUser?.uid else { return }
+        let trimmed = displayName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let docRef = db.collection("users").document(uid)
+        let doc = try await docRef.getDocument()
+
+        if !doc.exists {
+            try await docRef.setData([
+                "displayName": trimmed,
+                "updatedAt": FieldValue.serverTimestamp()
+            ])
+            self.displayName = trimmed
+        } else {
+            try await docRef.updateData(["updatedAt": FieldValue.serverTimestamp()])
         }
     }
 
@@ -110,51 +141,9 @@ final class AuthService {
     func signOut() {
         do {
             try Auth.auth().signOut()
-            GIDSignIn.sharedInstance.signOut()
+            hasAttemptedAutoSignIn = false
         } catch {
             errorMessage = "サインアウトに失敗しました: \(error.localizedDescription)"
-        }
-    }
-
-    // MARK: - Apple Reauthentication
-
-    /// Handle Apple reauthentication for account deletion (reuses nonce logic)
-    func reauthenticateWithApple(_ result: Result<ASAuthorization, Error>) async -> Bool {
-        switch result {
-        case .success(let authorization):
-            guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential,
-                  let appleIDToken = appleIDCredential.identityToken,
-                  let idTokenString = String(data: appleIDToken, encoding: .utf8),
-                  let nonce = currentNonce else {
-                errorMessage = "Apple再認証の処理に失敗しました"
-                return false
-            }
-
-            // Store authorization code for token revocation
-            if let authCode = appleIDCredential.authorizationCode,
-               let authCodeString = String(data: authCode, encoding: .utf8) {
-                appleAuthorizationCode = authCodeString
-            }
-
-            let credential = OAuthProvider.appleCredential(
-                withIDToken: idTokenString,
-                rawNonce: nonce,
-                fullName: appleIDCredential.fullName
-            )
-
-            do {
-                try await Auth.auth().currentUser?.reauthenticate(with: credential)
-                return true
-            } catch {
-                errorMessage = "再認証に失敗しました: \(error.localizedDescription)"
-                return false
-            }
-
-        case .failure(let error):
-            if (error as NSError).code != ASAuthorizationError.canceled.rawValue {
-                errorMessage = "Apple再認証に失敗しました: \(error.localizedDescription)"
-            }
-            return false
         }
     }
 
@@ -166,80 +155,83 @@ final class AuthService {
         isDeletingAccount = true
         defer { isDeletingAccount = false }
 
-        // 1. Leave group if in one (before stopping listeners)
+        // 1. グループから退出
         await GroupService.shared.handleAccountDeletion()
 
-        // 2. Stop Firestore listeners to prevent UI issues during deletion
+        // 2. Firestore リスナー停止
         FirestoreService.shared.stopListening()
 
-        // 3. Revoke Apple token FIRST (before data deletion)
-        //    If this fails, we can safely abort with data intact
-        if let authCode = appleAuthorizationCode {
-            do {
-                try await Auth.auth().revokeToken(withAuthorizationCode: authCode)
-                appleAuthorizationCode = nil
-            } catch {
-                errorMessage = "Appleトークンの取り消しに失敗しました: \(error.localizedDescription)"
-                FirestoreService.shared.startListening()
-                return
-            }
-        }
-
-        // 4. Delete Storage photos (best effort — continue on failure)
+        // 3. Storage 写真削除（ベストエフォート）
         let towelsSnapshot = FirestoreService.shared.towels
         await StorageService.shared.deleteAllUserPhotos(towels: towelsSnapshot)
 
-        // 5. Delete all Firestore data (towels + subcollections + user document)
+        // 4. Firestore データ削除
         do {
             try await FirestoreService.shared.deleteAllTowels()
             try await FirestoreService.shared.deleteUserDocument()
         } catch {
-            // Data deletion partially failed, but continue with user deletion
-            // Orphaned data is preferable to a user with revoked tokens
+            // 一部失敗しても続行
         }
 
-        // 6. Delete the Firebase Auth user
+        // 5. リストアコードを Firestore から削除
+        if let code = restoreCode {
+            try? await db.collection("restoreCodes").document(code).delete()
+        }
+
+        // 6. Firebase Auth ユーザー削除
         do {
             try await user.delete()
+            deleteFromKeychain(key: Self.keychainKeyRestoreCode)
+            restoreCode = nil
+            displayName = ""
         } catch {
             errorMessage = "アカウント削除に失敗しました: \(error.localizedDescription)"
         }
     }
 
-    // MARK: - Private Helpers
+    // MARK: - Code Generation
 
-    private func ensureUserDocument(for user: FirebaseAuth.User) async throws {
-        let db = Firestore.firestore()
-        let docRef = db.collection("users").document(user.uid)
-        let doc = try await docRef.getDocument()
-
-        if !doc.exists {
-            try await docRef.setData([
-                "displayName": user.displayName as Any,
-                "email": user.email as Any,
-                "updatedAt": FieldValue.serverTimestamp()
-            ])
-        } else {
-            try await docRef.updateData([
-                "updatedAt": FieldValue.serverTimestamp()
-            ])
-        }
+    func generateRestoreCode() -> String {
+        let group1 = String((0..<4).map { _ in Self.codeCharacters.randomElement()! })
+        let group2 = String((0..<4).map { _ in Self.codeCharacters.randomElement()! })
+        let group3 = String((0..<4).map { _ in Self.codeCharacters.randomElement()! })
+        return "\(group1)-\(group2)-\(group3)"
     }
 
-    private func randomNonceString(length: Int = 32) -> String {
-        precondition(length > 0)
-        var randomBytes = [UInt8](repeating: 0, count: length)
-        let errorCode = SecRandomCopyBytes(kSecRandomDefault, randomBytes.count, &randomBytes)
-        if errorCode != errSecSuccess {
-            fatalError("Unable to generate nonce. SecRandomCopyBytes failed with OSStatus \(errorCode)")
-        }
-        let charset: [Character] = Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
-        return String(randomBytes.map { charset[Int($0) % charset.count] })
+    // MARK: - Keychain Helpers
+
+    private func saveToKeychain(_ value: String, key: String) {
+        guard let data = value.data(using: .utf8) else { return }
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: Self.keychainService,
+            kSecAttrAccount as String: key,
+            kSecValueData as String: data
+        ]
+        SecItemDelete(query as CFDictionary)
+        SecItemAdd(query as CFDictionary, nil)
     }
 
-    private func sha256(_ input: String) -> String {
-        let inputData = Data(input.utf8)
-        let hashedData = SHA256.hash(data: inputData)
-        return hashedData.compactMap { String(format: "%02x", $0) }.joined()
+    private func loadFromKeychain(key: String) -> String? {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: Self.keychainService,
+            kSecAttrAccount as String: key,
+            kSecReturnData as String: true,
+            kSecMatchLimit as String: kSecMatchLimitOne
+        ]
+        var result: AnyObject?
+        SecItemCopyMatching(query as CFDictionary, &result)
+        guard let data = result as? Data else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
+
+    private func deleteFromKeychain(key: String) {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: Self.keychainService,
+            kSecAttrAccount as String: key
+        ]
+        SecItemDelete(query as CFDictionary)
     }
 }

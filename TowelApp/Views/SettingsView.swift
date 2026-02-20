@@ -6,12 +6,13 @@ struct SettingsView: View {
     @AppStorage("notificationMinute") private var notificationMinute = 0
     @AppStorage("overdueNotificationEnabled") private var overdueNotificationEnabled = true
     @State private var firestoreService = FirestoreService.shared
+    @State private var authService = AuthService.shared
     @State private var notificationPermissionDenied = false
     @State private var showingJoinSheet = false
     @State private var showingSignOutConfirmation = false
     @State private var showingDeleteAccountConfirmation = false
-    @State private var showingAppleReauth = false
-    @State private var authService = AuthService.shared
+    @State private var editingDisplayName: String = ""
+    @State private var codeCopied = false
 
     private var notificationTime: Binding<Date> {
         Binding(
@@ -59,31 +60,59 @@ struct SettingsView: View {
                 authService.signOut()
             }
         }
+        .task {
+            editingDisplayName = authService.displayName
+        }
+        .onChange(of: authService.displayName) { _, newValue in
+            editingDisplayName = newValue
+        }
     }
 
     private var accountSection: some View {
         Section {
-            if let user = authService.currentUser {
-                HStack {
-                    Image(systemName: "person.circle.fill")
-                        .font(.title)
-                        .foregroundStyle(.tint)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(user.displayName ?? "名前未設定")
-                            .font(.headline)
-                        if let email = user.email {
-                            Text(email)
-                                .font(.caption)
+            // 表示名編集
+            HStack {
+                TextField("表示名", text: $editingDisplayName)
+                    .autocorrectionDisabled()
+                    .submitLabel(.done)
+                    .onSubmit { Task { await saveDisplayName() } }
+
+                if editingDisplayName.trimmingCharacters(in: .whitespacesAndNewlines) != authService.displayName {
+                    Button("保存") {
+                        Task { await saveDisplayName() }
+                    }
+                    .font(.callout)
+                }
+            }
+
+            // リストアコード
+            if let code = authService.restoreCode {
+                Button {
+                    UIPasteboard.general.string = code
+                    codeCopied = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        codeCopied = false
+                    }
+                } label: {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("リストアコード")
+                                .foregroundStyle(.primary)
+                            Text(code)
+                                .font(.system(.caption, design: .monospaced))
                                 .foregroundStyle(.secondary)
                         }
+                        Spacer()
+                        Image(systemName: codeCopied ? "checkmark" : "doc.on.doc")
+                            .foregroundStyle(.tint)
                     }
                 }
+            }
 
-                Button {
-                    showingSignOutConfirmation = true
-                } label: {
-                    Label("サインアウト", systemImage: "rectangle.portrait.and.arrow.right")
-                }
+            Button {
+                showingSignOutConfirmation = true
+            } label: {
+                Label("サインアウト", systemImage: "rectangle.portrait.and.arrow.right")
             }
         } header: {
             Text("アカウント")
@@ -146,10 +175,6 @@ struct SettingsView: View {
         }
     }
 
-    private var isAppleProvider: Bool {
-        authService.currentUser?.providerData.contains(where: { $0.providerID == "apple.com" }) ?? false
-    }
-
     private var dangerSection: some View {
         Section {
             if authService.isDeletingAccount {
@@ -169,26 +194,24 @@ struct SettingsView: View {
                 .disabled(authService.isDeletingAccount)
             }
         }
-        .confirmationDialog("アカウントを削除しますか？", isPresented: $showingDeleteAccountConfirmation, titleVisibility: .visible) {
+        .confirmationDialog(
+            "アカウントを削除しますか？",
+            isPresented: $showingDeleteAccountConfirmation,
+            titleVisibility: .visible
+        ) {
             Button("アカウントを削除", role: .destructive) {
-                if isAppleProvider {
-                    showingAppleReauth = true
-                } else {
-                    Task {
-                        await authService.deleteAccount()
-                    }
-                }
+                Task { await authService.deleteAccount() }
             }
         } message: {
             Text("この操作は取り消せません。すべてのデータが削除されます。")
         }
-        .sheet(isPresented: $showingAppleReauth) {
-            AppleReauthView {
-                showingAppleReauth = false
-                Task {
-                    await authService.deleteAccount()
-                }
-            }
+    }
+
+    private func saveDisplayName() async {
+        do {
+            try await authService.updateDisplayName(editingDisplayName)
+        } catch {
+            // エラーは無視（後でアラート追加も可）
         }
     }
 }

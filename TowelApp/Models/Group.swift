@@ -14,7 +14,6 @@ struct FamilyGroup: Codable, Identifiable {
 struct GroupMember: Codable, Identifiable {
     @DocumentID var id: String?  // userId
     var displayName: String?
-    var email: String?
     var role: String = "member"  // "owner" | "member"
     @ServerTimestamp var joinedAt: Date?
 }
