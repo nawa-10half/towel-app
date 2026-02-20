@@ -257,13 +257,27 @@ const RecordExchangeHandler = {
       }
 
       const slots = input.requestEnvelope.request?.intent?.slots;
+      const towelNameSlot = slots?.TowelName?.value;
       const numberSlot = parseInt(slots?.TowelNumber?.value);
       const attrs = input.attributesManager.getSessionAttributes();
+      console.log('TowelName slot:', towelNameSlot, 'TowelNumber slot:', slots?.TowelNumber?.value);
 
       let target;
       if (towels.length === 1) {
         // 1枚なら自動選択
         target = towels[0];
+      } else if (towelNameSlot) {
+        // 名前でマッチング（ワンショット発話: 「キッチンタオル交換した」）
+        target = towels.find((t) =>
+          t.name.includes(towelNameSlot) || towelNameSlot.includes(t.name)
+        );
+        if (!target) {
+          const names = towels.map((t) => t.name).join('、');
+          return input.responseBuilder
+            .speak(`「${towelNameSlot}」というタオルが見つかりませんでした。登録されているのは、${names}です。`)
+            .reprompt('どのタオルを記録しますか？')
+            .getResponse();
+        }
       } else if (!isNaN(numberSlot) && attrs.pendingTowelIds) {
         // 番号で選択（聞き返し後の返答）
         const pendingTowelIds = attrs.pendingTowelIds;
