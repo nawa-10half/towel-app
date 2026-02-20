@@ -100,6 +100,7 @@ async function recordExchange(uid, towelId) {
   const ref = await getTowelsRef(uid);
   await ref.doc(towelId).collection('records').add({
     exchangedAt: admin.firestore.FieldValue.serverTimestamp(),
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
     note: 'Alexa経由で記録',
   });
 }
@@ -247,43 +248,51 @@ const RecordExchangeHandler = {
 
     try {
       const uid = await getUidFromRefreshToken(token);
+      console.log('RecordExchange uid:', uid);
       const towels = await fetchTowels(uid);
+      console.log('RecordExchange towels:', JSON.stringify(towels.map(t => ({ id: t.id, name: t.name }))));
 
       if (towels.length === 0) {
         return input.responseBuilder.speak('タオルが登録されていません。').getResponse();
       }
 
-      // スロットから名前を取得
       const slots = input.requestEnvelope.request?.intent?.slots;
-      const towelNameSlot = slots?.TowelName?.value;
+      const numberSlot = parseInt(slots?.TowelNumber?.value);
+      const attrs = input.attributesManager.getSessionAttributes();
 
       let target;
       if (towels.length === 1) {
+        // 1枚なら自動選択
         target = towels[0];
-      } else if (towelNameSlot) {
-        target = towels.find((t) =>
-          t.name.includes(towelNameSlot) || towelNameSlot.includes(t.name)
-        );
+      } else if (!isNaN(numberSlot) && attrs.pendingTowelIds) {
+        // 番号で選択（聞き返し後の返答）
+        const pendingTowelIds = attrs.pendingTowelIds;
+        target = towels.find(t => t.id === pendingTowelIds[numberSlot - 1]);
         if (!target) {
-          const names = towels.map((t) => t.name).join('、');
+          const max = pendingTowelIds.length;
           return input.responseBuilder
-            .speak(`「${towelNameSlot}」というタオルが見つかりませんでした。登録されているのは、${names}です。どのタオルを記録しますか？`)
-            .reprompt('どのタオルを記録しますか？')
+            .speak(`1から${max}の番号で答えてください。`)
+            .reprompt(`1から${max}の番号で答えてください。`)
             .getResponse();
         }
       } else {
-        const names = towels.map((t) => t.name).join('、');
+        // 複数タオルは番号で聞き返す
+        const numbered = towels.map((t, i) => `${i + 1}番、${t.name}`).join('。');
+        input.attributesManager.setSessionAttributes({ pendingTowelIds: towels.map(t => t.id) });
         return input.responseBuilder
-          .speak(`どのタオルを交換しましたか？登録されているのは、${names}です。`)
-          .reprompt('どのタオルを記録しますか？')
+          .speak(`複数のタオルが登録されています。${numbered}。交換したのは何番ですか？「交換したのは1」のように答えてください。`)
+          .reprompt('交換したのは何番ですか？「交換したのは1」のように答えてください。')
           .getResponse();
       }
 
+      console.log('Recording exchange for towel:', target.id, target.name);
       await recordExchange(uid, target.id);
+      console.log('recordExchange completed successfully');
       return input.responseBuilder
         .speak(`${target.name}の交換を記録しました。`)
         .getResponse();
-    } catch {
+    } catch (error) {
+      console.error('RecordExchange error:', error);
       return input.responseBuilder.speak('記録に失敗しました。もう一度お試しください。').getResponse();
     }
   },
