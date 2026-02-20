@@ -43,5 +43,8 @@ Thumbs.db
 !default.perspectivev3
 xcuserdata/
 
+# Apple private keys
+AuthKey_*.p8
+
 # XcodeGen generated (can be regenerated)
 *.xcodeproj
