@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>サポート – かえたお</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f5f7;
+      color: #1d1d1f;
+      padding: 40px 24px 80px;
+      line-height: 1.8;
+    }
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 16px;
+      padding: 48px 40px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+    .logo { font-size: 40px; text-align: center; margin-bottom: 8px; }
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: #6e6e73;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    h2 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-top: 36px;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #e5e5ea;
+    }
+    p { font-size: 15px; color: #3a3a3c; margin-bottom: 12px; }
+    .faq { margin-top: 8px; }
+    .faq-item {
+      border: 1px solid #e5e5ea;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .faq-item summary {
+      font-size: 15px;
+      font-weight: 600;
+      padding: 16px 20px;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #1d1d1f;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary::after {
+      content: '＋';
+      font-size: 18px;
+      color: #6e6e73;
+      flex-shrink: 0;
+    }
+    .faq-item[open] summary::after { content: '－'; }
+    .faq-item .answer {
+      font-size: 15px;
+      color: #3a3a3c;
+      padding: 0 20px 16px;
+      line-height: 1.8;
+    }
+    .faq-item .answer ol,
+    .faq-item .answer ul {
+      margin: 8px 0 8px 20px;
+    }
+    .faq-item .answer li { margin-bottom: 4px; }
+    .contact-box {
+      background: #f5f5f7;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-top: 12px;
+      font-size: 15px;
+    }
+    .contact-box a { color: #0071e3; text-decoration: none; }
+    .links {
+      display: flex;
+      gap: 16px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+    .links a {
+      font-size: 14px;
+      color: #0071e3;
+      text-decoration: none;
+    }
+    .links a:hover { text-decoration: underline; }
+    .updated {
+      font-size: 13px;
+      color: #8e8e93;
+      text-align: right;
+      margin-top: 40px;
+    }
+    @media (max-width: 600px) {
+      .container { padding: 32px 20px; }
+      h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">🏠</div>
+    <h1>サポート</h1>
+    <p class="subtitle">かえたお（Kaetao）</p>
+
+    <p>「かえたお」をご利用いただきありがとうございます。よくあるご質問と、お問い合わせ先をご案内します。</p>
+
+    <h2>よくあるご質問</h2>
+    <div class="faq">
+
+      <details class="faq-item">
+        <summary>リストアコードを忘れてしまいました</summary>
+        <div class="answer">
+          <p>リストアコードはアプリの設定画面から確認できます。</p>
+          <ol>
+            <li>アプリを開き、下部の「設定」タブをタップ</li>
+            <li>「アカウント」セクションのリストアコードをご確認ください</li>
+          </ol>
+          <p>コードが表示されない場合、または端末を変更してログインできない場合は、お手数ですがサポートまでご連絡ください。なお、セキュリティ上の理由からコードの再発行はできません。</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>家族グループに参加する方法を教えてください</summary>
+        <div class="answer">
+          <ol>
+            <li>グループを作成したメンバーに6文字の招待コードを共有してもらう</li>
+            <li>アプリの「設定」→「グループ設定」→「グループに参加」をタップ</li>
+            <li>招待コードを入力して参加完了</li>
+          </ol>
+          <p>参加後は、グループのタオルデータがリアルタイムで同期されます。</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>データが消えた・同期されない</summary>
+        <div class="answer">
+          <p>以下をお試しください。</p>
+          <ul>
+            <li>インターネット接続を確認する</li>
+            <li>アプリを一度終了して再起動する</li>
+            <li>端末を再起動する</li>
+          </ul>
+          <p>改善しない場合は、リストアコードとアプリのバージョンをお知らせのうえ、サポートまでご連絡ください。</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>アカウントを削除するには？</summary>
+        <div class="answer">
+          <ol>
+            <li>アプリの「設定」タブをタップ</li>
+            <li>「アカウント」セクション内の「アカウントを削除」をタップ</li>
+            <li>確認ダイアログで削除を実行</li>
+          </ol>
+          <p>削除するとタオルデータ・状態診断写真・認証情報のすべてが完全に消去されます。この操作は取り消しできません。</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Amazon Alexa と連携する方法を教えてください</summary>
+        <div class="answer">
+          <ol>
+            <li>アプリの「設定」→「Alexa 連携」をタップして6文字のコードを取得</li>
+            <li>Alexa アプリ（スマートフォン）でスキル「かえたお」を検索して有効化</li>
+            <li>アカウントリンク画面で取得したコードを入力</li>
+          </ol>
+          <p>連携後は「アレクサ、かえたおを開いて」でタオルの状態を音声で確認できます。コードの有効期限は10分です。期限切れの場合は再取得してください。</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>通知が届きません</summary>
+        <div class="answer">
+          <ul>
+            <li>「設定」アプリ → 「かえたお」→ 「通知」で通知が許可されているか確認する</li>
+            <li>アプリ内「設定」→「通知設定」で通知が有効になっているか確認する</li>
+            <li>各タオルに交換間隔が設定されているか確認する</li>
+          </ul>
+        </div>
+      </details>
+
+    </div>
+
+    <h2>お問い合わせ</h2>
+    <p>上記で解決しない場合は、以下のメールアドレスまでお気軽にご連絡ください。</p>
+    <div class="contact-box">
+      <strong>10HALF LLC</strong><br>
+      メール：<a href="mailto:support@10half.jp">support@10half.jp</a><br>
+      <small style="color:#8e8e93;">通常2営業日以内にご返信いたします。</small>
+    </div>
+
+    <div class="links">
+      <a href="/privacy-policy">プライバシーポリシー</a>
+      <a href="/terms-of-use">利用規約</a>
+    </div>
+
+    <p class="updated">最終更新日：2026年2月21日</p>
+  </div>
+</body>
+</html>
