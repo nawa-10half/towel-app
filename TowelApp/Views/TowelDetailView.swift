@@ -168,10 +168,11 @@ struct TowelDetailView: View {
             } label: {
                 Label("交換した！", systemImage: "arrow.triangle.2.circlepath")
                     .font(.headline)
+                    .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 4)
             }
-            .tint(.mint)
+            .tint(.blue)
             .buttonStyle(.borderedProminent)
             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
         }
