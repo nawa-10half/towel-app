@@ -9,6 +9,9 @@ final class TowelDetailViewModel {
     let towelId: String
     var errorMessage: String?
     var isAssessing = false
+    var dailyAssessmentCount: Int = 0
+    let maxDailyAssessments: Int = 2
+    var canAssess: Bool { dailyAssessmentCount < maxDailyAssessments }
 
     init(towelId: String) {
         self.towelId = towelId
@@ -40,7 +43,16 @@ final class TowelDetailViewModel {
         }
     }
 
+    func loadDailyAssessmentCount() async {
+        dailyAssessmentCount = (try? await FirestoreService.shared.getDailyAssessmentCount()) ?? 0
+    }
+
     func assessCondition(imageData: Data, image: UIImage) async {
+        guard canAssess else {
+            errorMessage = "本日の状態診断は2回までです。\n明日また試してください。"
+            return
+        }
+
         isAssessing = true
         defer { isAssessing = false }
 
@@ -77,6 +89,10 @@ final class TowelDetailViewModel {
                 checkId: checkId,
                 photoURL: photoURL
             )
+
+            // Count up only on success
+            try? await FirestoreService.shared.incrementDailyAssessmentCount()
+            dailyAssessmentCount += 1
         } catch {
             errorMessage = "状態診断に失敗しました: \(error.localizedDescription)"
         }

@@ -79,6 +79,9 @@ struct TowelDetailView: View {
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
+        .task {
+            await viewModel.loadDailyAssessmentCount()
+        }
     }
 
     @ViewBuilder
@@ -185,6 +188,13 @@ struct TowelDetailView: View {
                         .padding(.leading, 8)
                 }
             } else {
+                let remaining = max(0, viewModel.maxDailyAssessments - viewModel.dailyAssessmentCount)
+                Text("今日の診断: あと\(remaining)回")
+                    .font(.caption2)
+                    .foregroundStyle(remaining == 0 ? .red : .secondary)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 0, trailing: 16))
+
                 Button {
                     checkCameraPermission()
                 } label: {
@@ -196,6 +206,8 @@ struct TowelDetailView: View {
                 .tint(.indigo)
                 .buttonStyle(.borderedProminent)
                 .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                .disabled(!viewModel.canAssess)
+                .opacity(viewModel.canAssess ? 1 : 0.5)
 
                 PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
                     Label("写真から選択", systemImage: "photo.on.rectangle")
@@ -206,6 +218,8 @@ struct TowelDetailView: View {
                 .tint(.indigo)
                 .buttonStyle(.bordered)
                 .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 8, trailing: 16))
+                .disabled(!viewModel.canAssess)
+                .opacity(viewModel.canAssess ? 1 : 0.5)
             }
 
             if let latest = towel.latestConditionCheck {
