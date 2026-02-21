@@ -64,5 +64,11 @@ service cloud.firestore {
       allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
       allow read, create, update: if false;
     }
+
+    // Alexa device linking codes: 本人のみ作成・読み取り・削除可。Lambda は Admin SDK 経由
+    match /linkingCodes/{code} {
+      allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
+      allow read, delete: if request.auth != null && resource.data.uid == request.auth.uid;
+    }
   }
 }

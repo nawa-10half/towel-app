@@ -13,6 +13,9 @@ struct SettingsView: View {
     @State private var showingDeleteAccountConfirmation = false
     @State private var editingDisplayName: String = ""
     @State private var codeCopied = false
+    @State private var alexaLinkCode: String? = nil
+    @State private var alexaLinkExpiry: Date? = nil
+    @State private var isGeneratingAlexaCode = false
 
     private var notificationTime: Binding<Date> {
         Binding(
@@ -36,6 +39,7 @@ struct SettingsView: View {
             accountSection
             GroupSettingsView(onJoinGroupTapped: { showingJoinSheet = true })
             notificationSection
+            alexaSection
             aboutSection
             dangerSection
         }
@@ -116,6 +120,43 @@ struct SettingsView: View {
             }
         } header: {
             Text("アカウント")
+        }
+    }
+
+    private var alexaSection: some View {
+        Section {
+            if let code = alexaLinkCode, let expiry = alexaLinkExpiry, expiry > .now {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("連携コード")
+                        .foregroundStyle(.primary)
+                    Text(code)
+                        .font(.system(.title2, design: .monospaced))
+                        .fontWeight(.bold)
+                        .foregroundStyle(.tint)
+                    Text("有効期限: あと \(expiry, style: .relative)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.vertical, 4)
+            }
+
+            Button {
+                Task { await generateAlexaCode() }
+            } label: {
+                if isGeneratingAlexaCode {
+                    ProgressView()
+                } else {
+                    Label(
+                        alexaLinkCode != nil ? "コードを再生成" : "連携コードを生成",
+                        systemImage: "person.badge.key"
+                    )
+                }
+            }
+            .disabled(isGeneratingAlexaCode)
+        } header: {
+            Text("Alexa 連携")
+        } footer: {
+            Text("生成されたコードをAlexaアカウントリンクページで入力してください。コードは10分間有効です。")
         }
     }
 
@@ -204,6 +245,18 @@ struct SettingsView: View {
             }
         } message: {
             Text("この操作は取り消せません。すべてのデータが削除されます。")
+        }
+    }
+
+    private func generateAlexaCode() async {
+        isGeneratingAlexaCode = true
+        defer { isGeneratingAlexaCode = false }
+        do {
+            let code = try await authService.generateAlexaLinkCode()
+            alexaLinkCode = code
+            alexaLinkExpiry = Date().addingTimeInterval(10 * 60)
+        } catch {
+            // エラーは無視（将来的にアラート追加も可）
         }
     }
 

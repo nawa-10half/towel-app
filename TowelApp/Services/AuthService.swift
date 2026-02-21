@@ -198,6 +198,25 @@ final class AuthService {
         }
     }
 
+    // MARK: - Alexa Device Link
+
+    func generateAlexaLinkCode() async throws -> String {
+        guard let uid = currentUser?.uid else {
+            throw NSError(domain: "AuthService", code: 401,
+                          userInfo: [NSLocalizedDescriptionKey: "サインインが必要です"])
+        }
+
+        let code = String((0..<6).map { _ in Self.codeCharacters.randomElement()! })
+        let expiresAt = Date().addingTimeInterval(10 * 60)
+
+        try await db.collection("linkingCodes").document(code).setData([
+            "uid": uid,
+            "expiresAt": Timestamp(date: expiresAt)
+        ])
+
+        return code
+    }
+
     // MARK: - Code Generation
 
     func generateRestoreCode() -> String {
