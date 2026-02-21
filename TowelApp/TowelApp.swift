@@ -4,6 +4,7 @@ import FirebaseCore
 @main
 struct TowelApp: App {
     @State private var authService: AuthService
+    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
 
     init() {
         FirebaseApp.configure()
@@ -18,7 +19,9 @@ struct TowelApp: App {
 
     var body: some Scene {
         WindowGroup {
-            if authService.isLoading {
+            if !hasSeenOnboarding {
+                OnboardingView()
+            } else if authService.isLoading {
                 ProgressView()
             } else if authService.isAuthenticated {
                 ContentView()
