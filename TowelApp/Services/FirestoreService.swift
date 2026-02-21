@@ -199,7 +199,11 @@ final class FirestoreService {
     func deleteAllTowels() async throws {
         let towelIds = towels.compactMap(\.id)
         for towelId in towelIds {
-            try await deleteTowel(towelId)
+            do {
+                try await deleteTowel(towelId)
+            } catch {
+                // ベストエフォート: 1件失敗しても残りを継続
+            }
         }
     }
 

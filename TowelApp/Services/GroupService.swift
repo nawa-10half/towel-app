@@ -202,7 +202,7 @@ final class GroupService {
 
         if memberCount <= 1 {
             // Last member — delete the entire group
-            try await deleteGroup(groupId: currentGroupId)
+            await deleteGroup(groupId: currentGroupId)
         } else {
             // Remove self from members and decrement count
             let batch = db.batch()
@@ -341,48 +341,52 @@ final class GroupService {
         })
     }
 
-    private func deleteGroup(groupId: String) async throws {
+    private func deleteGroup(groupId: String) async {
         guard let userId else { return }
 
         // Delete all towels and their subcollections
-        let towels = try await db.collection("groups").document(groupId)
-            .collection("towels").getDocuments()
-        for towelDoc in towels.documents {
-            let records = try await towelDoc.reference.collection("records").getDocuments()
-            for record in records.documents {
-                try await record.reference.delete()
-            }
-            let checks = try await towelDoc.reference.collection("conditionChecks").getDocuments()
-            for check in checks.documents {
-                // Delete group photo
-                if check.data()["photoURL"] != nil {
-                    try? await StorageService.shared.deletePhoto(
-                        path: "groups/\(groupId)/towels/\(towelDoc.documentID)/conditions/\(check.documentID).jpg"
-                    )
+        if let towels = try? await db.collection("groups").document(groupId)
+            .collection("towels").getDocuments() {
+            for towelDoc in towels.documents {
+                if let records = try? await towelDoc.reference.collection("records").getDocuments() {
+                    for record in records.documents {
+                        try? await record.reference.delete()
+                    }
                 }
-                try await check.reference.delete()
+                if let checks = try? await towelDoc.reference.collection("conditionChecks").getDocuments() {
+                    for check in checks.documents {
+                        // Delete group photo
+                        if check.data()["photoURL"] != nil {
+                            try? await StorageService.shared.deletePhoto(
+                                path: "groups/\(groupId)/towels/\(towelDoc.documentID)/conditions/\(check.documentID).jpg"
+                            )
+                        }
+                        try? await check.reference.delete()
+                    }
+                }
+                try? await towelDoc.reference.delete()
             }
-            try await towelDoc.reference.delete()
         }
 
         // Delete invite code（まだメンバーのうちに削除）
         if let inviteCode = group?.inviteCode {
-            try await db.collection("inviteCodes").document(inviteCode).delete()
+            try? await db.collection("inviteCodes").document(inviteCode).delete()
         }
 
         // Delete group document（まだメンバーのうちに削除）
-        try await db.collection("groups").document(groupId).delete()
+        try? await db.collection("groups").document(groupId).delete()
 
         // Clear user's groupId
-        try await db.collection("users").document(userId).updateData([
+        try? await db.collection("users").document(userId).updateData([
             "groupId": FieldValue.delete()
         ])
 
         // Delete all members（グループ削除後に孤立ドキュメントとして削除）
-        let membersSnapshot = try await db.collection("groups").document(groupId)
-            .collection("members").getDocuments()
-        for member in membersSnapshot.documents {
-            try await member.reference.delete()
+        if let membersSnapshot = try? await db.collection("groups").document(groupId)
+            .collection("members").getDocuments() {
+            for member in membersSnapshot.documents {
+                try? await member.reference.delete()
+            }
         }
     }
 }
