@@ -294,6 +294,35 @@ final class FirestoreService {
 
         try await collection.document(towelId).collection("conditionChecks").document(checkId).delete()
     }
+
+    // MARK: - Daily Assessment Limit
+
+    private var todayDateKey: String {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd"
+        f.locale = Locale(identifier: "ja_JP")
+        f.timeZone = TimeZone.current
+        return f.string(from: Date())
+    }
+
+    func getDailyAssessmentCount() async throws -> Int {
+        guard let userId else {
+            throw FirestoreError.notAuthenticated
+        }
+        let docRef = db.collection("users").document(userId)
+            .collection("dailyAssessments").document(todayDateKey)
+        let snapshot = try await docRef.getDocument()
+        return snapshot.data()?["count"] as? Int ?? 0
+    }
+
+    func incrementDailyAssessmentCount() async throws {
+        guard let userId else {
+            throw FirestoreError.notAuthenticated
+        }
+        let docRef = db.collection("users").document(userId)
+            .collection("dailyAssessments").document(todayDateKey)
+        try await docRef.setData(["count": FieldValue.increment(Int64(1))], merge: true)
+    }
 }
 
 enum FirestoreError: LocalizedError {
