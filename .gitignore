@@ -52,3 +52,6 @@ lambda/*.zip
 
 # XcodeGen generated (can be regenerated)
 *.xcodeproj
+
+# Alexa icons (local use only, upload via Developer Console)
+alexa-icons/
