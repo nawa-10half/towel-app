@@ -51,14 +51,6 @@ exports.handler = async (event) => {
 
     let uid;
     if (codeDoc.exists) {
-      // 削除済みコードは拒否
-      if (codeDoc.data().deleted === true) {
-        return {
-          statusCode: 404,
-          headers: responseHeaders,
-          body: JSON.stringify({ error: 'Restore code not found' }),
-        };
-      }
       // 既存コード: UID を取得
       uid = codeDoc.data().uid;
     } else if (newUser === true) {

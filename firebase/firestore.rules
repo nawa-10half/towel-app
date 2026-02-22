@@ -63,10 +63,10 @@ service cloud.firestore {
       allow read, create, delete: if request.auth != null;
     }
 
-    // Restore codes: 作成・読み取りは Admin SDK のみ。自分のコードのみ削除・無効化可
+    // Restore codes: 作成・読み取りは Admin SDK のみ。自分のコードのみ削除可
     match /restoreCodes/{code} {
-      allow delete, update: if request.auth != null && resource.data.uid == request.auth.uid;
-      allow read, create: if false;
+      allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
+      allow read, create, update: if false;
     }
 
     // Alexa device linking codes: 本人のみ作成・読み取り・削除可。Lambda は Admin SDK 経由

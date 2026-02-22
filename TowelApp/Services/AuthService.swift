@@ -178,9 +178,9 @@ final class AuthService {
         FirestoreService.shared.deleteAllTowels()
         try? await FirestoreService.shared.deleteUserDocument()
 
-        // 5. リストアコードを無効化（ソフトデリート: 再利用防止のため物理削除しない）
+        // 5. リストアコードを Firestore から削除
         if let code = restoreCode {
-            try? await db.collection("restoreCodes").document(code).updateData(["deleted": true])
+            try? await db.collection("restoreCodes").document(code).delete()
         }
 
         // 6. Firebase Auth ユーザー削除
