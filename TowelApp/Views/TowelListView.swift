@@ -3,17 +3,33 @@ import SwiftUI
 struct TowelListView: View {
     @State private var firestoreService = FirestoreService.shared
     @State private var viewModel = TowelListViewModel()
+    @State private var networkMonitor = NetworkMonitor.shared
     @State private var showingAddForm = false
     @State private var towelToExchange: Towel?
 
     var body: some View {
-        Group {
-            if firestoreService.isLoading {
-                ProgressView()
-            } else if firestoreService.towels.isEmpty {
-                emptyStateView
-            } else {
-                towelList
+        VStack(spacing: 0) {
+            if !networkMonitor.isConnected {
+                HStack(spacing: 6) {
+                    Image(systemName: "wifi.slash")
+                        .font(.caption)
+                    Text("オフライン — 接続復旧後に同期されます")
+                        .font(.caption)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 6)
+                .background(.orange.opacity(0.15))
+                .foregroundStyle(.orange)
+            }
+
+            Group {
+                if firestoreService.isLoading {
+                    ProgressView()
+                } else if firestoreService.towels.isEmpty {
+                    emptyStateView
+                } else {
+                    towelList
+                }
             }
         }
         .navigationTitle("タオリスト")

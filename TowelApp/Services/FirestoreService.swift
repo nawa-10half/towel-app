@@ -144,30 +144,29 @@ final class FirestoreService {
 
     // MARK: - Towel CRUD
 
-    func addTowel(name: String, location: String, iconName: String, exchangeIntervalDays: Int) async throws -> String {
+    func addTowel(name: String, location: String, iconName: String, exchangeIntervalDays: Int) throws -> String {
         guard let collection = towelsCollection() else {
             throw FirestoreError.notAuthenticated
         }
 
-        let data: [String: Any] = [
+        let docRef = collection.document()
+        docRef.setData([
             "name": name,
             "location": location,
             "iconName": iconName,
             "exchangeIntervalDays": exchangeIntervalDays,
             "createdAt": FieldValue.serverTimestamp(),
             "updatedAt": FieldValue.serverTimestamp()
-        ]
-
-        let docRef = try await collection.addDocument(data: data)
+        ])
         return docRef.documentID
     }
 
-    func updateTowel(_ towelId: String, name: String, location: String, iconName: String, exchangeIntervalDays: Int) async throws {
+    func updateTowel(_ towelId: String, name: String, location: String, iconName: String, exchangeIntervalDays: Int) throws {
         guard let collection = towelsCollection() else {
             throw FirestoreError.notAuthenticated
         }
 
-        try await collection.document(towelId).updateData([
+        collection.document(towelId).updateData([
             "name": name,
             "location": location,
             "iconName": iconName,
@@ -176,34 +175,33 @@ final class FirestoreService {
         ])
     }
 
-    func deleteTowel(_ towelId: String) async throws {
+    func deleteTowel(_ towelId: String) throws {
         guard let collection = towelsCollection() else {
             throw FirestoreError.notAuthenticated
         }
 
-        // Delete subcollections first
-        let recordsSnapshot = try await collection.document(towelId).collection("records").getDocuments()
-        for doc in recordsSnapshot.documents {
-            try await doc.reference.delete()
+        // Delete subcollections using in-memory data (no server round-trip)
+        if let towel = towels.first(where: { $0.id == towelId }) {
+            for record in towel.records {
+                if let recordId = record.id {
+                    collection.document(towelId).collection("records").document(recordId).delete()
+                }
+            }
+            for check in towel.conditionChecks {
+                if let checkId = check.id {
+                    collection.document(towelId).collection("conditionChecks").document(checkId).delete()
+                }
+            }
         }
 
-        let checksSnapshot = try await collection.document(towelId).collection("conditionChecks").getDocuments()
-        for doc in checksSnapshot.documents {
-            try await doc.reference.delete()
-        }
-
-        try await collection.document(towelId).delete()
+        collection.document(towelId).delete()
     }
 
     /// Delete all towels and their subcollections for the current user
-    func deleteAllTowels() async throws {
+    func deleteAllTowels() {
         let towelIds = towels.compactMap(\.id)
         for towelId in towelIds {
-            do {
-                try await deleteTowel(towelId)
-            } catch {
-                // ベストエフォート: 1件失敗しても残りを継続
-            }
+            try? deleteTowel(towelId)
         }
     }
 
@@ -217,7 +215,7 @@ final class FirestoreService {
 
     // MARK: - Exchange Record
 
-    func addRecord(towelId: String, exchangedAt: Date, note: String?) async throws -> String {
+    func addRecord(towelId: String, exchangedAt: Date, note: String?) throws -> String {
         guard let collection = towelsCollection() else {
             throw FirestoreError.notAuthenticated
         }
@@ -240,29 +238,26 @@ final class FirestoreService {
             "updatedAt": FieldValue.serverTimestamp()
         ], forDocument: towelRef)
 
-        try await batch.commit()
+        batch.commit { _ in }
         return recordRef.documentID
     }
 
-    func deleteRecord(towelId: String, recordId: String) async throws {
+    func deleteRecord(towelId: String, recordId: String) throws {
         guard let collection = towelsCollection() else {
             throw FirestoreError.notAuthenticated
         }
 
-        try await collection.document(towelId).collection("records").document(recordId).delete()
+        collection.document(towelId).collection("records").document(recordId).delete()
 
-        // Recalculate lastExchangedAt from remaining records
-        let remaining = try await collection.document(towelId).collection("records")
-            .order(by: "exchangedAt", descending: true)
-            .limit(to: 1)
-            .getDocuments()
+        // Recalculate lastExchangedAt from in-memory records (no server round-trip)
+        let remainingRecords = towels.first(where: { $0.id == towelId })?.records
+            .filter { $0.id != recordId }
+            .sorted { ($0.exchangedAt ?? .distantPast) > ($1.exchangedAt ?? .distantPast) }
 
-        let newLastExchangedAt: Any = remaining.documents.first
-            .flatMap { try? $0.data(as: ExchangeRecord.self) }?
-            .exchangedAt
+        let newLastExchangedAt: Any = remainingRecords?.first?.exchangedAt
             .map { Timestamp(date: $0) } ?? FieldValue.delete()
 
-        try await collection.document(towelId).updateData([
+        collection.document(towelId).updateData([
             "lastExchangedAt": newLastExchangedAt,
             "updatedAt": FieldValue.serverTimestamp()
         ])
@@ -313,12 +308,12 @@ final class FirestoreService {
         ])
     }
 
-    func deleteConditionCheck(towelId: String, checkId: String) async throws {
+    func deleteConditionCheck(towelId: String, checkId: String) throws {
         guard let collection = towelsCollection() else {
             throw FirestoreError.notAuthenticated
         }
 
-        try await collection.document(towelId).collection("conditionChecks").document(checkId).delete()
+        collection.document(towelId).collection("conditionChecks").document(checkId).delete()
     }
 
     // MARK: - Daily Assessment Limit

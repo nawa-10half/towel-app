@@ -33,13 +33,11 @@ final class TowelDetailViewModel {
 
     func deleteRecord(_ record: ExchangeRecord) {
         guard let recordId = record.id else { return }
-        Task {
-            do {
-                try await FirestoreService.shared.deleteRecord(towelId: towelId, recordId: recordId)
-                WidgetCenter.shared.reloadAllTimelines()
-            } catch {
-                errorMessage = "交換記録の削除に失敗しました: \(error.localizedDescription)"
-            }
+        do {
+            try FirestoreService.shared.deleteRecord(towelId: towelId, recordId: recordId)
+            WidgetCenter.shared.reloadAllTimelines()
+        } catch {
+            errorMessage = "交換記録の削除に失敗しました: \(error.localizedDescription)"
         }
     }
 
@@ -100,16 +98,16 @@ final class TowelDetailViewModel {
 
     func deleteConditionCheck(_ check: ConditionCheck) {
         guard let checkId = check.id else { return }
-        Task {
-            do {
-                // Delete photo from Storage if exists
-                if check.photoURL != nil {
-                    try? await StorageService.shared.deleteConditionPhoto(towelId: towelId, checkId: checkId)
-                }
-                try await FirestoreService.shared.deleteConditionCheck(towelId: towelId, checkId: checkId)
-            } catch {
-                errorMessage = "診断記録の削除に失敗しました: \(error.localizedDescription)"
+        // Delete photo from Storage in background (best-effort)
+        if check.photoURL != nil {
+            Task {
+                try? await StorageService.shared.deleteConditionPhoto(towelId: towelId, checkId: checkId)
             }
+        }
+        do {
+            try FirestoreService.shared.deleteConditionCheck(towelId: towelId, checkId: checkId)
+        } catch {
+            errorMessage = "診断記録の削除に失敗しました: \(error.localizedDescription)"
         }
     }
 }
