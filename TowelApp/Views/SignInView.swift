@@ -37,6 +37,9 @@ struct SignInView: View {
                 step = .codeDisplay
             }
         }
+        .onChange(of: step) {
+            authService.errorMessage = nil
+        }
     }
 
     // MARK: - Step 1: コード表示
