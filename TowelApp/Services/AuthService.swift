@@ -173,12 +173,8 @@ final class AuthService {
         await StorageService.shared.deleteAllUserPhotos(towels: towelsSnapshot)
 
         // 4. Firestore データ削除
-        do {
-            try await FirestoreService.shared.deleteAllTowels()
-            try await FirestoreService.shared.deleteUserDocument()
-        } catch {
-            // 一部失敗しても続行
-        }
+        FirestoreService.shared.deleteAllTowels()
+        try? await FirestoreService.shared.deleteUserDocument()
 
         // 5. リストアコードを Firestore から削除
         if let code = restoreCode {

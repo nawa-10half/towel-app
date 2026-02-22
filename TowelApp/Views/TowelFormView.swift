@@ -148,30 +148,28 @@ struct TowelFormView: View {
         let trimmedLocation = location.trimmingCharacters(in: .whitespaces)
 
         isSaving = true
-        Task {
-            do {
-                if let towel, let towelId = towel.id {
-                    try await FirestoreService.shared.updateTowel(
-                        towelId,
-                        name: trimmedName,
-                        location: trimmedLocation,
-                        iconName: iconName,
-                        exchangeIntervalDays: exchangeIntervalDays
-                    )
-                } else {
-                    _ = try await FirestoreService.shared.addTowel(
-                        name: trimmedName,
-                        location: trimmedLocation,
-                        iconName: iconName,
-                        exchangeIntervalDays: exchangeIntervalDays
-                    )
-                }
-                WidgetCenter.shared.reloadAllTimelines()
-                dismiss()
-            } catch {
-                isSaving = false
-                errorMessage = "保存に失敗しました: \(error.localizedDescription)"
+        do {
+            if let towel, let towelId = towel.id {
+                try FirestoreService.shared.updateTowel(
+                    towelId,
+                    name: trimmedName,
+                    location: trimmedLocation,
+                    iconName: iconName,
+                    exchangeIntervalDays: exchangeIntervalDays
+                )
+            } else {
+                _ = try FirestoreService.shared.addTowel(
+                    name: trimmedName,
+                    location: trimmedLocation,
+                    iconName: iconName,
+                    exchangeIntervalDays: exchangeIntervalDays
+                )
             }
+            WidgetCenter.shared.reloadAllTimelines()
+            dismiss()
+        } catch {
+            isSaving = false
+            errorMessage = "保存に失敗しました: \(error.localizedDescription)"
         }
     }
 }

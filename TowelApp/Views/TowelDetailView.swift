@@ -358,18 +358,16 @@ struct ExchangeRecordSheet: View {
 
     private func saveRecord() {
         isSaving = true
-        Task {
-            do {
-                _ = try await FirestoreService.shared.addRecord(
-                    towelId: towelId,
-                    exchangedAt: exchangeDate,
-                    note: exchangeNote.isEmpty ? nil : exchangeNote
-                )
-                WidgetCenter.shared.reloadAllTimelines()
-                dismiss()
-            } catch {
-                isSaving = false
-            }
+        do {
+            _ = try FirestoreService.shared.addRecord(
+                towelId: towelId,
+                exchangedAt: exchangeDate,
+                note: exchangeNote.isEmpty ? nil : exchangeNote
+            )
+            WidgetCenter.shared.reloadAllTimelines()
+            dismiss()
+        } catch {
+            isSaving = false
         }
     }
 }

@@ -19,13 +19,11 @@ final class TowelListViewModel {
     func deleteTowel(_ towel: Towel) {
         guard let towelId = towel.id else { return }
         NotificationService.shared.cancelNotification(for: towel)
-        Task {
-            do {
-                try await FirestoreService.shared.deleteTowel(towelId)
-                WidgetCenter.shared.reloadAllTimelines()
-            } catch {
-                errorMessage = "タオルの削除に失敗しました: \(error.localizedDescription)"
-            }
+        do {
+            try FirestoreService.shared.deleteTowel(towelId)
+            WidgetCenter.shared.reloadAllTimelines()
+        } catch {
+            errorMessage = "タオルの削除に失敗しました: \(error.localizedDescription)"
         }
     }
 
