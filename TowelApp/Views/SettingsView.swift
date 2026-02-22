@@ -211,6 +211,22 @@ struct SettingsView: View {
                 Text("1.0")
                     .foregroundStyle(.secondary)
             }
+            Link(destination: URL(string: "https://kaetao-c43f1.web.app/privacy-policy")!) {
+                HStack {
+                    Text("プライバシーポリシー")
+                    Spacer()
+                    Image(systemName: "arrow.up.right.square")
+                        .foregroundStyle(.secondary)
+                }
+            }
+            Link(destination: URL(string: "https://kaetao-c43f1.web.app/terms-of-use")!) {
+                HStack {
+                    Text("利用規約")
+                    Spacer()
+                    Image(systemName: "arrow.up.right.square")
+                        .foregroundStyle(.secondary)
+                }
+            }
         } header: {
             Text("アプリ情報")
         }
