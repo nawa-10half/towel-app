@@ -36,7 +36,7 @@ exports.handler = async (event) => {
 
   try {
     const body = JSON.parse(event.body || '{}');
-    const { code } = body;
+    const { code, newUser } = body;
 
     if (!code || !RESTORE_CODE_PATTERN.test(code)) {
       return {
@@ -61,13 +61,20 @@ exports.handler = async (event) => {
       }
       // 既存コード: UID を取得
       uid = codeDoc.data().uid;
-    } else {
-      // 新規コード: UID を生成して保存
+    } else if (newUser === true) {
+      // 新規ユーザーのみ新規作成を許可
       uid = randomUUID();
       await codeRef.set({
         uid,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       });
+    } else {
+      // 復元フローでコードが存在しない場合はエラー
+      return {
+        statusCode: 404,
+        headers: responseHeaders,
+        body: JSON.stringify({ error: 'Restore code not found' }),
+      };
     }
 
     const customToken = await admin.auth().createCustomToken(uid);
