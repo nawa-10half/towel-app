@@ -292,7 +292,7 @@ struct SignInView: View {
     private func startNewUser() async {
         isLoading = true
         defer { isLoading = false }
-        await authService.signInWithRestoreCode(generatedCode)
+        await authService.signInWithRestoreCode(generatedCode, isNewUser: true)
         if authService.isAuthenticated {
             try? await authService.ensureUserDocument(displayName: displayNameInput)
         }

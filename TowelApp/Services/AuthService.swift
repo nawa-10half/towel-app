@@ -57,7 +57,7 @@ final class AuthService {
 
     // MARK: - Sign In with Restore Code
 
-    func signInWithRestoreCode(_ code: String) async {
+    func signInWithRestoreCode(_ code: String, isNewUser: Bool = false) async {
         guard let urlString = Bundle.main.infoDictionary?["RestoreCodeAuthURL"] as? String,
               let apiURL = URL(string: urlString) else {
             errorMessage = "API URLの設定が見つかりません"
@@ -68,7 +68,9 @@ final class AuthService {
             var request = URLRequest(url: apiURL)
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.httpBody = try JSONEncoder().encode(["code": code])
+            var body: [String: Any] = ["code": code]
+            if isNewUser { body["newUser"] = true }
+            request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
             let (data, response) = try await URLSession.shared.data(for: request)
             guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
