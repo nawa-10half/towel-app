@@ -53,9 +53,16 @@ struct Towel: Codable, Identifiable, Hashable {
         conditionChecks.max(by: { $0.checkedAt ?? .distantPast < $1.checkedAt ?? .distantPast })
     }
 
-    // Hashable conformance using id only
     static func == (lhs: Towel, rhs: Towel) -> Bool {
-        lhs.id == rhs.id
+        lhs.id == rhs.id &&
+        lhs.name == rhs.name &&
+        lhs.location == rhs.location &&
+        lhs.iconName == rhs.iconName &&
+        lhs.exchangeIntervalDays == rhs.exchangeIntervalDays &&
+        lhs.createdAt == rhs.createdAt &&
+        lhs.lastExchangedAt == rhs.lastExchangedAt &&
+        lhs.records.count == rhs.records.count &&
+        lhs.conditionChecks.count == rhs.conditionChecks.count
     }
 
     func hash(into hasher: inout Hasher) {
