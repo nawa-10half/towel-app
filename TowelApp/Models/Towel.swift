@@ -9,6 +9,7 @@ struct Towel: Codable, Identifiable, Hashable {
     var exchangeIntervalDays: Int = 3
     @ServerTimestamp var createdAt: Date?
     @ServerTimestamp var updatedAt: Date?
+    var lastExchangedAt: Date?
 
     // Not stored in Firestore — populated from subcollections
     var records: [ExchangeRecord] = []
@@ -22,10 +23,7 @@ struct Towel: Codable, Identifiable, Hashable {
         case exchangeIntervalDays
         case createdAt
         case updatedAt
-    }
-
-    var lastExchangedAt: Date? {
-        records.max(by: { $0.exchangedAt ?? .distantPast < $1.exchangedAt ?? .distantPast })?.exchangedAt
+        case lastExchangedAt
     }
 
     var daysSinceLastExchange: Int {
