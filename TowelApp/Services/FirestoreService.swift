@@ -222,6 +222,9 @@ final class FirestoreService {
             throw FirestoreError.notAuthenticated
         }
 
+        let batch = db.batch()
+
+        let recordRef = collection.document(towelId).collection("records").document()
         var data: [String: Any] = [
             "exchangedAt": Timestamp(date: exchangedAt),
             "createdAt": FieldValue.serverTimestamp()
@@ -229,9 +232,16 @@ final class FirestoreService {
         if let note, !note.isEmpty {
             data["note"] = note
         }
+        batch.setData(data, forDocument: recordRef)
 
-        let docRef = try await collection.document(towelId).collection("records").addDocument(data: data)
-        return docRef.documentID
+        let towelRef = collection.document(towelId)
+        batch.updateData([
+            "lastExchangedAt": Timestamp(date: exchangedAt),
+            "updatedAt": FieldValue.serverTimestamp()
+        ], forDocument: towelRef)
+
+        try await batch.commit()
+        return recordRef.documentID
     }
 
     func deleteRecord(towelId: String, recordId: String) async throws {
@@ -240,6 +250,22 @@ final class FirestoreService {
         }
 
         try await collection.document(towelId).collection("records").document(recordId).delete()
+
+        // Recalculate lastExchangedAt from remaining records
+        let remaining = try await collection.document(towelId).collection("records")
+            .order(by: "exchangedAt", descending: true)
+            .limit(to: 1)
+            .getDocuments()
+
+        let newLastExchangedAt: Any = remaining.documents.first
+            .flatMap { try? $0.data(as: ExchangeRecord.self) }?
+            .exchangedAt
+            .map { Timestamp(date: $0) } ?? FieldValue.delete()
+
+        try await collection.document(towelId).updateData([
+            "lastExchangedAt": newLastExchangedAt,
+            "updatedAt": FieldValue.serverTimestamp()
+        ])
     }
 
     // MARK: - Condition Check
