@@ -98,11 +98,21 @@ async function fetchTowels(uid) {
 // 交換記録を追加
 async function recordExchange(uid, towelId) {
   const ref = await getTowelsRef(uid);
-  await ref.doc(towelId).collection('records').add({
+  const batch = db.batch();
+
+  const recordRef = ref.doc(towelId).collection('records').doc();
+  batch.set(recordRef, {
     exchangedAt: admin.firestore.FieldValue.serverTimestamp(),
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
     note: 'Alexa経由で記録',
   });
+
+  batch.update(ref.doc(towelId), {
+    lastExchangedAt: admin.firestore.FieldValue.serverTimestamp(),
+    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+  });
+
+  await batch.commit();
 }
 
 // ── ヘルパー ──────────────────────────────────────────────────────────
