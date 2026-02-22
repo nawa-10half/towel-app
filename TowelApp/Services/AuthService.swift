@@ -108,7 +108,7 @@ final class AuthService {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
 
-        try await db.collection("users").document(uid).updateData(["displayName": trimmed])
+        try await db.collection("users").document(uid).setData(["displayName": trimmed], merge: true)
         self.displayName = trimmed
 
         // グループメンバードキュメントにも同期
@@ -176,9 +176,9 @@ final class AuthService {
         FirestoreService.shared.deleteAllTowels()
         try? await FirestoreService.shared.deleteUserDocument()
 
-        // 5. リストアコードを Firestore から削除
+        // 5. リストアコードを無効化（ソフトデリート: 再利用防止のため物理削除しない）
         if let code = restoreCode {
-            try? await db.collection("restoreCodes").document(code).delete()
+            try? await db.collection("restoreCodes").document(code).updateData(["deleted": true])
         }
 
         // 6. Firebase Auth ユーザー削除
