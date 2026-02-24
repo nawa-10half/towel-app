@@ -210,6 +210,12 @@ final class FirestoreService {
         guard let userId else {
             throw FirestoreError.notAuthenticated
         }
+        // dailyAssessments サブコレクションを削除（Firestoreは親削除時に自動削除しない）
+        let assessments = try await db.collection("users").document(userId)
+            .collection("dailyAssessments").getDocuments()
+        for doc in assessments.documents {
+            try? await doc.reference.delete()
+        }
         try await db.collection("users").document(userId).delete()
     }
 

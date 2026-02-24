@@ -24,6 +24,7 @@ final class AuthService {
     private static let keychainKeyRestoreCode = "restoreCode"
     // 紛らわしい文字 (0/O, 1/I/L) を除いた文字セット
     static let codeCharacters = Array("23456789ABCDEFGHJKLMNPQRSTUVWXYZ")
+    private static let wasSignedOutKey = "wasSignedOut"
 
     private init() {
         restoreCode = loadFromKeychain(key: Self.keychainKeyRestoreCode)
@@ -38,7 +39,9 @@ final class AuthService {
                 self.isAuthenticated = true
                 self.isLoading = false
                 Task { await self.loadDisplayName(uid: user.uid) }
-            } else if !self.hasAttemptedAutoSignIn, let code = self.restoreCode {
+            } else if !self.hasAttemptedAutoSignIn,
+                      !UserDefaults.standard.bool(forKey: Self.wasSignedOutKey),
+                      let code = self.restoreCode {
                 // Keychain にコードがあれば自動サインイン
                 self.hasAttemptedAutoSignIn = true
                 Task {
@@ -89,6 +92,7 @@ final class AuthService {
             try await Auth.auth().signIn(withCustomToken: customToken)
             saveToKeychain(code, key: Self.keychainKeyRestoreCode)
             self.restoreCode = code
+            UserDefaults.standard.set(false, forKey: Self.wasSignedOutKey)
         } catch {
             errorMessage = "サインインに失敗しました: \(error.localizedDescription)"
         }
@@ -143,6 +147,7 @@ final class AuthService {
     // MARK: - Sign Out
 
     func signOut() {
+        UserDefaults.standard.set(true, forKey: Self.wasSignedOutKey)
         // リスナーを先に停止（サインアウト後の権限エラーを防ぐ）
         FirestoreService.shared.stopListening()
         GroupService.shared.stopListening()
@@ -160,6 +165,7 @@ final class AuthService {
 
     func deleteAccount() async {
         guard let user = Auth.auth().currentUser else { return }
+        let savedRestoreCode = restoreCode
 
         isDeletingAccount = true
         defer { isDeletingAccount = false }
@@ -191,9 +197,49 @@ final class AuthService {
         displayName = ""
         do {
             try await user.delete()
+        } catch let error as NSError where error.code == AuthErrorCode.requiresRecentLogin.rawValue {
+            // トークン失効時: リストアコードで再認証してリトライ
+            guard let code = savedRestoreCode else {
+                errorMessage = "再認証に必要なリストアコードが見つかりません"
+                return
+            }
+            do {
+                try await reauthenticateWithRestoreCode(code)
+                try await Auth.auth().currentUser?.delete()
+            } catch {
+                errorMessage = "アカウント削除に失敗しました: \(error.localizedDescription)"
+            }
         } catch {
             errorMessage = "アカウント削除に失敗しました: \(error.localizedDescription)"
         }
+    }
+
+    /// リストアコードで Lambda から新しい Custom Token を取得し再認証する
+    private func reauthenticateWithRestoreCode(_ code: String) async throws {
+        guard let urlString = Bundle.main.infoDictionary?["RestoreCodeAuthURL"] as? String,
+              let apiURL = URL(string: urlString) else {
+            throw NSError(domain: "AuthService", code: -1,
+                          userInfo: [NSLocalizedDescriptionKey: "API URLの設定が見つかりません"])
+        }
+
+        var request = URLRequest(url: apiURL)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONSerialization.data(withJSONObject: ["code": code])
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw NSError(domain: "AuthService", code: -1,
+                          userInfo: [NSLocalizedDescriptionKey: "再認証に失敗しました"])
+        }
+
+        let json = try JSONDecoder().decode([String: String].self, from: data)
+        guard let customToken = json["customToken"] else {
+            throw NSError(domain: "AuthService", code: -1,
+                          userInfo: [NSLocalizedDescriptionKey: "認証トークンの取得に失敗しました"])
+        }
+
+        try await Auth.auth().signIn(withCustomToken: customToken)
     }
 
     // MARK: - Alexa Device Link
