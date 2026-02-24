@@ -49,9 +49,13 @@ struct SignInView: View {
             Spacer()
 
             VStack(spacing: 12) {
-                Image(systemName: "drop.fill")
-                    .font(.system(size: 56))
-                    .foregroundStyle(.tint)
+                if let icon = UIImage(named: "AppIcon") {
+                    Image(uiImage: icon)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 80, height: 80)
+                        .clipShape(RoundedRectangle(cornerRadius: 18))
+                }
 
                 Text("かえたお")
                     .font(.largeTitle)
