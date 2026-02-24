@@ -1,5 +1,15 @@
 import SwiftUI
 
+private extension Bundle {
+    var icon: UIImage? {
+        guard let icons = infoDictionary?["CFBundleIcons"] as? [String: Any],
+              let primary = icons["CFBundlePrimaryIcon"] as? [String: Any],
+              let files = primary["CFBundleIconFiles"] as? [String],
+              let name = files.last else { return nil }
+        return UIImage(named: name)
+    }
+}
+
 struct SignInView: View {
     @State private var authService = AuthService.shared
     @State private var step: SignInStep = .codeDisplay
@@ -49,7 +59,7 @@ struct SignInView: View {
             Spacer()
 
             VStack(spacing: 12) {
-                if let icon = UIImage(named: "AppIcon") {
+                if let icon = Bundle.main.icon {
                     Image(uiImage: icon)
                         .resizable()
                         .scaledToFit()
