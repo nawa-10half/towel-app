@@ -16,6 +16,7 @@ struct SettingsView: View {
     @State private var alexaLinkCode: String? = nil
     @State private var alexaLinkExpiry: Date? = nil
     @State private var isGeneratingAlexaCode = false
+    @State private var alexaCodeCopied = false
 
     private var notificationTime: Binding<Date> {
         Binding(
@@ -126,18 +127,31 @@ struct SettingsView: View {
     private var alexaSection: some View {
         Section {
             if let code = alexaLinkCode, let expiry = alexaLinkExpiry, expiry > .now {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("連携コード")
-                        .foregroundStyle(.primary)
-                    Text(code)
-                        .font(.system(.title2, design: .monospaced))
-                        .fontWeight(.bold)
-                        .foregroundStyle(.tint)
-                    Text("有効期限: あと \(expiry, style: .relative)")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                Button {
+                    UIPasteboard.general.string = code
+                    alexaCodeCopied = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        alexaCodeCopied = false
+                    }
+                } label: {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("連携コード")
+                                .foregroundStyle(.primary)
+                            Text(code)
+                                .font(.system(.title2, design: .monospaced))
+                                .fontWeight(.bold)
+                                .foregroundStyle(.tint)
+                            Text("有効期限: あと \(expiry, style: .relative)")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Image(systemName: alexaCodeCopied ? "checkmark" : "doc.on.doc")
+                            .foregroundStyle(.tint)
+                    }
+                    .padding(.vertical, 4)
                 }
-                .padding(.vertical, 4)
             }
 
             Button {
