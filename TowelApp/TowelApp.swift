@@ -4,6 +4,7 @@ import FirebaseCore
 @main
 struct TowelApp: App {
     @State private var authService: AuthService
+    @State private var showSplash = true
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
 
     init() {
@@ -21,8 +22,14 @@ struct TowelApp: App {
         WindowGroup {
             if !hasSeenOnboarding {
                 OnboardingView()
-            } else if authService.isLoading {
+            } else if showSplash {
                 SplashView()
+                    .task {
+                        try? await Task.sleep(for: .seconds(1.2))
+                        withAnimation(.easeOut(duration: 0.3)) {
+                            showSplash = false
+                        }
+                    }
             } else if authService.isAuthenticated {
                 ContentView()
                     .task {
