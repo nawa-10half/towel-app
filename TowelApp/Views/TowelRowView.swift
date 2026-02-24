@@ -23,6 +23,10 @@ struct TowelRowView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+
+                Text(formatDaysAgo(towel.daysSinceLastExchange))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
 
             Spacer()
@@ -43,6 +47,13 @@ struct TowelRowView: View {
             }
         }
         .padding(.vertical, 4)
+    }
+
+    private func formatDaysAgo(_ days: Int) -> String {
+        switch days {
+        case 0: return "今日交換"
+        default: return "\(days)日前に交換"
+        }
     }
 
     private var statusColor: Color {
