@@ -22,7 +22,7 @@ struct TowelApp: App {
             if !hasSeenOnboarding {
                 OnboardingView()
             } else if authService.isLoading {
-                ProgressView()
+                SplashView()
             } else if authService.isAuthenticated {
                 ContentView()
                     .task {
@@ -32,5 +32,49 @@ struct TowelApp: App {
                 SignInView()
             }
         }
+    }
+}
+
+private struct SplashView: View {
+    @State private var iconScale: CGFloat = 0.6
+    @State private var iconOpacity: Double = 0
+    @State private var titleOpacity: Double = 0
+
+    var body: some View {
+        VStack(spacing: 16) {
+            if let icon = Bundle.main.icon {
+                Image(uiImage: icon)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 100, height: 100)
+                    .clipShape(RoundedRectangle(cornerRadius: 22))
+                    .scaleEffect(iconScale)
+                    .opacity(iconOpacity)
+            }
+
+            Text("かえたお")
+                .font(.title)
+                .fontWeight(.bold)
+                .opacity(titleOpacity)
+        }
+        .onAppear {
+            withAnimation(.spring(duration: 0.5)) {
+                iconScale = 1.0
+                iconOpacity = 1
+            }
+            withAnimation(.easeOut(duration: 0.4).delay(0.25)) {
+                titleOpacity = 1
+            }
+        }
+    }
+}
+
+private extension Bundle {
+    var icon: UIImage? {
+        guard let icons = infoDictionary?["CFBundleIcons"] as? [String: Any],
+              let primary = icons["CFBundlePrimaryIcon"] as? [String: Any],
+              let files = primary["CFBundleIconFiles"] as? [String],
+              let name = files.last else { return nil }
+        return UIImage(named: name)
     }
 }
