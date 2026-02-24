@@ -8,7 +8,7 @@ final class FirestoreService {
     static let shared = FirestoreService()
 
     var towels: [Towel] = []
-    var isLoading = false
+    var isLoading = true
     var errorMessage: String?
 
     private let db = Firestore.firestore()
