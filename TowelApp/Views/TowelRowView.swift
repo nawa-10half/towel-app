@@ -31,20 +31,13 @@ struct TowelRowView: View {
 
             Spacer()
 
-            VStack(alignment: .trailing, spacing: 4) {
-                Text("\(towel.daysSinceLastExchange)日経過")
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                    .foregroundStyle(statusColor)
-
-                Text(towel.status.label)
-                    .font(.caption2)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(statusColor.opacity(0.15))
-                    .foregroundStyle(statusColor)
-                    .clipShape(Capsule())
-            }
+            Text(towel.status.label)
+                .font(.caption2)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 2)
+                .background(statusColor.opacity(0.15))
+                .foregroundStyle(statusColor)
+                .clipShape(Capsule())
         }
         .padding(.vertical, 4)
     }
