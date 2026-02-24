@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 struct SettingsView: View {
     @AppStorage("notificationsEnabled") private var notificationsEnabled = true
@@ -70,6 +71,12 @@ struct SettingsView: View {
         }
         .onChange(of: authService.displayName) { _, newValue in
             editingDisplayName = newValue
+        }
+        .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
+            if let expiry = alexaLinkExpiry, expiry <= .now {
+                alexaLinkCode = nil
+                alexaLinkExpiry = nil
+            }
         }
     }
 
