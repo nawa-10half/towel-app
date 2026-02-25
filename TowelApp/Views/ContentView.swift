@@ -27,6 +27,9 @@ struct ContentView: View {
             await GroupService.shared.loadGroupForCurrentUser()
             firestoreService.startListening()
         }
+        .onChange(of: firestoreService.towels) { _, towels in
+            NotificationService.shared.rescheduleAllNotifications(for: towels)
+        }
         .onOpenURL { url in
             handleDeepLink(url)
         }
