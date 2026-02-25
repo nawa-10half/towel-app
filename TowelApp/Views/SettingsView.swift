@@ -229,7 +229,7 @@ struct SettingsView: View {
             HStack {
                 Text("バージョン")
                 Spacer()
-                Text("1.0")
+                Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")
                     .foregroundStyle(.secondary)
             }
             Link(destination: URL(string: "https://kaetao-c43f1.web.app/privacy-policy")!) {
