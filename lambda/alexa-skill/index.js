@@ -134,7 +134,7 @@ function getAccessToken(handlerInput) {
 
 function accountNotLinkedResponse(handlerInput) {
   return handlerInput.responseBuilder
-    .speak('Alexaアプリでかえたおのアカウント連携を完了してから、もう一度お試しください。')
+    .speak('Alexaアプリでかえたおアプリのアカウント連携を完了してから、もう一度お試しください。')
     .withLinkAccountCard()
     .getResponse();
 }
@@ -155,7 +155,7 @@ const LaunchRequestHandler = {
     try {
       const uid = await getUidFromRefreshToken(token);
       const towels = await fetchTowels(uid);
-      const speak = `かえたおです。タオルが${towels.length}枚登録されています。「状態を教えて」や「交換を記録して」と言ってみてください。`;
+      const speak = `かえたおアプリです。タオルが${towels.length}枚登録されています。「状態を教えて」や「交換を記録して」と言ってみてください。`;
       return input.responseBuilder.speak(speak).reprompt('何かお手伝いできますか？').getResponse();
     } catch {
       return input.responseBuilder.speak('データの取得に失敗しました。しばらくしてからもう一度お試しください。').getResponse();

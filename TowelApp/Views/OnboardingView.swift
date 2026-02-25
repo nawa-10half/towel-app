@@ -29,7 +29,7 @@ private let onboardingPages: [OnboardingPage] = [
     OnboardingPage(
         icon: "mic.fill",
         title: "Alexaで\nハンズフリー管理",
-        description: "「アレクサ、かえたおで状態を教えて」\nと声だけで確認・記録ができます。",
+        description: "「アレクサ、かえたおアプリで状態教えて」\nと声だけで確認・記録ができます。",
         color: .orange
     ),
 ]
