@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>かえたお 改善レポート</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #232733;
+    --border: #2d3244;
+    --text: #e4e6ef;
+    --text-secondary: #8b8fa3;
+    --accent: #3d9ab0;
+    --accent-light: #5bc0d8;
+    --critical: #f43f5e;
+    --high: #f97316;
+    --medium: #eab308;
+    --low: #22c55e;
+    --info: #6366f1;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #1a3a42 0%, #0f2027 50%, #1a1d27 100%);
+    padding: 80px 40px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle at 30% 50%, rgba(61,154,176,0.08) 0%, transparent 50%);
+  }
+  .hero h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+    position: relative;
+  }
+  .hero .subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    position: relative;
+  }
+  .hero .meta {
+    margin-top: 24px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    position: relative;
+  }
+  .hero .meta code {
+    background: var(--surface2);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .toc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    margin: 40px auto;
+    max-width: 700px;
+  }
+  .toc h2 { font-size: 1.2rem; margin-bottom: 16px; color: var(--accent-light); }
+  .toc ol { padding-left: 24px; }
+  .toc li { margin-bottom: 8px; }
+  .toc a {
+    color: var(--text);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .toc a:hover { color: var(--accent-light); }
+
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 40px 0;
+  }
+  .summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+  }
+  .summary-card .number {
+    font-size: 2.4rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+  .summary-card .label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+  .summary-card.critical .number { color: var(--critical); }
+  .summary-card.high .number { color: var(--high); }
+  .summary-card.medium .number { color: var(--medium); }
+  .summary-card.low .number { color: var(--low); }
+  .summary-card.total .number { color: var(--accent-light); }
+
+  section {
+    margin: 60px 0;
+  }
+  section > h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  section > h2 .icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+  section > .section-desc {
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    font-size: 0.95rem;
+  }
+
+  .grade-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 24px;
+    margin-bottom: 24px;
+  }
+  .grade-box .grade {
+    font-size: 2rem;
+    font-weight: 800;
+  }
+  .grade-box .grade-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+
+  .finding {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .finding-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .finding-header:hover { background: var(--surface2); }
+  .finding-header .severity {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .severity-critical { background: rgba(244,63,94,0.15); color: var(--critical); }
+  .severity-high { background: rgba(249,115,22,0.15); color: var(--high); }
+  .severity-medium { background: rgba(234,179,8,0.15); color: var(--medium); }
+  .severity-low { background: rgba(34,197,94,0.15); color: var(--low); }
+
+  .finding-header .title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    flex: 1;
+  }
+  .finding-header .toggle {
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    transition: transform 0.2s;
+  }
+  .finding.open .finding-header .toggle { transform: rotate(180deg); }
+  .finding-body {
+    display: none;
+    padding: 0 20px 20px;
+    border-top: 1px solid var(--border);
+  }
+  .finding.open .finding-body { display: block; }
+
+  .finding-body h4 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-light);
+    margin-top: 16px;
+    margin-bottom: 6px;
+  }
+  .finding-body p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+  .finding-body code {
+    background: var(--bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 0.83rem;
+    color: var(--accent-light);
+  }
+  .finding-body pre {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    overflow-x: auto;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    margin: 8px 0;
+    color: var(--text-secondary);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.88rem;
+  }
+  th {
+    text-align: left;
+    padding: 10px 12px;
+    background: var(--surface2);
+    border-bottom: 2px solid var(--border);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-secondary);
+  }
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+
+  .priority-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.03em;
+  }
+  .priority-must { background: rgba(244,63,94,0.15); color: var(--critical); }
+  .priority-should { background: rgba(249,115,22,0.15); color: var(--high); }
+  .priority-nice { background: rgba(34,197,94,0.15); color: var(--low); }
+
+  .roadmap {
+    position: relative;
+    padding-left: 32px;
+  }
+  .roadmap::before {
+    content: '';
+    position: absolute;
+    left: 11px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+  .roadmap-item {
+    position: relative;
+    margin-bottom: 32px;
+  }
+  .roadmap-item::before {
+    content: '';
+    position: absolute;
+    left: -25px;
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+  }
+  .roadmap-item h4 {
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+  .roadmap-item .timeline {
+    font-size: 0.8rem;
+    color: var(--accent-light);
+    margin-bottom: 8px;
+  }
+  .roadmap-item p {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+  }
+
+  .chart-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .chart-bar .bar-label {
+    width: 120px;
+    font-size: 0.82rem;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .chart-bar .bar-track {
+    flex: 1;
+    height: 24px;
+    background: var(--surface2);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .chart-bar .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    min-width: fit-content;
+  }
+
+  .footer {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--border);
+    margin-top: 60px;
+  }
+
+  .callout {
+    background: rgba(61,154,176,0.08);
+    border: 1px solid rgba(61,154,176,0.2);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 20px 0;
+  }
+  .callout-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+    color: var(--accent-light);
+  }
+  .callout p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 768px) {
+    .two-col { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 2rem; }
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .score-ring {
+    width: 80px;
+    height: 80px;
+    position: relative;
+    margin: 0 auto 8px;
+  }
+  .score-ring svg { transform: rotate(-90deg); }
+  .score-ring .score-text {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.4rem;
+    font-weight: 800;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>かえたお 改善レポート</h1>
+  <p class="subtitle">5つの専門チームによるアプリ総合分析</p>
+  <p class="meta">2026-02-25 / commit <code>0a93474</code> / v1.1</p>
+</div>
+
+<div class="container">
+
+<!-- TOC -->
+<div class="toc">
+  <h2>目次</h2>
+  <ol>
+    <li><a href="#overview">エグゼクティブサマリー</a></li>
+    <li><a href="#architecture">コード品質 &amp; アーキテクチャ</a></li>
+    <li><a href="#security">セキュリティ</a></li>
+    <li><a href="#ux">UX &amp; 機能改善</a></li>
+    <li><a href="#performance">パフォーマンス &amp; スケーラビリティ</a></li>
+    <li><a href="#business">ビジネス &amp; マネタイズ</a></li>
+    <li><a href="#roadmap">推奨ロードマップ</a></li>
+  </ol>
+</div>
+
+<!-- Summary Cards -->
+<div class="summary-grid">
+  <div class="summary-card total">
+    <div class="number">62</div>
+    <div class="label">総検出項目数</div>
+  </div>
+  <div class="summary-card critical">
+    <div class="number">3</div>
+    <div class="label">Critical</div>
+  </div>
+  <div class="summary-card high">
+    <div class="number">16</div>
+    <div class="label">High</div>
+  </div>
+  <div class="summary-card medium">
+    <div class="number">26</div>
+    <div class="label">Medium</div>
+  </div>
+  <div class="summary-card low">
+    <div class="number">17</div>
+    <div class="label">Low / Info</div>
+  </div>
+</div>
+
+<!-- ===== 1. EXECUTIVE SUMMARY ===== -->
+<section id="overview">
+  <h2><span class="icon" style="background:rgba(99,102,241,0.15)">1</span> エグゼクティブサマリー</h2>
+
+  <div class="callout">
+    <div class="callout-title">3行まとめ</div>
+    <p>
+      1. <strong>セキュリティ</strong>: 状態診断 API に認証がなく、第三者が無制限に Bedrock を呼び出せる。API Gateway のレート制限も未設定。<strong>最優先で対処が必要</strong>。<br>
+      2. <strong>アーキテクチャ</strong>: Singleton 依存でテスト不可能。サブコレクションの全件リスナーがスケーラビリティのボトルネック。<br>
+      3. <strong>グロース</strong>: SKStoreReviewController 未実装、シェア機能なし、StoreKit 未導入。低コストで実装可能な施策が手つかず。
+    </p>
+  </div>
+
+  <h3 style="margin-top:24px; margin-bottom:12px;">各領域の評価</h3>
+  <div class="two-col">
+    <div>
+      <div class="chart-bar">
+        <span class="bar-label">アーキテクチャ</span>
+        <div class="bar-track"><div class="bar-fill" style="width:55%;background:var(--medium)">C+</div></div>
+      </div>
+      <div class="chart-bar">
+        <span class="bar-label">コード品質</span>
+        <div class="bar-track"><div class="bar-fill" style="width:70%;background:var(--low)">B</div></div>
+      </div>
+      <div class="chart-bar">
+        <span class="bar-label">セキュリティ</span>
+        <div class="bar-track"><div class="bar-fill" style="width:45%;background:var(--high)">C</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="chart-bar">
+        <span class="bar-label">パフォーマンス</span>
+        <div class="bar-track"><div class="bar-fill" style="width:60%;background:var(--medium)">C+</div></div>
+      </div>
+      <div class="chart-bar">
+        <span class="bar-label">UX</span>
+        <div class="bar-track"><div class="bar-fill" style="width:65%;background:var(--medium)">B-</div></div>
+      </div>
+      <div class="chart-bar">
+        <span class="bar-label">ビジネス基盤</span>
+        <div class="bar-track"><div class="bar-fill" style="width:35%;background:var(--high)">D+</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 2. ARCHITECTURE ===== -->
+<section id="architecture">
+  <h2><span class="icon" style="background:rgba(99,102,241,0.15)">2</span> コード品質 &amp; アーキテクチャ</h2>
+  <p class="section-desc">16件の改善点を検出。Singleton 依存によるテスト不能と、Swift 6 対応の不備が主な課題。</p>
+
+  <div class="finding open">
+    <div class="finding-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="severity severity-critical">Critical</span>
+      <span class="title">Singleton Services でユニットテストが不可能</span>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="finding-body">
+      <h4>現状</h4>
+      <p>全 7 サービスが <code>static let shared</code> + <code>private init()</code> のシングルトン。ViewModel や View から直接参照されており、モック差し替えができない。テストファイルは 0 件。</p>
+      <pre>// FirestoreService.shared.towels を直接参照
+FirestoreService.shared.deleteTowel(towelId)</pre>
+      <h4>推奨</h4>
+      <p>Protocol-based Dependency Injection に移行。各サービスのプロトコルを定義し、ViewModel のイニシャライザ経由で注入する。デフォルト引数で <code>.shared</code> を指定すれば既存コードへの影響は最小限。</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="finding-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="severity severity-high">High</span>
+      <span class="title">サービス間の循環依存</span>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="finding-body">
+      <h4>現状</h4>
+      <p><code>AuthService</code> &rarr; <code>GroupService</code> &rarr; <code>FirestoreService</code> &rarr; <code>GroupService</code> の循環参照。変更時の影響範囲が予測困難。</p>
+      <h4>推奨</h4>
+      <p>AppCoordinator パターンでサービス間調整を一元管理するか、NotificationCenter / Combine で間接通信に移行。</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="finding-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="severity severity-high">High</span>
+      <span class="title"><code>@unchecked Sendable</code> の使用 &mdash; Swift 6 非準拠</span>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="finding-body">
+      <h4>現状</h4>
+      <p><code>ConditionCheckService</code> と <code>NotificationService</code> が <code>@unchecked Sendable</code>。Swift 6 の strict concurrency checking を無効化。</p>
+      <h4>推奨</h4>
+      <p><code>actor</code> に変換するか、<code>@MainActor</code> 分離を明示的に適用。NotificationService は <code>async/await</code> 版 API (iOS 16+) に移行。</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="finding-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="severity severity-high">High</span>
+      <span class="title">エラーのサイレント無視が多数</span>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="finding-body">
+      <h4>現状</h4>
+      <p>Alexa コード生成、表示名保存、交換記録の保存、通知の登録など、<code>catch { }</code> でエラーが完全に無視されている箇所が 5 箇所以上。ユーザーに操作失敗が伝わらない。</p>
+      <h4>推奨</h4>
+      <p>各所に <code>errorMessage</code> を設定しアラートまたはバナーで表示。特に <code>ExchangeRecordSheet</code> の保存失敗はデータロスに直結するため必須。</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="finding-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="severity severity-medium">Medium</span>
+      <span class="title">MVVM パターンの不統一</span>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="finding-body">
+      <p>ViewModel が存在するのは <code>TowelListView</code> と <code>TowelDetailView</code> のみ。他の画面 (<code>TowelFormView</code>, <code>SettingsView</code>, <code>GroupSettingsView</code>, <code>SignInView</code> 等) は View から直接 Service を呼んでおり、アーキテクチャが中途半端。全画面に ViewModel を入れるか、意図的に thin View パターンを統一するか決定すべき。</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="finding-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="severity severity-medium">Medium</span>
+      <span class="title">Firestore リスナーコールバックのスレッド安全性</span>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="finding-body">
+      <p><code>addSnapshotListener</code> のクロージャはバックグラウンドスレッドで呼ばれる可能性があるが、<code>@MainActor</code> の <code>self.towels</code> に直接アクセスしている。<code>Task { @MainActor in }</code> でラップするか、Firestore のリスナーディスパッチキューを明示的に設定すべき。</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="finding-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="severity severity-medium">Medium</span>
+      <span class="title">ステータス色定義の不整合 &amp; 重複</span>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="finding-body">
+      <p><code>TowelStatus.color</code> プロパティは文字列 <code>"yellow"</code> を返すが、View 側は <code>.orange</code> を使用。色決定ロジックが <code>TowelRowView</code>, <code>TowelDetailView</code>, <code>ConditionCheckDetailView</code>, <code>ConditionCheckRowView</code> の 4 箇所に重複。<code>TowelStatus</code> に <code>var swiftUIColor: Color</code> を追加して統一すべき。</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="finding-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="severity severity-medium">Medium</span>
+      <span class="title"><code>Towel.Equatable</code> の不完全な比較</span>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="finding-body">
+      <p><code>records.count</code> と <code>conditionChecks.count</code> のみで比較しているため、中身が変わっても件数が同じなら等しいと判定される。レコードの内容変更が UI に反映されない可能性がある。</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="finding-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="severity severity-low">Low</span>
+      <span class="title">その他 (8件)</span>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="finding-body">
+      <ul style="font-size:0.88rem;color:var(--text-secondary);padding-left:20px;">
+        <li><code>DateFormatter</code> の毎回生成 (キャッシュすべき)</li>
+        <li><code>DispatchQueue.main.asyncAfter</code> → <code>Task.sleep</code> に移行</li>
+        <li>エラー型の不統一 (<code>AuthService</code> が NSError を手動生成)</li>
+        <li><code>Bundle.main.icon</code> の重複定義 (TowelApp.swift と SignInView.swift)</li>
+        <li><code>Towel</code> モデルにビジネスロジックが過度に配置</li>
+        <li>アラート表示の Binding ボイラープレート重複</li>
+        <li>API URL が <code>project.yml</code> にハードコード (<code>.xcconfig</code> 分離推奨)</li>
+        <li><code>NotificationService</code> がコールバックベース (iOS 17+ なら async/await 版 API 使用可能)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 3. SECURITY ===== -->
+<section id="security">
+  <h2><span class="icon" style="background:rgba(244,63,94,0.15)">3</span> セキュリティ</h2>
+  <p class="section-desc">19件の脆弱性を検出。API 認証の欠如とレート制限なしが最大のリスク。</p>
+
+  <div class="callout" style="background:rgba(244,63,94,0.06);border-color:rgba(244,63,94,0.2);">
+    <div class="callout-title" style="color:var(--critical);">緊急対応推奨 TOP 3</div>
+    <p>
+      1. <strong>状態診断 API に認証がない</strong> &mdash; URL を知っていれば誰でも Bedrock (Claude) を無制限に呼び出せる。AWS 料金の不正膨張リスク。<br>
+      2. <strong>全 Lambda にレート制限なし</strong> &mdash; API Gateway のスロットリング未設定。ブルートフォース攻撃が可能。<br>
+      3. <strong>alexa-auth.html のリダイレクト先未検証</strong> &mdash; Open Redirect によるトークン窃取のリスク。
+    </p>
+  </div>
+
+  <div class="finding open">
+    <div class="finding-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="severity severity-critical">Critical</span>
+      <span class="title">状態診断 API (assess-nova) に認証チェックなし</span>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="finding-body">
+      <h4>現状</h4>
+      <p><code>lambda/towel-condition-assess-nova/index.mjs</code> は Firebase Auth トークンの検証を行っていない。API URL を知る第三者が無制限に Bedrock API を呼び出せる。</p>
+      <h4>リスク</h4>
+      <p>AWS 料金の不正膨張 (Bedrock 呼び出し 1 回あたり $0.01-0.05)。正規ユーザーへのサービス妨害。</p>
+      <h4>改善策</h4>
+      <p>リクエストヘッダーに Firebase ID Token を含め、Lambda 側で <code>admin.auth().verifyIdToken()</code> で検証する。または API Gateway に Lambda Authorizer を追加。</p>
+    </div>
+  </div>
+
+  <div class="finding open">
+    <div class="finding-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="severity severity-critical">Critical</span>
+      <span class="title">全 Lambda エンドポイントにレート制限なし</span>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="finding-body">
+      <h4>現状</h4>
+      <p><code>/restore-auth</code>, <code>/alexa-link</code>, <code>/assess-nova</code> の全エンドポイントにレート制限がない。特にリストアコード認証はブルートフォース攻撃に対して脆弱 (30^12 = 約 59 ビットのエントロピーだが、制限なしでは攻撃可能)。</p>
+      <h4>改善策</h4>
+      <p>API Gateway で Usage Plan + スロットリング設定 (例: IP あたり 10 リクエスト/分)。Lambda 側で連続失敗時の遅延実装。</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="finding-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="severity severity-high">High</span>
+      <span class="title">Firestore: inviteCodes を誰でも削除可能</span>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="finding-body">
+      <p><code>allow read, create, delete: if request.auth != null;</code> で、認証済みユーザーが他人の招待コードを削除できる (DoS)。偽コード作成やコード列挙による不正参加も可能。</p>
+      <h4>改善策</h4>
+      <p>招待コード CRUD を Admin SDK (サーバーサイド) に移行するか、<code>delete</code> をグループオーナーのみに制限。</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="finding-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="severity severity-high">High</span>
+      <span class="title">Storage: グループ写真が全認証ユーザーに公開</span>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="finding-body">
+      <p><code>/groups/{groupId}/**</code> が <code>allow read, write: if request.auth != null;</code>。グループ外のユーザーが写真を閲覧・上書き・削除可能。ファイルサイズ・コンテンツタイプの検証もなし。</p>
+      <h4>改善策</h4>
+      <p>最低限、write にファイルサイズ制限 (10MB) と JPEG のみ許可を追加。</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="finding-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="severity severity-high">High</span>
+      <span class="title">alexa-auth.html: リダイレクト先の未検証 (Open Redirect)</span>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="finding-body">
+      <p><code>redirect_uri</code> パラメータを検証せずにリフレッシュトークン付きでリダイレクトしている。攻撃者が細工した URL で被害者のトークンを窃取可能。</p>
+      <h4>改善策</h4>
+      <pre>const ALLOWED_HOSTS = ['layla.amazon.com', 'pitangui.amazon.com', 'alexa.amazon.co.jp'];
+const url = new URL(params.get('redirect_uri'));
+if (!ALLOWED_HOSTS.includes(url.hostname)) return;</pre>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="finding-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="severity severity-high">High</span>
+      <span class="title">Alexa 連携コードのエントロピー不足 (6文字 / 30^6)</span>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="finding-body">
+      <p>6 文字 (30^6 &asymp; 7.3億通り / 約 30 ビット) で有効期限 10 分。レート制限なしなら毎秒 1,214 回で 10 分以内に全探索可能。</p>
+      <h4>改善策</h4>
+      <p>API Gateway スロットリング設定が最優先。加えてコード長を 8 文字以上に増やす (30^8 &asymp; 6,560 億通り)。</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="finding-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="severity severity-medium">Medium</span>
+      <span class="title">その他のセキュリティ項目 (10件)</span>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="finding-body">
+      <table>
+        <thead><tr><th>重大度</th><th>項目</th><th>概要</th></tr></thead>
+        <tbody>
+          <tr><td><span class="severity severity-high">High</span></td><td>グループ削除権限</td><td>一般メンバーでも <code>delete</code> 可能。owner のみに制限すべき</td></tr>
+          <tr><td><span class="severity severity-medium">Medium</span></td><td>Firestore バリデーション不足</td><td>フィールドの型・長さ・値範囲の検証なし</td></tr>
+          <tr><td><span class="severity severity-medium">Medium</span></td><td>memberCount 改ざん</td><td>任意の値に更新可能。increment パターンのみ許可すべき</td></tr>
+          <tr><td><span class="severity severity-medium">Medium</span></td><td>joinGroup 競合状態</td><td>同時参加で maxMembers (10) 超過の可能性</td></tr>
+          <tr><td><span class="severity severity-medium">Medium</span></td><td>Keychain 属性未設定</td><td><code>kSecAttrAccessible</code> / <code>kSecAttrSynchronizable</code> が明示的でない</td></tr>
+          <tr><td><span class="severity severity-medium">Medium</span></td><td>CORS 設定が <code>*</code></td><td><code>restore-code-auth</code> はネイティブ専用のため CORS ヘッダー不要</td></tr>
+          <tr><td><span class="severity severity-medium">Medium</span></td><td>画像サイズ制限なし</td><td>Lambda の base64 画像にサイズバリデーションがない</td></tr>
+          <tr><td><span class="severity severity-medium">Medium</span></td><td>Alexa Lambda のログ漏洩</td><td><code>requestEnvelope</code> 全体をログ出力 (トークン含む)</td></tr>
+          <tr><td><span class="severity severity-medium">Medium</span></td><td>CSP 未設定</td><td><code>alexa-auth.html</code> に Content Security Policy がない</td></tr>
+          <tr><td><span class="severity severity-low">Low</span></td><td>エラー情報漏洩</td><td>旧版 Lambda が AI の生レスポンスを返している</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 4. UX ===== -->
+<section id="ux">
+  <h2><span class="icon" style="background:rgba(234,179,8,0.15)">4</span> UX &amp; 機能改善</h2>
+  <p class="section-desc">22件の改善提案。リストアコードの安全策とハプティックフィードバックが最優先。</p>
+
+  <table>
+    <thead><tr><th>優先度</th><th>項目</th><th>カテゴリ</th><th>期待効果</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="priority-tag priority-must">Must</span></td>
+        <td><strong>リストアコードのバックアップ支援</strong><br><small>ShareLink でコード共有 + 確認ステップ追加</small></td>
+        <td>オンボーディング</td>
+        <td>コード紛失によるデータ完全喪失を防止</td>
+      </tr>
+      <tr>
+        <td><span class="priority-tag priority-must">Must</span></td>
+        <td><strong>タオル削除の確認ダイアログ</strong><br><small>スワイプ即削除 &rarr; <code>.confirmationDialog</code> 追加</small></td>
+        <td>データ保護</td>
+        <td>誤操作による不可逆なデータ喪失を防止</td>
+      </tr>
+      <tr>
+        <td><span class="priority-tag priority-must">Must</span></td>
+        <td><strong>ハプティックフィードバック追加</strong><br><small>交換記録、削除、診断完了、コピー等</small></td>
+        <td>インタラクション</td>
+        <td>操作の達成感向上。アプリの品質感</td>
+      </tr>
+      <tr>
+        <td><span class="priority-tag priority-must">Must</span></td>
+        <td><strong>VoiceOver / アクセシビリティ対応</strong><br><small><code>accessibilityLabel</code> 追加。色のみのステータス表示を改善</small></td>
+        <td>アクセシビリティ</td>
+        <td>インクルーシブなユーザー層。App Store 評価</td>
+      </tr>
+      <tr>
+        <td><span class="priority-tag priority-should">Should</span></td>
+        <td><strong>ステータスの視覚的プログレスリング</strong><br><small>TowelRowView / DetailView に円形進捗表示</small></td>
+        <td>情報設計</td>
+        <td>一目で交換緊急度を把握可能に</td>
+      </tr>
+      <tr>
+        <td><span class="priority-tag priority-should">Should</span></td>
+        <td><strong>データ可視化 (Swift Charts)</strong><br><small>交換頻度の棒グラフ、診断スコアの折れ線</small></td>
+        <td>エンゲージメント</td>
+        <td>「記録するだけ」から「振り返り」へ。長期リテンション</td>
+      </tr>
+      <tr>
+        <td><span class="priority-tag priority-should">Should</span></td>
+        <td><strong>「まとめて交換」一括操作</strong><br><small>EditMode + 複数選択 &rarr; 一括記録</small></td>
+        <td>効率性</td>
+        <td>洗濯日のメイン操作を大幅効率化</td>
+      </tr>
+      <tr>
+        <td><span class="priority-tag priority-should">Should</span></td>
+        <td><strong>診断中のステップ表示強化</strong><br><small>「診断中...」&rarr; 段階表示 + スケルトンビュー</small></td>
+        <td>フィードバック</td>
+        <td>待ち時間の体感短縮</td>
+      </tr>
+      <tr>
+        <td><span class="priority-tag priority-should">Should</span></td>
+        <td><strong>カメラのガイドフレーム</strong><br><small>「タオルを枠内に収めてください」オーバーレイ</small></td>
+        <td>診断精度</td>
+        <td>AI 診断の精度向上に寄与</td>
+      </tr>
+      <tr>
+        <td><span class="priority-tag priority-should">Should</span></td>
+        <td><strong>Pull-to-refresh</strong><br><small><code>.refreshable { }</code> モディファイア追加</small></td>
+        <td>安心感</td>
+        <td>オフライン復帰時のユーザー安心感</td>
+      </tr>
+      <tr>
+        <td><span class="priority-tag priority-nice">Nice</span></td>
+        <td><strong>ゲーミフィケーション</strong><br><small>連続交換ストリーク、月間達成率バッジ</small></td>
+        <td>リテンション</td>
+        <td>習慣形成の動機付け</td>
+      </tr>
+      <tr>
+        <td><span class="priority-tag priority-nice">Nice</span></td>
+        <td><strong>診断結果のシェア機能</strong><br><small>ShareLink でスコアカード画像を共有</small></td>
+        <td>グロース</td>
+        <td>オーガニック拡散</td>
+      </tr>
+      <tr>
+        <td><span class="priority-tag priority-nice">Nice</span></td>
+        <td><strong>Widget 再実装</strong><br><small>App Groups + UserDefaults ベース</small></td>
+        <td>リマインド</td>
+        <td>DAU 向上。ホーム画面の常時接点</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===== 5. PERFORMANCE ===== -->
+<section id="performance">
+  <h2><span class="icon" style="background:rgba(34,197,94,0.15)">5</span> パフォーマンス &amp; スケーラビリティ</h2>
+  <p class="section-desc">15件の改善点。サブコレクション全件リスナーと Lambda のコールドスタートが主要課題。</p>
+
+  <div class="finding open">
+    <div class="finding-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="severity severity-critical">Critical</span>
+      <span class="title">サブコレクションリスナーの無制限増殖 (1+2N 問題)</span>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="finding-body">
+      <h4>現状</h4>
+      <p>タオル N 個に対して <code>1 + 2N</code> のリアルタイムリスナーが常時接続。タオル 10 個で 21 リスナー、50 個で 101 リスナー。全 <code>records</code> / <code>conditionChecks</code> をページネーションなしで取得。</p>
+      <h4>影響</h4>
+      <p>1 年間の使用 (1 タオルあたり ~120 レコード + ~24 診断) で、100 ユーザーの場合 Firestore 日次リード数が無料枠の 4.3 倍に到達。</p>
+      <h4>推奨</h4>
+      <p>サブコレクションは<strong>遅延ロード</strong>に変更。タオル詳細画面遷移時に初めて購読し、<code>.limit(20)</code> + ページネーション。リード数 90% 削減の見込み。</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="finding-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="severity severity-high">High</span>
+      <span class="title">firebase-admin のコールドスタート遅延 (2-5秒)</span>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="finding-body">
+      <p>3 つの Lambda が <code>firebase-admin</code> v12 (~56MB) に依存。コールドスタートが 2-5 秒。特に Alexa スキル Lambda は Alexa の 8 秒タイムアウトに近づく。</p>
+      <h4>推奨</h4>
+      <p>ES Modules の部分インポート (<code>firebase-admin/firestore</code>, <code>firebase-admin/auth</code>) で tree shaking。または Lambda Layer で共有しデプロイパッケージを軽量化。コールドスタート 0.5-1 秒に短縮の見込み。</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="finding-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="severity severity-high">High</span>
+      <span class="title">Alexa Lambda の N+1 クエリ</span>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="finding-body">
+      <p><code>fetchTowels()</code> でタオルごとに <code>records</code> サブコレクションを個別クエリ。タオルドキュメントの <code>lastExchangedAt</code> を直接使えばサブコレクションクエリは不要。リード数 N+1 &rarr; 1 に削減。</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="finding-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="severity severity-high">High</span>
+      <span class="title">AsyncImage にキャッシュ戦略なし</span>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="finding-body">
+      <p>Firebase Storage の download URL にはトークンパラメータが含まれ、同じ画像でもキャッシュミスが発生しうる。診断履歴 20 件で 20 枚の並行ダウンロード。<code>CachedAsyncImage</code> (自作 or ライブラリ) でトークンを除いたパスベースのキャッシュキーを使用すべき。</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="finding-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="severity severity-medium">Medium</span>
+      <span class="title">その他のパフォーマンス項目 (8件)</span>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="finding-body">
+      <table>
+        <thead><tr><th>影響度</th><th>項目</th><th>改善策</th></tr></thead>
+        <tbody>
+          <tr><td><span class="severity severity-medium">Med</span></td><td>強制 1.2 秒スプラッシュ</td><td><code>max(0.5秒, 認証完了)</code> に短縮</td></tr>
+          <tr><td><span class="severity severity-medium">Med</span></td><td>SettingsView の 1 秒間隔タイマー</td><td><code>.task(id: expiry)</code> で有効期限まで 1 回だけ待機</td></tr>
+          <tr><td><span class="severity severity-medium">Med</span></td><td>deleteAllTowels の非バッチ削除</td><td><code>WriteBatch</code> でまとめて削除</td></tr>
+          <tr><td><span class="severity severity-medium">Med</span></td><td>マイグレーションのシーケンシャル処理</td><td><code>TaskGroup</code> で並列コピー。3-5x 短縮</td></tr>
+          <tr><td><span class="severity severity-medium">Med</span></td><td>isMember() の暗黙リード</td><td>Custom Claims に groupId を含めルール評価リードを排除</td></tr>
+          <tr><td><span class="severity severity-medium">Med</span></td><td>起動時のシーケンシャルなデータロード</td><td>グループ ID 取得後即座にリスナー開始</td></tr>
+          <tr><td><span class="severity severity-low">Low</span></td><td>onChange で全タオルの通知再スケジュール</td><td>差分検出ロジックを追加</td></tr>
+          <tr><td><span class="severity severity-low">Low</span></td><td>診断フローで画像二重リサイズ</td><td>1 回のリサイズ結果を使い回し</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-title">スケーラビリティ試算</div>
+    <p>
+      <strong>現在</strong> (5 タオル / 3 回起動/日): ~45 reads/日/ユーザー &rarr; 100 ユーザーで ~135K reads/月 (無料枠内)<br>
+      <strong>1 年後</strong> (蓄積データ込み): ~2,160 reads/日/ユーザー &rarr; 100 ユーザーで ~216K reads/日 (無料枠の 4.3 倍)<br>
+      <strong>遅延ロード導入後</strong>: ~250 reads/日/ユーザー &rarr; 100 ユーザーでも無料枠内
+    </p>
+  </div>
+</section>
+
+<!-- ===== 6. BUSINESS ===== -->
+<section id="business">
+  <h2><span class="icon" style="background:rgba(249,115,22,0.15)">6</span> ビジネス &amp; マネタイズ</h2>
+  <p class="section-desc">収益化基盤が未構築。低コストで実装可能なグロース施策が多数手つかず。</p>
+
+  <h3 style="margin:24px 0 12px;">6.1 Pro プラン設計案</h3>
+  <table>
+    <thead><tr><th>機能</th><th>Free</th><th>Pro (月額300円)</th></tr></thead>
+    <tbody>
+      <tr><td>AI 状態診断</td><td>1回/日 (Nova 2 Lite)</td><td>無制限 (Claude Haiku 4.5)</td></tr>
+      <tr><td>診断履歴</td><td>直近 5 件</td><td>無制限</td></tr>
+      <tr><td>タオル登録数</td><td>5 枚</td><td>無制限</td></tr>
+      <tr><td>グループ人数</td><td>3 名</td><td>10 名</td></tr>
+      <tr><td>統計ダッシュボード</td><td>&mdash;</td><td>あり</td></tr>
+      <tr><td>Widget</td><td>&mdash;</td><td>あり</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:8px;">
+    推奨価格: 月額 300円 / 年額 1,800円 (50% 割引)。日本のニッチユーティリティ市場では低価格で利用者ベースを広げる戦略が有効。
+  </p>
+
+  <h3 style="margin:32px 0 12px;">6.2 収益シミュレーション (初年度)</h3>
+  <div class="two-col">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;">
+      <h4 style="color:var(--text-secondary);font-size:0.8rem;margin-bottom:12px;">保守的シナリオ</h4>
+      <div style="font-size:1.8rem;font-weight:800;color:var(--medium);">38-46万円<small style="font-size:0.7rem;color:var(--text-secondary)">/年</small></div>
+      <p style="font-size:0.82rem;color:var(--text-secondary);margin-top:8px;">5,000 DL &times; 3% 転換 = 150 Pro &times; 300円 &times; 12 (Apple手数料控除後)</p>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;">
+      <h4 style="color:var(--text-secondary);font-size:0.8rem;margin-bottom:12px;">楽観シナリオ (2年目・カテゴリ拡張後)</h4>
+      <div style="font-size:1.8rem;font-weight:800;color:var(--low);">126-153万円<small style="font-size:0.7rem;color:var(--text-secondary)">/年</small></div>
+      <p style="font-size:0.82rem;color:var(--text-secondary);margin-top:8px;">20,000 DL &times; 5% = 1,000 Pro &times; 1,800円/年 (Apple手数料控除後)</p>
+    </div>
+  </div>
+
+  <h3 style="margin:32px 0 12px;">6.3 今すぐ着手すべきグロース施策</h3>
+  <table>
+    <thead><tr><th>施策</th><th>推定工数</th><th>期待効果</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>SKStoreReviewController 実装</strong></td>
+        <td>2-3 時間</td>
+        <td>レビュー数増加 &rarr; ASO 改善 &rarr; DL 増</td>
+      </tr>
+      <tr>
+        <td><strong>ASO 最適化</strong> (キーワード・サブタイトル・説明文)</td>
+        <td>1 日</td>
+        <td>検索流入増</td>
+      </tr>
+      <tr>
+        <td><strong>AI 診断結果のシェア機能</strong></td>
+        <td>4-6 時間</td>
+        <td>X/LINE での口コミ。バイラル効果</td>
+      </tr>
+      <tr>
+        <td><strong>グループ招待の LINE シェア</strong></td>
+        <td>2-3 時間</td>
+        <td>グループ参加率向上</td>
+      </tr>
+      <tr>
+        <td><strong>匿名 Auth 導入</strong></td>
+        <td>2-3 日</td>
+        <td>初回離脱率 20-30% 改善見込み</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 style="margin:32px 0 12px;">6.4 中長期のプロダクト戦略</h3>
+  <table>
+    <thead><tr><th>方向性</th><th>概要</th><th>インパクト</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>消耗品カテゴリ拡張</strong></td>
+        <td>タオル以外 (シーツ、浄水器、歯ブラシ等) に対応。モデル名を汎化するだけで技術的には容易</td>
+        <td>TAM の大幅拡大</td>
+      </tr>
+      <tr>
+        <td><strong>NFC タグ連携</strong></td>
+        <td>タオルに NFC タグを貼り、かざすだけで交換記録。<code>CoreNFC</code> + 既存の Deep Link 基盤で実現可能</td>
+        <td>差別化、PR 話題性</td>
+      </tr>
+      <tr>
+        <td><strong>Apple Watch</strong></td>
+        <td>ワンタップ交換記録、コンプリケーションで期限切れカウント</td>
+        <td>Apple フィーチャー候補</td>
+      </tr>
+      <tr>
+        <td><strong>統計ダッシュボード</strong></td>
+        <td>交換頻度推移、AI スコア経年変化、タオル寿命予測</td>
+        <td>Pro の価値向上</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===== 7. ROADMAP ===== -->
+<section id="roadmap">
+  <h2><span class="icon" style="background:rgba(61,154,176,0.15)">7</span> 推奨ロードマップ</h2>
+  <p class="section-desc">改善項目を時間軸に沿って整理。セキュリティ修正を最優先に。</p>
+
+  <div class="roadmap">
+    <div class="roadmap-item">
+      <h4>Phase 0: 緊急セキュリティ修正</h4>
+      <div class="timeline">今週中</div>
+      <p>
+        &bull; assess-nova Lambda に Firebase Auth トークン検証を追加<br>
+        &bull; API Gateway に Usage Plan + スロットリング設定 (全エンドポイント)<br>
+        &bull; alexa-auth.html の redirect_uri バリデーション追加<br>
+        &bull; inviteCodes の ACL 修正 (delete 制限)<br>
+        &bull; Storage rules にファイルサイズ + JPEG 制限追加
+      </p>
+    </div>
+    <div class="roadmap-item">
+      <h4>Phase 1: UX 改善 + グロース基盤 (v1.2)</h4>
+      <div class="timeline">1-2 週間</div>
+      <p>
+        &bull; SKStoreReviewController 実装<br>
+        &bull; タオル削除の確認ダイアログ<br>
+        &bull; ハプティックフィードバック追加<br>
+        &bull; リストアコードの ShareLink 共有<br>
+        &bull; エラーハンドリングの修正 (サイレント失敗の解消)<br>
+        &bull; Alexa Lambda の N+1 クエリ修正 (lastExchangedAt 活用)
+      </p>
+    </div>
+    <div class="roadmap-item">
+      <h4>Phase 2: マネタイズ + パフォーマンス (v1.3)</h4>
+      <div class="timeline">3-4 週間</div>
+      <p>
+        &bull; StoreKit 2 統合 + Pro プラン導入<br>
+        &bull; サブコレクションの遅延ロード + ページネーション<br>
+        &bull; Lambda コールドスタート最適化 (firebase-admin 部分インポート)<br>
+        &bull; ASO 最適化 (キーワード・説明文)
+      </p>
+    </div>
+    <div class="roadmap-item">
+      <h4>Phase 3: エンゲージメント強化 (v1.4)</h4>
+      <div class="timeline">1-2 ヶ月</div>
+      <p>
+        &bull; 匿名 Auth 導入 (初回サインイン不要化)<br>
+        &bull; データ可視化 (Swift Charts: 交換頻度・診断スコア推移)<br>
+        &bull; 「まとめて交換」一括操作<br>
+        &bull; Widget 再実装 (App Groups ベース)<br>
+        &bull; 診断結果のシェア機能
+      </p>
+    </div>
+    <div class="roadmap-item">
+      <h4>Phase 4: プラットフォーム拡張 (v2.0)</h4>
+      <div class="timeline">3-6 ヶ月</div>
+      <p>
+        &bull; 消耗品カテゴリ拡張 (Towel &rarr; ConsumableItem 汎化)<br>
+        &bull; NFC タグ連携<br>
+        &bull; Apple Watch アプリ<br>
+        &bull; アーキテクチャ刷新 (Protocol DI、テスト導入、Swift 6 対応)
+      </p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div class="footer">
+  かえたお (Kaetao) 改善レポート &mdash; Generated on 2026-02-25<br>
+  Analysis by 5 specialized agent teams: Architecture, Security, UX, Performance, Business
+</div>
+
+<script>
+  // Toggle all findings on click
+  document.querySelectorAll('.finding-header').forEach(header => {
+    header.addEventListener('click', () => {
+      header.parentElement.classList.toggle('open');
+    });
+  });
+</script>
+
+</body>
+</html>
