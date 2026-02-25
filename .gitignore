@@ -46,6 +46,10 @@ xcuserdata/
 # Apple private keys
 AuthKey_*.p8
 
+# Environment variables
+.env
+.env.*
+
 # Lambda dependencies
 lambda/*/node_modules/
 lambda/*.zip
