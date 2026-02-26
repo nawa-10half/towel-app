@@ -26,6 +26,7 @@ enum ConditionCheckError: LocalizedError {
     case serverError(String)
     case missingAPIURL
     case imageTooLarge
+    case rateLimited
 
     var errorDescription: String? {
         switch self {
@@ -39,6 +40,8 @@ enum ConditionCheckError: LocalizedError {
             return "APIのURLが設定されていません"
         case .imageTooLarge:
             return "画像サイズが大きすぎます（5MB以下にしてください）"
+        case .rateLimited:
+            return "しばらく時間をおいてから再度お試しください"
         }
     }
 }
@@ -85,6 +88,9 @@ final class ConditionCheckService: @unchecked Sendable {
         }
 
         guard (200...299).contains(httpResponse.statusCode) else {
+            if httpResponse.statusCode == 429 {
+                throw ConditionCheckError.rateLimited
+            }
             if let errorBody = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                let message = errorBody["error"] as? String {
                 throw ConditionCheckError.serverError(message)
