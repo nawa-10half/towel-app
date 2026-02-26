@@ -204,9 +204,20 @@ final class GroupService {
             // Last member — delete the entire group
             await deleteGroup(groupId: currentGroupId)
         } else {
+            let groupRef = db.collection("groups").document(currentGroupId)
+
+            // Owner が退出する場合、他のメンバーに owner を委譲
+            let myMember = members.first { $0.id == userId }
+            if myMember?.role == "owner" {
+                if let nextOwner = members.first(where: { $0.id != userId }) {
+                    try await groupRef.collection("members").document(nextOwner.id!).updateData([
+                        "role": "owner"
+                    ])
+                }
+            }
+
             // Remove self from members and decrement count
             let batch = db.batch()
-            let groupRef = db.collection("groups").document(currentGroupId)
             batch.deleteDocument(groupRef.collection("members").document(userId))
             batch.updateData([
                 "memberCount": FieldValue.increment(Int64(-1)),

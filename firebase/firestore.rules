@@ -50,8 +50,8 @@ service cloud.firestore {
           request.resource.data.memberCount == resource.data.memberCount + 1 ||
           request.resource.data.memberCount == resource.data.memberCount - 1
         );
-      // グループ削除は owner のみ
-      allow delete: if isOwner();
+      // グループ削除は owner または最後のメンバー（owner 退出済み時の安全弁）
+      allow delete: if isOwner() || (isMember() && resource.data.memberCount <= 1);
 
       // Members subcollection: can only add/remove your own membership
       match /members/{memberId} {
@@ -61,7 +61,8 @@ service cloud.firestore {
           && request.resource.data.role is string
           && (request.resource.data.role == 'owner' || request.resource.data.role == 'member');
         allow delete: if request.auth != null && request.auth.uid == memberId;
-        allow update: if request.auth != null && request.auth.uid == memberId;
+        // 本人または owner が更新可能（owner 委譲に必要）
+        allow update: if (request.auth != null && request.auth.uid == memberId) || isOwner();
       }
 
       // Group towels: all members have full access
