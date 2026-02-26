@@ -2,14 +2,26 @@ rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
-    // Personal user photos
+    // Personal user photos — owner only
     match /users/{userId}/{allPaths=**} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read, write: if request.auth != null && request.auth.uid == userId
+        && (request.resource == null || (
+          request.resource.size < 10 * 1024 * 1024
+          && request.resource.contentType.matches('image/.*')
+        ));
     }
 
-    // Group photos (Storage rules cannot query Firestore, so auth-only check)
+    // Group photos
+    // Storage rules cannot query Firestore to verify group membership.
+    // Restrict to authenticated users + enforce file size and content type limits.
+    // Membership verification is enforced at the application layer.
     match /groups/{groupId}/{allPaths=**} {
-      allow read, write: if request.auth != null;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+        && (request.resource == null || (
+          request.resource.size < 10 * 1024 * 1024
+          && request.resource.contentType.matches('image/.*')
+        ));
     }
   }
 }

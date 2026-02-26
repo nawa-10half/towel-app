@@ -82,6 +82,12 @@ struct TowelDetailView: View {
         .task {
             await viewModel.loadDailyAssessmentCount()
         }
+        .onAppear {
+            viewModel.startListening()
+        }
+        .onDisappear {
+            viewModel.stopListening()
+        }
     }
 
     @ViewBuilder

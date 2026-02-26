@@ -79,14 +79,7 @@ final class FirestoreService {
                 self.towels = newTowels
                 self.isLoading = false
 
-                // Subscribe to subcollections for each towel
-                for towel in newTowels {
-                    guard let towelId = towel.id else { continue }
-                    self.subscribeToRecords(towelId: towelId)
-                    self.subscribeToConditionChecks(towelId: towelId)
-                }
-
-                // Clean up listeners for removed towels
+                // Clean up subcollection listeners for removed towels
                 let currentIds = Set(newTowels.compactMap(\.id))
                 for key in self.recordListeners.keys where !currentIds.contains(key) {
                     self.recordListeners[key]?.remove()
@@ -106,6 +99,20 @@ final class FirestoreService {
         recordListeners.removeAll()
         conditionCheckListeners.values.forEach { $0.remove() }
         conditionCheckListeners.removeAll()
+    }
+
+    // MARK: - Subcollection Listeners (lazy — called from detail view)
+
+    func startSubcollectionListeners(towelId: String) {
+        subscribeToRecords(towelId: towelId)
+        subscribeToConditionChecks(towelId: towelId)
+    }
+
+    func stopSubcollectionListeners(towelId: String) {
+        recordListeners[towelId]?.remove()
+        recordListeners.removeValue(forKey: towelId)
+        conditionCheckListeners[towelId]?.remove()
+        conditionCheckListeners.removeValue(forKey: towelId)
     }
 
     private func subscribeToRecords(towelId: String) {
@@ -180,21 +187,37 @@ final class FirestoreService {
             throw FirestoreError.notAuthenticated
         }
 
-        // Delete subcollections using in-memory data (no server round-trip)
-        if let towel = towels.first(where: { $0.id == towelId }) {
+        let towelRef = collection.document(towelId)
+        let towel = towels.first(where: { $0.id == towelId })
+
+        if let towel, !towel.records.isEmpty || !towel.conditionChecks.isEmpty {
+            // Delete subcollections using in-memory data (no server round-trip)
             for record in towel.records {
                 if let recordId = record.id {
-                    collection.document(towelId).collection("records").document(recordId).delete()
+                    towelRef.collection("records").document(recordId).delete()
                 }
             }
             for check in towel.conditionChecks {
                 if let checkId = check.id {
-                    collection.document(towelId).collection("conditionChecks").document(checkId).delete()
+                    towelRef.collection("conditionChecks").document(checkId).delete()
+                }
+            }
+        } else {
+            // Subcollections not loaded — fetch and delete asynchronously
+            Task {
+                let records = try? await towelRef.collection("records").getDocuments()
+                for doc in records?.documents ?? [] {
+                    try? await doc.reference.delete()
+                }
+                let checks = try? await towelRef.collection("conditionChecks").getDocuments()
+                for doc in checks?.documents ?? [] {
+                    try? await doc.reference.delete()
                 }
             }
         }
 
-        collection.document(towelId).delete()
+        stopSubcollectionListeners(towelId: towelId)
+        towelRef.delete()
     }
 
     /// Delete all towels and their subcollections for the current user

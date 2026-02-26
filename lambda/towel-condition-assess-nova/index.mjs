@@ -44,6 +44,16 @@ export const handler = async (event) => {
       };
     }
 
+    // base64 画像のサイズ制限 (約5MB: base64 は ~33% 大きくなるため 7MB で制限)
+    const MAX_BASE64_SIZE = 7 * 1024 * 1024;
+    if (image.length > MAX_BASE64_SIZE) {
+      return {
+        statusCode: 400,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ error: "画像サイズが大きすぎます。5MB以下の画像を使用してください" }),
+      };
+    }
+
     const userMessage = towel_name
       ? `このタオル「${towel_name}」（設置場所: ${towel_location || "不明"}）の状態を診断してください。`
       : "このタオルの状態を診断してください。";
@@ -89,12 +99,12 @@ export const handler = async (event) => {
     // Extract JSON from response (handle markdown code block wrapper)
     const jsonMatch = textContent.text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
+      console.error("Failed to parse model response as JSON");
       return {
         statusCode: 500,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          error: "Failed to parse assessment result",
-          raw: textContent.text,
+          error: "診断結果の解析に失敗しました。もう一度お試しください",
         }),
       };
     }

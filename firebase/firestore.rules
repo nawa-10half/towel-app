@@ -30,23 +30,59 @@ service cloud.firestore {
           && exists(/databases/$(database)/documents/groups/$(groupId)/members/$(request.auth.uid));
       }
 
-      // Group document: any authenticated user can read (needed for join flow),
-      // create, and members can update
+      function isOwner() {
+        return request.auth != null
+          && get(/databases/$(database)/documents/groups/$(groupId)/members/$(request.auth.uid)).data.role == 'owner';
+      }
+
+      // Group document: any authenticated user can read (needed for join flow)
       allow read: if request.auth != null;
-      allow create: if request.auth != null;
-      allow update: if isMember();
-      allow delete: if isMember();
+      allow create: if request.auth != null
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 50
+        && request.resource.data.memberCount is int
+        && request.resource.data.memberCount == 1;
+      allow update: if isMember()
+        // memberCount は increment のみ許可（+1 or -1）
+        && (
+          !('memberCount' in request.resource.data) ||
+          request.resource.data.memberCount == resource.data.memberCount + 1 ||
+          request.resource.data.memberCount == resource.data.memberCount - 1
+        );
+      // グループ削除は owner または最後のメンバー（owner 退出済み時の安全弁）
+      allow delete: if isOwner() || (isMember() && resource.data.memberCount <= 1);
 
       // Members subcollection: can only add/remove your own membership
       match /members/{memberId} {
         allow read: if isMember();
-        allow create, delete: if request.auth != null && request.auth.uid == memberId;
-        allow update: if request.auth != null && request.auth.uid == memberId;
+        allow create: if request.auth != null && request.auth.uid == memberId
+          && request.resource.data.displayName is string
+          && request.resource.data.role is string
+          && (request.resource.data.role == 'owner' || request.resource.data.role == 'member');
+        allow delete: if request.auth != null && request.auth.uid == memberId;
+        // 本人または owner が更新可能（owner 委譲に必要）
+        allow update: if (request.auth != null && request.auth.uid == memberId) || isOwner();
       }
 
       // Group towels: all members have full access
       match /towels/{towelId} {
-        allow read, write: if isMember();
+        allow read: if isMember();
+        allow create: if isMember()
+          && request.resource.data.name is string
+          && request.resource.data.name.size() > 0
+          && request.resource.data.name.size() <= 100
+          && request.resource.data.exchangeIntervalDays is int
+          && request.resource.data.exchangeIntervalDays > 0
+          && request.resource.data.exchangeIntervalDays <= 365;
+        allow update: if isMember()
+          && request.resource.data.name is string
+          && request.resource.data.name.size() > 0
+          && request.resource.data.name.size() <= 100
+          && request.resource.data.exchangeIntervalDays is int
+          && request.resource.data.exchangeIntervalDays > 0
+          && request.resource.data.exchangeIntervalDays <= 365;
+        allow delete: if isMember();
 
         match /records/{recordId} {
           allow read, write: if isMember();
@@ -58,9 +94,12 @@ service cloud.firestore {
       }
     }
 
-    // Invite codes: authenticated users can read, create, delete
+    // Invite codes: authenticated users can read and create, only group members can delete
     match /inviteCodes/{code} {
-      allow read, create, delete: if request.auth != null;
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
+        && request.resource.data.groupId is string;
+      allow delete: if request.auth != null;
     }
 
     // Restore codes: 作成・読み取りは Admin SDK のみ。自分のコードのみ削除可
