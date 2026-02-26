@@ -148,6 +148,12 @@ Storage path: `users/{userId}/towels/{towelId}/conditions/{checkId}.jpg`
 - **Alexa Skill Lambda**: `lambda/alexa-skill/` (Node.js, ask-sdk-core + firebase-admin)
 - **Alexa Skill ID**: `amzn1.ask.skill.e2a7d5de-b980-401c-a173-09c8c1c441b1`
 
+## Testing Policy
+
+- バグが起きやすく、UIで再現確認しにくい純粋なロジックにピンポイントでテストを書く
+- Firebase依存の Service 層や SwiftUI View 層のテストは不要（モック構築コストに見合わない）
+- テスト対象の例: 通知スケジューリングの重複排除、Towel ステータス算出、日付計算
+
 ## Related
 
 - **RN版 (凍結)**: https://github.com/nawa-10half/kaetao-app — 完全凍結、更新不要
