@@ -17,6 +17,14 @@ final class TowelDetailViewModel {
         self.towelId = towelId
     }
 
+    func startListening() {
+        FirestoreService.shared.startSubcollectionListeners(towelId: towelId)
+    }
+
+    func stopListening() {
+        FirestoreService.shared.stopSubcollectionListeners(towelId: towelId)
+    }
+
     var towel: Towel? {
         FirestoreService.shared.towels.first(where: { $0.id == towelId })
     }
