@@ -19,14 +19,16 @@ final class NotificationService: @unchecked Sendable {
     private func nextNotificationDateComponents() -> DateComponents {
         let hour = UserDefaults.standard.integer(forKey: "notificationHour")
         let minute = UserDefaults.standard.integer(forKey: "notificationMinute")
+        return Self.nextNotificationDateComponents(hour: hour, minute: minute, now: Date.now)
+    }
 
-        var components = Calendar.current.dateComponents([.year, .month, .day], from: Date.now)
+    static func nextNotificationDateComponents(hour: Int, minute: Int, now: Date) -> DateComponents {
+        var components = Calendar.current.dateComponents([.year, .month, .day], from: now)
         components.hour = hour
         components.minute = minute
 
-        if let today = Calendar.current.date(from: components), today <= Date.now {
-            // 今日の設定時刻を過ぎている → 明日
-            let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date.now)!
+        if let today = Calendar.current.date(from: components), today <= now {
+            let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: now)!
             components = Calendar.current.dateComponents([.year, .month, .day], from: tomorrow)
             components.hour = hour
             components.minute = minute

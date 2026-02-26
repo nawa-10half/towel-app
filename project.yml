@@ -72,6 +72,17 @@ targets:
         CONDITION_CHECK_API_URL: https://REDACTED.execute-api.ap-northeast-1.amazonaws.com/prod/assess-nova
         RESTORE_CODE_AUTH_URL: https://REDACTED.execute-api.ap-northeast-1.amazonaws.com/prod/restore-auth
 
+  TowelAppTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: TowelAppTests
+    dependencies:
+      - target: TowelApp
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+
   # Widget temporarily disabled — depends on SwiftData which has been removed.
   # Will be re-implemented using App Groups cache approach.
   # TowelWidgetExtension:
