@@ -90,11 +90,32 @@
   <script>
     const DEVICE_LINK_API = 'https://REDACTED.execute-api.ap-northeast-1.amazonaws.com/prod/alexa-link';
 
+    // Alexa の正規リダイレクト先のみ許可
+    const ALLOWED_REDIRECT_HOSTS = [
+      'layla.amazon.co.jp',
+      'pitangui.amazon.com',
+      'alexa.amazon.co.jp',
+    ];
+
+    function isAllowedRedirectUri(uri) {
+      try {
+        const url = new URL(uri);
+        return ALLOWED_REDIRECT_HOSTS.some(host => url.hostname === host || url.hostname.endsWith('.amazon.com') || url.hostname.endsWith('.amazon.co.jp'));
+      } catch {
+        return false;
+      }
+    }
+
     // Alexaからのクエリパラメータを sessionStorage に退避
     const params = new URLSearchParams(location.search);
     if (params.get('redirect_uri')) {
-      sessionStorage.setItem('alexa_redirect_uri', params.get('redirect_uri'));
-      sessionStorage.setItem('alexa_state', params.get('state') || '');
+      const redirectUri = params.get('redirect_uri');
+      if (isAllowedRedirectUri(redirectUri)) {
+        sessionStorage.setItem('alexa_redirect_uri', redirectUri);
+        sessionStorage.setItem('alexa_state', params.get('state') || '');
+      } else {
+        console.error('Blocked disallowed redirect_uri:', redirectUri);
+      }
     }
 
     function setStatus(msg, type = '') {
