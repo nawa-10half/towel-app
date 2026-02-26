@@ -4,8 +4,22 @@ import UserNotifications
 final class NotificationService: @unchecked Sendable {
     static let shared = NotificationService()
     private let center = UNUserNotificationCenter.current()
+    private let overduePrefs = UserDefaults.standard
+    private let overdueKeyPrefix = "overdueNotified_"
 
     private init() {}
+
+    private func isOverdueAlreadyNotified(towelId: String, exchangeDateKey: TimeInterval) -> Bool {
+        overduePrefs.double(forKey: "\(overdueKeyPrefix)\(towelId)") == exchangeDateKey
+    }
+
+    private func markOverdueNotified(towelId: String, exchangeDateKey: TimeInterval) {
+        overduePrefs.set(exchangeDateKey, forKey: "\(overdueKeyPrefix)\(towelId)")
+    }
+
+    private func clearOverdueTracking(towelId: String) {
+        overduePrefs.removeObject(forKey: "\(overdueKeyPrefix)\(towelId)")
+    }
 
     func requestPermission() async -> Bool {
         do {
@@ -41,8 +55,12 @@ final class NotificationService: @unchecked Sendable {
             let trigger: UNNotificationTrigger
             if scheduledDate <= Date.now {
                 guard UserDefaults.standard.bool(forKey: "overdueNotificationEnabled") else { return }
+                let exchangeDateKey = scheduledDate.timeIntervalSince1970
+                guard !self.isOverdueAlreadyNotified(towelId: towelId, exchangeDateKey: exchangeDateKey) else { return }
+                self.markOverdueNotified(towelId: towelId, exchangeDateKey: exchangeDateKey)
                 trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
             } else {
+                self.clearOverdueTracking(towelId: towelId)
                 trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
             }
 
