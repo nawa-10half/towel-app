@@ -4,22 +4,8 @@ import UserNotifications
 final class NotificationService: @unchecked Sendable {
     static let shared = NotificationService()
     private let center = UNUserNotificationCenter.current()
-    private let overduePrefs = UserDefaults.standard
-    private let overdueKeyPrefix = "overdueNotified_"
 
     private init() {}
-
-    private func isOverdueAlreadyNotified(towelId: String, exchangeDateKey: TimeInterval) -> Bool {
-        overduePrefs.double(forKey: "\(overdueKeyPrefix)\(towelId)") == exchangeDateKey
-    }
-
-    private func markOverdueNotified(towelId: String, exchangeDateKey: TimeInterval) {
-        overduePrefs.set(exchangeDateKey, forKey: "\(overdueKeyPrefix)\(towelId)")
-    }
-
-    private func clearOverdueTracking(towelId: String) {
-        overduePrefs.removeObject(forKey: "\(overdueKeyPrefix)\(towelId)")
-    }
 
     func requestPermission() async -> Bool {
         do {
@@ -27,6 +13,25 @@ final class NotificationService: @unchecked Sendable {
         } catch {
             return false
         }
+    }
+
+    /// 次の通知時刻を返す。今日の設定時刻がまだなら今日、過ぎていれば明日。
+    private func nextNotificationDateComponents() -> DateComponents {
+        let hour = UserDefaults.standard.integer(forKey: "notificationHour")
+        let minute = UserDefaults.standard.integer(forKey: "notificationMinute")
+
+        var components = Calendar.current.dateComponents([.year, .month, .day], from: Date.now)
+        components.hour = hour
+        components.minute = minute
+
+        if let today = Calendar.current.date(from: components), today <= Date.now {
+            // 今日の設定時刻を過ぎている → 明日
+            let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date.now)!
+            components = Calendar.current.dateComponents([.year, .month, .day], from: tomorrow)
+            components.hour = hour
+            components.minute = minute
+        }
+        return components
     }
 
     func scheduleNotification(for towel: Towel) {
@@ -54,13 +59,11 @@ final class NotificationService: @unchecked Sendable {
 
             let trigger: UNNotificationTrigger
             if scheduledDate <= Date.now {
+                // 期限切れ: 次の通知時刻（今日 or 明日）にスケジュール
                 guard UserDefaults.standard.bool(forKey: "overdueNotificationEnabled") else { return }
-                let exchangeDateKey = scheduledDate.timeIntervalSince1970
-                guard !self.isOverdueAlreadyNotified(towelId: towelId, exchangeDateKey: exchangeDateKey) else { return }
-                self.markOverdueNotified(towelId: towelId, exchangeDateKey: exchangeDateKey)
-                trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+                let nextComponents = self.nextNotificationDateComponents()
+                trigger = UNCalendarNotificationTrigger(dateMatching: nextComponents, repeats: false)
             } else {
-                self.clearOverdueTracking(towelId: towelId)
                 trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
             }
 
