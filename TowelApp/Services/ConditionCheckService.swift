@@ -25,6 +25,7 @@ enum ConditionCheckError: LocalizedError {
     case httpError(Int)
     case serverError(String)
     case missingAPIURL
+    case imageTooLarge
 
     var errorDescription: String? {
         switch self {
@@ -36,6 +37,8 @@ enum ConditionCheckError: LocalizedError {
             return "サーバーエラー: \(message)"
         case .missingAPIURL:
             return "APIのURLが設定されていません"
+        case .imageTooLarge:
+            return "画像サイズが大きすぎます（5MB以下にしてください）"
         }
     }
 }
@@ -51,10 +54,16 @@ final class ConditionCheckService: @unchecked Sendable {
         self.session = URLSession(configuration: config)
     }
 
+    private static let maxImageSize = 5 * 1024 * 1024 // 5MB
+
     func assessCondition(imageData: Data, towelName: String, towelLocation: String) async throws -> ConditionAssessment {
         guard let urlString = Bundle.main.object(forInfoDictionaryKey: "ConditionCheckAPIURL") as? String,
               let url = URL(string: urlString) else {
             throw ConditionCheckError.missingAPIURL
+        }
+
+        guard imageData.count <= Self.maxImageSize else {
+            throw ConditionCheckError.imageTooLarge
         }
 
         let base64Image = imageData.base64EncodedString()

@@ -147,9 +147,7 @@ const LaunchRequestHandler = {
     return Alexa.getRequestType(input.requestEnvelope) === 'LaunchRequest';
   },
   async handle(input) {
-    console.log('LaunchRequest received. requestEnvelope:', JSON.stringify(input.requestEnvelope, null, 2));
     const token = getAccessToken(input);
-    console.log('accessToken present:', !!token);
     if (!token) return accountNotLinkedResponse(input);
 
     try {
@@ -258,9 +256,7 @@ const RecordExchangeHandler = {
 
     try {
       const uid = await getUidFromRefreshToken(token);
-      console.log('RecordExchange uid:', uid);
       const towels = await fetchTowels(uid);
-      console.log('RecordExchange towels:', JSON.stringify(towels.map(t => ({ id: t.id, name: t.name }))));
 
       if (towels.length === 0) {
         return input.responseBuilder.speak('タオルが登録されていません。').getResponse();
@@ -270,7 +266,6 @@ const RecordExchangeHandler = {
       const towelNameSlot = slots?.TowelName?.value;
       const numberSlot = parseInt(slots?.TowelNumber?.value);
       const attrs = input.attributesManager.getSessionAttributes();
-      console.log('TowelName slot:', towelNameSlot, 'TowelNumber slot:', slots?.TowelNumber?.value);
 
       let target;
       if (towels.length === 1) {
@@ -309,9 +304,7 @@ const RecordExchangeHandler = {
           .getResponse();
       }
 
-      console.log('Recording exchange for towel:', target.id, target.name);
       await recordExchange(uid, target.id);
-      console.log('recordExchange completed successfully');
       return input.responseBuilder
         .speak(`${target.name}の交換を記録しました。`)
         .getResponse();
@@ -335,8 +328,7 @@ const SessionEndedHandler = {
 const ErrorHandler = {
   canHandle() { return true; },
   handle(input, error) {
-    console.error('Error:', error);
-    console.error('Error stack:', error?.stack);
+    console.error('Alexa handler error:', error?.message);
     return input.responseBuilder
       .speak('エラーが発生しました。もう一度お試しください。')
       .getResponse();
