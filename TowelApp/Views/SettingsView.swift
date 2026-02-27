@@ -1,4 +1,5 @@
 import SwiftUI
+import StoreKit
 import Combine
 
 struct SettingsView: View {
@@ -20,6 +21,9 @@ struct SettingsView: View {
     @State private var alexaCodeCopied = false
     @State private var errorMessage: String?
     @State private var copyHapticTrigger = false
+    @State private var showingPaywall = false
+    @State private var showingManageSubscriptions = false
+    @State private var storeService = StoreService.shared
 
     private var notificationTime: Binding<Date> {
         Binding(
@@ -44,6 +48,7 @@ struct SettingsView: View {
             GroupSettingsView(onJoinGroupTapped: { showingJoinSheet = true })
             notificationSection
             alexaSection
+            subscriptionSection
             aboutSection
             dangerSection
         }
@@ -241,6 +246,41 @@ struct SettingsView: View {
             } else {
                 Text("交換時期が近づくとリマインダーが届きます")
             }
+        }
+    }
+
+    private var subscriptionSection: some View {
+        Section {
+            if storeService.isPro {
+                HStack {
+                    Label("Pro プラン", systemImage: "star.fill")
+                        .foregroundStyle(.orange)
+                    Spacer()
+                    Text("有効")
+                        .foregroundStyle(.secondary)
+                }
+                Button("サブスクリプションを管理") {
+                    showingManageSubscriptions = true
+                }
+                .manageSubscriptionsSheet(isPresented: $showingManageSubscriptions)
+            } else {
+                Button {
+                    showingPaywall = true
+                } label: {
+                    HStack {
+                        Label("Pro プランにアップグレード", systemImage: "star")
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+        } header: {
+            Text("サブスクリプション")
+        }
+        .sheet(isPresented: $showingPaywall) {
+            ProPaywallView(feature: .assessment)
         }
     }
 
