@@ -125,6 +125,11 @@ struct TowelListView: View {
             Text("交換履歴と診断履歴もすべて削除されます。この操作は取り消せません。")
         }
         .sensoryFeedback(.warning, trigger: deleteTrigger)
+        .refreshable {
+            firestoreService.stopListening()
+            firestoreService.startListening()
+            try? await Task.sleep(for: .seconds(1))
+        }
     }
 }
 
