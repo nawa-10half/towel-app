@@ -83,9 +83,9 @@ targets:
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         CONDITION_CHECK_API_URL: https://REDACTED.execute-api.ap-northeast-1.amazonaws.com/prod/assess-nova
         RESTORE_CODE_AUTH_URL: https://REDACTED.execute-api.ap-northeast-1.amazonaws.com/prod/restore-auth
-        PRO_MONTHLY_PRODUCT_ID: com.kaetao-app.TowelApp.pro.monthly
-        PRO_ANNUAL_PRODUCT_ID: com.kaetao-app.TowelApp.pro.annual
-        PRO_LIFETIME_PRODUCT_ID: com.kaetao-app.TowelApp.pro.lifetime
+        PRO_MONTHLY_PRODUCT_ID: com.kaetao_app.TowelApp.pro.monthly
+        PRO_ANNUAL_PRODUCT_ID: com.kaetao_app.TowelApp.pro.annual
+        PRO_LIFETIME_PRODUCT_ID: com.kaetao_app.TowelApp.pro.lifetime
         ADMOB_APP_ID: ca-app-pub-4773362073066777~5141753527
         ADMOB_REWARDED_AD_UNIT_ID: ca-app-pub-4773362073066777/2097767727
 
