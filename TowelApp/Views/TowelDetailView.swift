@@ -15,8 +15,6 @@ struct TowelDetailView: View {
     @State private var capturedImage: UIImage?
     @State private var recordToDelete: ExchangeRecord?
     @State private var conditionCheckToDelete: ConditionCheck?
-    @State private var showingRecordDeleteAlert = false
-    @State private var showingCheckDeleteAlert = false
     @State private var deleteHapticTrigger = false
 
     init(towelId: String) {
@@ -266,7 +264,6 @@ struct TowelDetailView: View {
                 .onDelete { indexSet in
                     if let index = indexSet.first {
                         conditionCheckToDelete = viewModel.sortedConditionChecks[index]
-                        showingCheckDeleteAlert = true
                     }
                 }
             }
@@ -275,7 +272,10 @@ struct TowelDetailView: View {
         }
         .confirmationDialog(
             "診断記録を削除しますか？",
-            isPresented: $showingCheckDeleteAlert,
+            isPresented: Binding(
+                get: { conditionCheckToDelete != nil },
+                set: { if !$0 { conditionCheckToDelete = nil } }
+            ),
             titleVisibility: .visible
         ) {
             Button("削除", role: .destructive) {
@@ -284,9 +284,6 @@ struct TowelDetailView: View {
                     conditionCheckToDelete = nil
                     deleteHapticTrigger.toggle()
                 }
-            }
-            Button("キャンセル", role: .cancel) {
-                conditionCheckToDelete = nil
             }
         }
     }
@@ -311,7 +308,6 @@ struct TowelDetailView: View {
                 .onDelete { indexSet in
                     if let index = indexSet.first {
                         recordToDelete = viewModel.sortedRecords[index]
-                        showingRecordDeleteAlert = true
                     }
                 }
             }
@@ -320,7 +316,10 @@ struct TowelDetailView: View {
         }
         .confirmationDialog(
             "交換記録を削除しますか？",
-            isPresented: $showingRecordDeleteAlert,
+            isPresented: Binding(
+                get: { recordToDelete != nil },
+                set: { if !$0 { recordToDelete = nil } }
+            ),
             titleVisibility: .visible
         ) {
             Button("削除", role: .destructive) {
@@ -329,9 +328,6 @@ struct TowelDetailView: View {
                     recordToDelete = nil
                     deleteHapticTrigger.toggle()
                 }
-            }
-            Button("キャンセル", role: .cancel) {
-                recordToDelete = nil
             }
         }
     }
