@@ -272,14 +272,13 @@ struct TowelDetailView: View {
         } header: {
             Text("診断履歴")
         }
-        .confirmationDialog(
-            "診断記録を削除しますか？",
-            isPresented: Binding(
-                get: { conditionCheckToDelete != nil },
-                set: { if !$0 { conditionCheckToDelete = nil } }
-            ),
-            titleVisibility: .visible
-        ) {
+        .alert("診断記録を削除しますか？", isPresented: Binding(
+            get: { conditionCheckToDelete != nil },
+            set: { if !$0 { conditionCheckToDelete = nil } }
+        )) {
+            Button("キャンセル", role: .cancel) {
+                conditionCheckToDelete = nil
+            }
             Button("削除", role: .destructive) {
                 if let check = conditionCheckToDelete {
                     viewModel.deleteConditionCheck(check)
@@ -318,14 +317,13 @@ struct TowelDetailView: View {
         } header: {
             Text("交換履歴")
         }
-        .confirmationDialog(
-            "交換記録を削除しますか？",
-            isPresented: Binding(
-                get: { recordToDelete != nil },
-                set: { if !$0 { recordToDelete = nil } }
-            ),
-            titleVisibility: .visible
-        ) {
+        .alert("交換記録を削除しますか？", isPresented: Binding(
+            get: { recordToDelete != nil },
+            set: { if !$0 { recordToDelete = nil } }
+        )) {
+            Button("キャンセル", role: .cancel) {
+                recordToDelete = nil
+            }
             Button("削除", role: .destructive) {
                 if let record = recordToDelete {
                     viewModel.deleteRecord(record)
