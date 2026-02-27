@@ -6,6 +6,7 @@ struct TowelListView: View {
     @State private var networkMonitor = NetworkMonitor.shared
     @State private var showingAddForm = false
     @State private var towelToExchange: Towel?
+    @State private var towelToDelete: Towel?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -87,7 +88,7 @@ struct TowelListView: View {
                 }
                 .swipeActions(edge: .trailing) {
                     Button(role: .destructive) {
-                        viewModel.deleteTowel(towel)
+                        towelToDelete = towel
                     } label: {
                         Label("削除", systemImage: "trash")
                     }
@@ -103,6 +104,23 @@ struct TowelListView: View {
             if let towelId = towel.id {
                 ExchangeRecordSheet(towelId: towelId, towelName: towel.name)
             }
+        }
+        .confirmationDialog(
+            "「\(towelToDelete?.name ?? "")」を削除しますか？",
+            isPresented: Binding(
+                get: { towelToDelete != nil },
+                set: { if !$0 { towelToDelete = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button("削除", role: .destructive) {
+                if let towel = towelToDelete {
+                    viewModel.deleteTowel(towel)
+                    towelToDelete = nil
+                }
+            }
+        } message: {
+            Text("交換履歴と診断履歴もすべて削除されます。この操作は取り消せません。")
         }
     }
 }

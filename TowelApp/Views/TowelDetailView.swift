@@ -12,6 +12,8 @@ struct TowelDetailView: View {
     @State private var showingCameraPermissionAlert = false
     @State private var selectedPhotoItem: PhotosPickerItem?
     @State private var capturedImage: UIImage?
+    @State private var recordToDelete: ExchangeRecord?
+    @State private var conditionCheckToDelete: ConditionCheck?
 
     init(towelId: String) {
         self.towelId = towelId
@@ -78,6 +80,36 @@ struct TowelDetailView: View {
             Button("OK") { viewModel.errorMessage = nil }
         } message: {
             Text(viewModel.errorMessage ?? "")
+        }
+        .confirmationDialog(
+            "交換記録を削除しますか？",
+            isPresented: Binding(
+                get: { recordToDelete != nil },
+                set: { if !$0 { recordToDelete = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button("削除", role: .destructive) {
+                if let record = recordToDelete {
+                    viewModel.deleteRecord(record)
+                    recordToDelete = nil
+                }
+            }
+        }
+        .confirmationDialog(
+            "診断記録を削除しますか？",
+            isPresented: Binding(
+                get: { conditionCheckToDelete != nil },
+                set: { if !$0 { conditionCheckToDelete = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button("削除", role: .destructive) {
+                if let check = conditionCheckToDelete {
+                    viewModel.deleteConditionCheck(check)
+                    conditionCheckToDelete = nil
+                }
+            }
         }
         .task {
             await viewModel.loadDailyAssessmentCount()
@@ -255,9 +287,8 @@ struct TowelDetailView: View {
                     }
                 }
                 .onDelete { indexSet in
-                    let checks = viewModel.sortedConditionChecks
-                    for index in indexSet {
-                        viewModel.deleteConditionCheck(checks[index])
+                    if let index = indexSet.first {
+                        conditionCheckToDelete = viewModel.sortedConditionChecks[index]
                     }
                 }
             }
@@ -284,9 +315,8 @@ struct TowelDetailView: View {
                     }
                 }
                 .onDelete { indexSet in
-                    let records = viewModel.sortedRecords
-                    for index in indexSet {
-                        viewModel.deleteRecord(records[index])
+                    if let index = indexSet.first {
+                        recordToDelete = viewModel.sortedRecords[index]
                     }
                 }
             }
