@@ -12,6 +12,7 @@ final class TowelDetailViewModel {
     var dailyAssessmentCount: Int = 0
     let maxDailyAssessments: Int = 2
     var canAssess: Bool { dailyAssessmentCount < maxDailyAssessments }
+    var assessmentSucceeded = false
 
     init(towelId: String) {
         self.towelId = towelId
@@ -99,6 +100,7 @@ final class TowelDetailViewModel {
             // Count up only on success
             try? await FirestoreService.shared.incrementDailyAssessmentCount()
             dailyAssessmentCount += 1
+            assessmentSucceeded.toggle()
         } catch {
             errorMessage = "状態診断に失敗しました: \(error.localizedDescription)"
         }

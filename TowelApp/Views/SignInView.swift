@@ -18,6 +18,7 @@ struct SignInView: View {
     @State private var restoreCodeInput: String = ""
     @State private var isLoading = false
     @State private var codeCopied = false
+    @State private var copyHapticTrigger = false
 
     enum SignInStep {
         case codeDisplay   // 新規: コード表示
@@ -47,6 +48,7 @@ struct SignInView: View {
                 step = .codeDisplay
             }
         }
+        .sensoryFeedback(.selection, trigger: copyHapticTrigger)
         .onChange(of: step) {
             authService.errorMessage = nil
         }
@@ -96,6 +98,7 @@ struct SignInView: View {
                     Button {
                         UIPasteboard.general.string = generatedCode
                         codeCopied = true
+                        copyHapticTrigger.toggle()
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                             codeCopied = false
                         }

@@ -7,6 +7,7 @@ struct TowelListView: View {
     @State private var showingAddForm = false
     @State private var towelToExchange: Towel?
     @State private var towelToDelete: Towel?
+    @State private var deleteTrigger = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -117,11 +118,13 @@ struct TowelListView: View {
                 if let towel = towelToDelete {
                     viewModel.deleteTowel(towel)
                     towelToDelete = nil
+                    deleteTrigger.toggle()
                 }
             }
         } message: {
             Text("交換履歴と診断履歴もすべて削除されます。この操作は取り消せません。")
         }
+        .sensoryFeedback(.warning, trigger: deleteTrigger)
     }
 }
 

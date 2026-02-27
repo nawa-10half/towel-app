@@ -19,6 +19,7 @@ struct SettingsView: View {
     @State private var isGeneratingAlexaCode = false
     @State private var alexaCodeCopied = false
     @State private var errorMessage: String?
+    @State private var copyHapticTrigger = false
 
     private var notificationTime: Binding<Date> {
         Binding(
@@ -70,6 +71,8 @@ struct SettingsView: View {
         } message: {
             Text(errorMessage ?? "")
         }
+        .sensoryFeedback(.selection, trigger: copyHapticTrigger)
+        .sensoryFeedback(.error, trigger: errorMessage)
         .confirmationDialog("サインアウトしますか？", isPresented: $showingSignOutConfirmation, titleVisibility: .visible) {
             Button("サインアウト", role: .destructive) {
                 authService.signOut()
@@ -111,6 +114,7 @@ struct SettingsView: View {
                 Button {
                     UIPasteboard.general.string = code
                     codeCopied = true
+                    copyHapticTrigger.toggle()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                         codeCopied = false
                     }
@@ -146,6 +150,7 @@ struct SettingsView: View {
                 Button {
                     UIPasteboard.general.string = code
                     alexaCodeCopied = true
+                    copyHapticTrigger.toggle()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                         alexaCodeCopied = false
                     }

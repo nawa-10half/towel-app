@@ -14,6 +14,7 @@ struct TowelDetailView: View {
     @State private var capturedImage: UIImage?
     @State private var recordToDelete: ExchangeRecord?
     @State private var conditionCheckToDelete: ConditionCheck?
+    @State private var deleteHapticTrigger = false
 
     init(towelId: String) {
         self.towelId = towelId
@@ -93,6 +94,7 @@ struct TowelDetailView: View {
                 if let record = recordToDelete {
                     viewModel.deleteRecord(record)
                     recordToDelete = nil
+                    deleteHapticTrigger.toggle()
                 }
             }
         }
@@ -108,9 +110,13 @@ struct TowelDetailView: View {
                 if let check = conditionCheckToDelete {
                     viewModel.deleteConditionCheck(check)
                     conditionCheckToDelete = nil
+                    deleteHapticTrigger.toggle()
                 }
             }
         }
+        .sensoryFeedback(.warning, trigger: deleteHapticTrigger)
+        .sensoryFeedback(.success, trigger: viewModel.assessmentSucceeded)
+        .sensoryFeedback(.error, trigger: viewModel.errorMessage)
         .task {
             await viewModel.loadDailyAssessmentCount()
         }
@@ -354,6 +360,7 @@ struct ExchangeRecordSheet: View {
     @State private var exchangeNote = ""
     @State private var isSaving = false
     @State private var errorMessage: String?
+    @State private var saveTrigger = false
 
     var body: some View {
         NavigationStack {
@@ -398,6 +405,8 @@ struct ExchangeRecordSheet: View {
         } message: {
             Text(errorMessage ?? "")
         }
+        .sensoryFeedback(.success, trigger: saveTrigger)
+        .sensoryFeedback(.error, trigger: errorMessage)
         .presentationDetents([.medium])
     }
 
@@ -410,6 +419,7 @@ struct ExchangeRecordSheet: View {
                 note: exchangeNote.isEmpty ? nil : exchangeNote
             )
             WidgetCenter.shared.reloadAllTimelines()
+            saveTrigger.toggle()
             dismiss()
         } catch {
             isSaving = false
