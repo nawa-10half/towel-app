@@ -65,34 +65,20 @@ async function getTowelsRef(uid) {
   return db.collection('users').doc(uid).collection('towels');
 }
 
-// タオル一覧を取得（最新交換記録付き）
+// タオル一覧を取得（lastExchangedAt をタオルドキュメントから直接取得）
 async function fetchTowels(uid) {
   const ref = await getTowelsRef(uid);
   const snapshot = await ref.get();
 
-  const towels = await Promise.all(
-    snapshot.docs.map(async (doc) => {
-      const data = doc.data();
-      // 最新の交換記録を取得
-      const recordsSnap = await doc.ref
-        .collection('records')
-        .orderBy('exchangedAt', 'desc')
-        .limit(1)
-        .get();
-      const lastExchanged = recordsSnap.empty
-        ? null
-        : recordsSnap.docs[0].data().exchangedAt?.toDate() ?? null;
-
-      return {
-        id: doc.id,
-        name: data.name ?? 'タオル',
-        exchangeIntervalDays: data.exchangeIntervalDays ?? 30,
-        lastExchanged,
-      };
-    })
-  );
-
-  return towels;
+  return snapshot.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      name: data.name ?? 'タオル',
+      exchangeIntervalDays: data.exchangeIntervalDays ?? 30,
+      lastExchanged: data.lastExchangedAt?.toDate() ?? null,
+    };
+  });
 }
 
 // 交換記録を追加
