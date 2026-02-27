@@ -2,6 +2,7 @@ import SwiftUI
 import PhotosUI
 import AVFoundation
 import WidgetKit
+import StoreKit
 
 struct TowelDetailView: View {
     let towelId: String
@@ -354,6 +355,7 @@ struct TowelDetailView: View {
 
 struct ExchangeRecordSheet: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.requestReview) private var requestReview
     let towelId: String
     let towelName: String
     @State private var exchangeDate = Date.now
@@ -410,6 +412,9 @@ struct ExchangeRecordSheet: View {
         .presentationDetents([.medium])
     }
 
+    private static let exchangeCountKey = "exchangeRecordCount"
+    private static let reviewMilestones: Set<Int> = [3, 10]
+
     private func saveRecord() {
         isSaving = true
         do {
@@ -420,10 +425,19 @@ struct ExchangeRecordSheet: View {
             )
             WidgetCenter.shared.reloadAllTimelines()
             saveTrigger.toggle()
+            requestReviewIfNeeded()
             dismiss()
         } catch {
             isSaving = false
             errorMessage = "交換記録の保存に失敗しました: \(error.localizedDescription)"
+        }
+    }
+
+    private func requestReviewIfNeeded() {
+        let count = UserDefaults.standard.integer(forKey: Self.exchangeCountKey) + 1
+        UserDefaults.standard.set(count, forKey: Self.exchangeCountKey)
+        if Self.reviewMilestones.contains(count) {
+            requestReview()
         }
     }
 }
