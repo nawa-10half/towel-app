@@ -322,7 +322,7 @@ const ErrorHandler = {
 };
 
 // ── エクスポート ──────────────────────────────────────────────────────
-exports.handler = Alexa.SkillBuilders.custom()
+const alexaHandler = Alexa.SkillBuilders.custom()
   .addRequestHandlers(
     LaunchRequestHandler,
     GetTowelStatusHandler,
@@ -332,3 +332,11 @@ exports.handler = Alexa.SkillBuilders.custom()
   )
   .addErrorHandlers(ErrorHandler)
   .lambda();
+
+exports.handler = (event, context, callback) => {
+  // EventBridge warmup ping
+  if (event.source === 'aws.events' || event.detail?.type === 'warmup') {
+    return callback(null, { statusCode: 200, body: 'warm' });
+  }
+  return alexaHandler(event, context, callback);
+};

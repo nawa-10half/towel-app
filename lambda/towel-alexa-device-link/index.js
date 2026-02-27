@@ -58,6 +58,11 @@ const corsHeaders = {
 
 // ── Lambda ハンドラー ─────────────────────────────────────────────────
 exports.handler = async (event) => {
+  // EventBridge warmup ping
+  if (event.source === 'aws.events' || event.detail?.type === 'warmup') {
+    return { statusCode: 200, body: 'warm' };
+  }
+
   // CORS preflight
   const method = event.requestContext?.http?.method ?? event.httpMethod;
   if (method === 'OPTIONS') {

@@ -30,6 +30,11 @@ const responseHeaders = {
 };
 
 exports.handler = async (event) => {
+  // EventBridge warmup ping
+  if (event.source === 'aws.events' || event.detail?.type === 'warmup') {
+    return { statusCode: 200, body: 'warm' };
+  }
+
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 200, headers: responseHeaders, body: '' };
   }
