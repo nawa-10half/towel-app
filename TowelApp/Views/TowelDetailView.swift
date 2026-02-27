@@ -273,7 +273,7 @@ struct TowelDetailView: View {
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 4)
                     }
-                    .tint(.tint)
+                    .tint(Color.accentColor)
                     .buttonStyle(.bordered)
                     .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
                 }

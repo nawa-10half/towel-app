@@ -10,7 +10,7 @@ struct TowelApp: App {
 
     init() {
         FirebaseApp.configure()
-        MobileAds.shared.start(completionHandler: nil)
+        MobileAds.shared.start()
         _authService = State(initialValue: AuthService.shared)
         UserDefaults.standard.register(defaults: [
             "notificationsEnabled": true,

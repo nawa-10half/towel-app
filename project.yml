@@ -13,7 +13,7 @@ packages:
     from: "11.0.0"
   google-mobile-ads:
     url: https://github.com/googleads/swift-package-manager-google-mobile-ads.git
-    from: "11.0.0"
+    from: "12.0.0"
 
 settings:
   base:
