@@ -323,6 +323,7 @@ struct ExchangeRecordSheet: View {
     @State private var exchangeDate = Date.now
     @State private var exchangeNote = ""
     @State private var isSaving = false
+    @State private var errorMessage: String?
 
     var body: some View {
         NavigationStack {
@@ -359,6 +360,14 @@ struct ExchangeRecordSheet: View {
                 }
             }
         }
+        .alert("エラー", isPresented: Binding(
+            get: { errorMessage != nil },
+            set: { if !$0 { errorMessage = nil } }
+        )) {
+            Button("OK") { errorMessage = nil }
+        } message: {
+            Text(errorMessage ?? "")
+        }
         .presentationDetents([.medium])
     }
 
@@ -374,6 +383,7 @@ struct ExchangeRecordSheet: View {
             dismiss()
         } catch {
             isSaving = false
+            errorMessage = "交換記録の保存に失敗しました: \(error.localizedDescription)"
         }
     }
 }

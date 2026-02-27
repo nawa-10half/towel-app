@@ -18,6 +18,7 @@ struct SettingsView: View {
     @State private var alexaLinkExpiry: Date? = nil
     @State private var isGeneratingAlexaCode = false
     @State private var alexaCodeCopied = false
+    @State private var errorMessage: String?
 
     private var notificationTime: Binding<Date> {
         Binding(
@@ -60,6 +61,14 @@ struct SettingsView: View {
             }
         } message: {
             Text("設定アプリから通知を許可してください")
+        }
+        .alert("エラー", isPresented: Binding(
+            get: { errorMessage != nil },
+            set: { if !$0 { errorMessage = nil } }
+        )) {
+            Button("OK") { errorMessage = nil }
+        } message: {
+            Text(errorMessage ?? "")
         }
         .confirmationDialog("サインアウトしますか？", isPresented: $showingSignOutConfirmation, titleVisibility: .visible) {
             Button("サインアウト", role: .destructive) {
@@ -293,7 +302,7 @@ struct SettingsView: View {
             alexaLinkCode = code
             alexaLinkExpiry = Date().addingTimeInterval(10 * 60)
         } catch {
-            // エラーは無視（将来的にアラート追加も可）
+            errorMessage = "Alexaコードの生成に失敗しました: \(error.localizedDescription)"
         }
     }
 
@@ -301,7 +310,8 @@ struct SettingsView: View {
         do {
             try await authService.updateDisplayName(editingDisplayName)
         } catch {
-            // エラーは無視（後でアラート追加も可）
+            editingDisplayName = authService.displayName
+            errorMessage = "表示名の保存に失敗しました: \(error.localizedDescription)"
         }
     }
 }
