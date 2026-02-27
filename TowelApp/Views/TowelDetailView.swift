@@ -412,9 +412,6 @@ struct ExchangeRecordSheet: View {
         .presentationDetents([.medium])
     }
 
-    private static let exchangeCountKey = "exchangeRecordCount"
-    private static let reviewMilestones: Set<Int> = [3, 10]
-
     private func saveRecord() {
         isSaving = true
         do {
@@ -425,19 +422,14 @@ struct ExchangeRecordSheet: View {
             )
             WidgetCenter.shared.reloadAllTimelines()
             saveTrigger.toggle()
-            requestReviewIfNeeded()
+            var manager = ReviewRequestManager()
+            if manager.recordExchangeAndCheckReview() {
+                requestReview()
+            }
             dismiss()
         } catch {
             isSaving = false
             errorMessage = "交換記録の保存に失敗しました: \(error.localizedDescription)"
-        }
-    }
-
-    private func requestReviewIfNeeded() {
-        let count = UserDefaults.standard.integer(forKey: Self.exchangeCountKey) + 1
-        UserDefaults.standard.set(count, forKey: Self.exchangeCountKey)
-        if Self.reviewMilestones.contains(count) {
-            requestReview()
         }
     }
 }
