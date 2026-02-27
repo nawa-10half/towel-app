@@ -324,6 +324,14 @@ struct TowelDetailView: View {
                             .font(.subheadline)
                             .foregroundStyle(.tint)
                     }
+                } else if viewModel.hasMoreConditionChecks {
+                    Button {
+                        viewModel.loadAllConditionChecks()
+                    } label: {
+                        Label("すべての診断履歴を表示", systemImage: "ellipsis")
+                            .font(.subheadline)
+                            .foregroundStyle(.tint)
+                    }
                 }
             }
         } header: {
@@ -370,6 +378,16 @@ struct TowelDetailView: View {
                             Label("削除", systemImage: "trash")
                         }
                         .tint(.red)
+                    }
+                }
+
+                if viewModel.hasMoreRecords {
+                    Button {
+                        viewModel.loadAllRecords()
+                    } label: {
+                        Label("すべての交換履歴を表示", systemImage: "ellipsis")
+                            .font(.subheadline)
+                            .foregroundStyle(.tint)
                     }
                 }
             }

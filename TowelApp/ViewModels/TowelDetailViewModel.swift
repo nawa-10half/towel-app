@@ -48,6 +48,24 @@ final class TowelDetailViewModel {
         return towel.conditionChecks.sorted { $0.checkedAt ?? .distantPast > $1.checkedAt ?? .distantPast }
     }
 
+    // MARK: - Pagination
+
+    var hasMoreRecords: Bool {
+        FirestoreService.shared.hasMoreRecords(towelId: towelId)
+    }
+
+    var hasMoreConditionChecks: Bool {
+        FirestoreService.shared.hasMoreConditionChecks(towelId: towelId)
+    }
+
+    func loadAllRecords() {
+        FirestoreService.shared.loadAllRecords(towelId: towelId)
+    }
+
+    func loadAllConditionChecks() {
+        FirestoreService.shared.loadAllConditionChecks(towelId: towelId)
+    }
+
     func deleteRecord(_ record: ExchangeRecord) {
         guard let recordId = record.id else { return }
         do {

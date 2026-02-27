@@ -16,6 +16,10 @@ final class FirestoreService {
     private var recordListeners: [String: ListenerRegistration] = [:]
     private var conditionCheckListeners: [String: ListenerRegistration] = [:]
 
+    private static let subcollectionPageSize = 20
+    private var allRecordsLoaded: [String: Bool] = [:]
+    private var allConditionChecksLoaded: [String: Bool] = [:]
+
     private init() {}
 
     // MARK: - User ID
@@ -113,14 +117,49 @@ final class FirestoreService {
         recordListeners.removeValue(forKey: towelId)
         conditionCheckListeners[towelId]?.remove()
         conditionCheckListeners.removeValue(forKey: towelId)
+        allRecordsLoaded.removeValue(forKey: towelId)
+        allConditionChecksLoaded.removeValue(forKey: towelId)
     }
 
-    private func subscribeToRecords(towelId: String) {
+    // MARK: - Pagination
+
+    func hasMoreRecords(towelId: String) -> Bool {
+        guard allRecordsLoaded[towelId] != true else { return false }
+        let count = towels.first(where: { $0.id == towelId })?.records.count ?? 0
+        return count >= Self.subcollectionPageSize
+    }
+
+    func hasMoreConditionChecks(towelId: String) -> Bool {
+        guard allConditionChecksLoaded[towelId] != true else { return false }
+        let count = towels.first(where: { $0.id == towelId })?.conditionChecks.count ?? 0
+        return count >= Self.subcollectionPageSize
+    }
+
+    func loadAllRecords(towelId: String) {
+        recordListeners[towelId]?.remove()
+        recordListeners.removeValue(forKey: towelId)
+        allRecordsLoaded[towelId] = true
+        subscribeToRecords(towelId: towelId, limit: nil)
+    }
+
+    func loadAllConditionChecks(towelId: String) {
+        conditionCheckListeners[towelId]?.remove()
+        conditionCheckListeners.removeValue(forKey: towelId)
+        allConditionChecksLoaded[towelId] = true
+        subscribeToConditionChecks(towelId: towelId, limit: nil)
+    }
+
+    private func subscribeToRecords(towelId: String, limit: Int? = subcollectionPageSize) {
         guard recordListeners[towelId] == nil,
               let collection = towelsCollection() else { return }
 
-        let listener = collection.document(towelId).collection("records")
+        var query: Query = collection.document(towelId).collection("records")
             .order(by: "exchangedAt", descending: true)
+        if let limit {
+            query = query.limit(to: limit)
+        }
+
+        let listener = query
             .addSnapshotListener { [weak self] snapshot, _ in
                 guard let self, let documents = snapshot?.documents else { return }
                 let records = documents.compactMap { try? $0.data(as: ExchangeRecord.self) }
@@ -132,12 +171,17 @@ final class FirestoreService {
         recordListeners[towelId] = listener
     }
 
-    private func subscribeToConditionChecks(towelId: String) {
+    private func subscribeToConditionChecks(towelId: String, limit: Int? = subcollectionPageSize) {
         guard conditionCheckListeners[towelId] == nil,
               let collection = towelsCollection() else { return }
 
-        let listener = collection.document(towelId).collection("conditionChecks")
+        var query: Query = collection.document(towelId).collection("conditionChecks")
             .order(by: "checkedAt", descending: true)
+        if let limit {
+            query = query.limit(to: limit)
+        }
+
+        let listener = query
             .addSnapshotListener { [weak self] snapshot, _ in
                 guard let self, let documents = snapshot?.documents else { return }
                 let checks = documents.compactMap { try? $0.data(as: ConditionCheck.self) }
