@@ -306,6 +306,10 @@ struct SettingsView: View {
     }
 
     private func generateAlexaCode() async {
+        guard NetworkMonitor.shared.isConnected else {
+            errorMessage = "オフラインのためAlexaコードを生成できません。ネットワーク接続後に再度お試しください。"
+            return
+        }
         isGeneratingAlexaCode = true
         defer { isGeneratingAlexaCode = false }
         do {
@@ -322,6 +326,11 @@ struct SettingsView: View {
     }
 
     private func saveDisplayName() async {
+        guard NetworkMonitor.shared.isConnected else {
+            editingDisplayName = authService.displayName
+            errorMessage = "オフラインのため表示名を変更できません。ネットワーク接続後に再度お試しください。"
+            return
+        }
         do {
             try await authService.updateDisplayName(editingDisplayName)
         } catch {

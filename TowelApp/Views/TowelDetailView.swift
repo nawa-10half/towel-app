@@ -83,38 +83,6 @@ struct TowelDetailView: View {
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
-        .confirmationDialog(
-            "交換記録を削除しますか？",
-            isPresented: Binding(
-                get: { recordToDelete != nil },
-                set: { if !$0 { recordToDelete = nil } }
-            ),
-            titleVisibility: .visible
-        ) {
-            Button("削除", role: .destructive) {
-                if let record = recordToDelete {
-                    viewModel.deleteRecord(record)
-                    recordToDelete = nil
-                    deleteHapticTrigger.toggle()
-                }
-            }
-        }
-        .confirmationDialog(
-            "診断記録を削除しますか？",
-            isPresented: Binding(
-                get: { conditionCheckToDelete != nil },
-                set: { if !$0 { conditionCheckToDelete = nil } }
-            ),
-            titleVisibility: .visible
-        ) {
-            Button("削除", role: .destructive) {
-                if let check = conditionCheckToDelete {
-                    viewModel.deleteConditionCheck(check)
-                    conditionCheckToDelete = nil
-                    deleteHapticTrigger.toggle()
-                }
-            }
-        }
         .sensoryFeedback(.warning, trigger: deleteHapticTrigger)
         .sensoryFeedback(.success, trigger: viewModel.assessmentSucceeded)
         .sensoryFeedback(.error, trigger: viewModel.errorMessage)
@@ -302,6 +270,22 @@ struct TowelDetailView: View {
         } header: {
             Text("診断履歴")
         }
+        .confirmationDialog(
+            "診断記録を削除しますか？",
+            isPresented: Binding(
+                get: { conditionCheckToDelete != nil },
+                set: { if !$0 { conditionCheckToDelete = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button("削除", role: .destructive) {
+                if let check = conditionCheckToDelete {
+                    viewModel.deleteConditionCheck(check)
+                    conditionCheckToDelete = nil
+                    deleteHapticTrigger.toggle()
+                }
+            }
+        }
     }
 
     private var historySection: some View {
@@ -329,6 +313,22 @@ struct TowelDetailView: View {
             }
         } header: {
             Text("交換履歴")
+        }
+        .confirmationDialog(
+            "交換記録を削除しますか？",
+            isPresented: Binding(
+                get: { recordToDelete != nil },
+                set: { if !$0 { recordToDelete = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button("削除", role: .destructive) {
+                if let record = recordToDelete {
+                    viewModel.deleteRecord(record)
+                    recordToDelete = nil
+                    deleteHapticTrigger.toggle()
+                }
+            }
         }
     }
 
