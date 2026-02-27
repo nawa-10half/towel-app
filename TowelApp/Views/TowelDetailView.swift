@@ -260,10 +260,12 @@ struct TowelDetailView: View {
                     } label: {
                         ConditionCheckRowView(conditionCheck: check)
                     }
-                }
-                .onDelete { indexSet in
-                    if let index = indexSet.first {
-                        conditionCheckToDelete = viewModel.sortedConditionChecks[index]
+                    .swipeActions(edge: .trailing) {
+                        Button(role: .destructive) {
+                            conditionCheckToDelete = check
+                        } label: {
+                            Label("削除", systemImage: "trash")
+                        }
                     }
                 }
             }
@@ -304,10 +306,12 @@ struct TowelDetailView: View {
                                 .foregroundStyle(.secondary)
                         }
                     }
-                }
-                .onDelete { indexSet in
-                    if let index = indexSet.first {
-                        recordToDelete = viewModel.sortedRecords[index]
+                    .swipeActions(edge: .trailing) {
+                        Button(role: .destructive) {
+                            recordToDelete = record
+                        } label: {
+                            Label("削除", systemImage: "trash")
+                        }
                     }
                 }
             }
