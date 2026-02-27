@@ -1,27 +1,26 @@
-import { initializeApp, cert, getApps } from 'firebase-admin/app';
-import { getFirestore, FieldValue } from 'firebase-admin/firestore';
-import { getAuth } from 'firebase-admin/auth';
-import https from 'https';
-import { createRequire } from 'module';
+'use strict';
 
-const require = createRequire(import.meta.url);
 const Alexa = require('ask-sdk-core');
+const admin = require('firebase-admin');
+const https = require('https');
 
 // ── Firebase Admin 初期化 ────────────────────────────────────────────
+// SERVICE_ACCOUNT 環境変数に base64 エンコードされたサービスアカウント JSON を設定すること
 const serviceAccount = JSON.parse(
   Buffer.from(process.env.SERVICE_ACCOUNT_B64, 'base64').toString('utf8')
 );
 
-if (!getApps().length) {
-  initializeApp({
-    credential: cert(serviceAccount),
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
     projectId: 'kaetao-c43f1',
   });
 }
 
-const db = getFirestore();
+const db = admin.firestore();
 
 // ── Firebase トークン交換 ─────────────────────────────────────────────
+// Alexa が保持している refresh token → ID token → UID
 async function getUidFromRefreshToken(refreshToken) {
   const apiKey = process.env.FIREBASE_API_KEY;
   const body = JSON.stringify({
@@ -52,7 +51,7 @@ async function getUidFromRefreshToken(refreshToken) {
     req.end();
   });
 
-  const decoded = await getAuth().verifyIdToken(idToken);
+  const decoded = await admin.auth().verifyIdToken(idToken);
   return decoded.uid;
 }
 
@@ -66,6 +65,7 @@ async function getTowelsRef(uid) {
   return db.collection('users').doc(uid).collection('towels');
 }
 
+// タオル一覧を取得（lastExchangedAt をタオルドキュメントから直接取得）
 async function fetchTowels(uid) {
   const ref = await getTowelsRef(uid);
   const snapshot = await ref.get();
@@ -81,20 +81,21 @@ async function fetchTowels(uid) {
   });
 }
 
+// 交換記録を追加
 async function recordExchange(uid, towelId) {
   const ref = await getTowelsRef(uid);
   const batch = db.batch();
 
   const recordRef = ref.doc(towelId).collection('records').doc();
   batch.set(recordRef, {
-    exchangedAt: FieldValue.serverTimestamp(),
-    createdAt: FieldValue.serverTimestamp(),
+    exchangedAt: admin.firestore.FieldValue.serverTimestamp(),
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
     note: 'Alexa経由で記録',
   });
 
   batch.update(ref.doc(towelId), {
-    lastExchangedAt: FieldValue.serverTimestamp(),
-    updatedAt: FieldValue.serverTimestamp(),
+    lastExchangedAt: admin.firestore.FieldValue.serverTimestamp(),
+    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
   });
 
   await batch.commit();
@@ -126,6 +127,7 @@ function accountNotLinkedResponse(handlerInput) {
 
 // ── ハンドラー ────────────────────────────────────────────────────────
 
+// 起動
 const LaunchRequestHandler = {
   canHandle(input) {
     return Alexa.getRequestType(input.requestEnvelope) === 'LaunchRequest';
@@ -145,6 +147,7 @@ const LaunchRequestHandler = {
   },
 };
 
+// タオルの状態確認
 const GetTowelStatusHandler = {
   canHandle(input) {
     return (
@@ -178,6 +181,7 @@ const GetTowelStatusHandler = {
   },
 };
 
+// 交換期限確認
 const CheckExchangeDeadlineHandler = {
   canHandle(input) {
     return (
@@ -224,6 +228,7 @@ const CheckExchangeDeadlineHandler = {
   },
 };
 
+// 交換を記録（タオルが1枚の場合は自動選択、複数の場合は名前スロット使用）
 const RecordExchangeHandler = {
   canHandle(input) {
     return (
@@ -250,8 +255,10 @@ const RecordExchangeHandler = {
 
       let target;
       if (towels.length === 1) {
+        // 1枚なら自動選択
         target = towels[0];
       } else if (towelNameSlot) {
+        // 名前でマッチング（ワンショット発話: 「キッチンタオル交換した」）
         target = towels.find((t) =>
           t.name.includes(towelNameSlot) || towelNameSlot.includes(t.name)
         );
@@ -263,6 +270,7 @@ const RecordExchangeHandler = {
             .getResponse();
         }
       } else if (!isNaN(numberSlot) && attrs.pendingTowelIds) {
+        // 番号で選択（聞き返し後の返答）
         const pendingTowelIds = attrs.pendingTowelIds;
         target = towels.find(t => t.id === pendingTowelIds[numberSlot - 1]);
         if (!target) {
@@ -273,6 +281,7 @@ const RecordExchangeHandler = {
             .getResponse();
         }
       } else {
+        // 複数タオルは番号で聞き返す
         const numbered = towels.map((t, i) => `${i + 1}番、${t.name}`).join('。');
         input.attributesManager.setSessionAttributes({ pendingTowelIds: towels.map(t => t.id) });
         return input.responseBuilder
@@ -292,6 +301,7 @@ const RecordExchangeHandler = {
   },
 };
 
+// セッション終了・エラー
 const SessionEndedHandler = {
   canHandle(input) {
     return Alexa.getRequestType(input.requestEnvelope) === 'SessionEndedRequest';
@@ -312,7 +322,7 @@ const ErrorHandler = {
 };
 
 // ── エクスポート ──────────────────────────────────────────────────────
-export const handler = Alexa.SkillBuilders.custom()
+exports.handler = Alexa.SkillBuilders.custom()
   .addRequestHandlers(
     LaunchRequestHandler,
     GetTowelStatusHandler,

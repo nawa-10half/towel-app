@@ -1,21 +1,22 @@
-import { initializeApp, cert, getApps } from 'firebase-admin/app';
-import { getFirestore, FieldValue } from 'firebase-admin/firestore';
-import { getAuth } from 'firebase-admin/auth';
-import { randomUUID } from 'crypto';
+'use strict';
+
+const admin = require('firebase-admin');
+const { randomUUID } = require('crypto');
 
 // ── Firebase Admin 初期化 ────────────────────────────────────────────
+// SERVICE_ACCOUNT 環境変数に base64 エンコードされたサービスアカウント JSON を設定すること
 const serviceAccount = JSON.parse(
   Buffer.from(process.env.SERVICE_ACCOUNT_B64, 'base64').toString('utf8')
 );
 
-if (!getApps().length) {
-  initializeApp({
-    credential: cert(serviceAccount),
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
     projectId: 'kaetao-c43f1',
   });
 }
 
-const db = getFirestore();
+const db = admin.firestore();
 
 // リストアコードのフォーマット: XXXX-XXXX-XXXX
 // 文字セット: 23456789ABCDEFGHJKLMNPQRSTUVWXYZ (紛らわしい文字を除外)
@@ -28,7 +29,7 @@ const responseHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type',
 };
 
-export const handler = async (event) => {
+exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 200, headers: responseHeaders, body: '' };
   }
@@ -57,7 +58,7 @@ export const handler = async (event) => {
       uid = randomUUID();
       await codeRef.set({
         uid,
-        createdAt: FieldValue.serverTimestamp(),
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
       });
     } else {
       // 復元フローでコードが存在しない場合はエラー
@@ -68,7 +69,7 @@ export const handler = async (event) => {
       };
     }
 
-    const customToken = await getAuth().createCustomToken(uid);
+    const customToken = await admin.auth().createCustomToken(uid);
 
     return {
       statusCode: 200,

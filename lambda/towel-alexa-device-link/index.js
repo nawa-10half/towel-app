@@ -1,21 +1,21 @@
-import { initializeApp, cert, getApps } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
-import { getAuth } from 'firebase-admin/auth';
-import https from 'https';
+'use strict';
+
+const admin = require('firebase-admin');
+const https = require('https');
 
 // ── Firebase Admin 初期化 ────────────────────────────────────────────
 const serviceAccount = JSON.parse(
   Buffer.from(process.env.SERVICE_ACCOUNT_B64, 'base64').toString('utf8')
 );
 
-if (!getApps().length) {
-  initializeApp({
-    credential: cert(serviceAccount),
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
     projectId: 'kaetao-c43f1',
   });
 }
 
-const db = getFirestore();
+const db = admin.firestore();
 
 // ── Firebase カスタムトークン → リフレッシュトークン交換 ──────────────
 async function exchangeCustomTokenForRefreshToken(customToken) {
@@ -57,7 +57,7 @@ const corsHeaders = {
 };
 
 // ── Lambda ハンドラー ─────────────────────────────────────────────────
-export const handler = async (event) => {
+exports.handler = async (event) => {
   // CORS preflight
   const method = event.requestContext?.http?.method ?? event.httpMethod;
   if (method === 'OPTIONS') {
@@ -100,7 +100,7 @@ export const handler = async (event) => {
     const uid = data.uid;
     await codeRef.delete(); // ワンタイム使用
 
-    const customToken = await getAuth().createCustomToken(uid);
+    const customToken = await admin.auth().createCustomToken(uid);
     const refreshToken = await exchangeCustomTokenForRefreshToken(customToken);
 
     return {
