@@ -184,12 +184,7 @@ final class AuthService {
         FirestoreService.shared.deleteAllTowels()
         try? await FirestoreService.shared.deleteUserDocument()
 
-        // 5. リストアコードを Firestore から削除
-        if let code = restoreCode {
-            try? await db.collection("restoreCodes").document(code).delete()
-        }
-
-        // 6. Firebase Auth ユーザー削除
+        // 5. Firebase Auth ユーザー削除
         // user.delete() が auth リスナーをトリガーし SignInView が表示されるため、
         // その前に restoreCode をクリアしておく（onAppear が正しく新規フローを開始できるよう）
         deleteFromKeychain(key: Self.keychainKeyRestoreCode)
@@ -208,9 +203,17 @@ final class AuthService {
                 try await Auth.auth().currentUser?.delete()
             } catch {
                 errorMessage = "アカウント削除に失敗しました: \(error.localizedDescription)"
+                return
             }
         } catch {
             errorMessage = "アカウント削除に失敗しました: \(error.localizedDescription)"
+            return
+        }
+
+        // 6. リストアコードを Firestore から削除（user.delete() 成功後）
+        // 再認証リトライで必要なため、Auth 削除が完了するまで残しておく
+        if let code = savedRestoreCode {
+            try? await db.collection("restoreCodes").document(code).delete()
         }
     }
 
