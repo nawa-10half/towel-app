@@ -111,26 +111,32 @@ struct SettingsView: View {
 
             // リストアコード
             if let code = authService.restoreCode {
-                Button {
-                    UIPasteboard.general.string = code
-                    codeCopied = true
-                    copyHapticTrigger.toggle()
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        codeCopied = false
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("リストアコード")
+                            .foregroundStyle(.primary)
+                        Text(code)
+                            .font(.system(.caption, design: .monospaced))
+                            .foregroundStyle(.secondary)
                     }
-                } label: {
-                    HStack {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("リストアコード")
-                                .foregroundStyle(.primary)
-                            Text(code)
-                                .font(.system(.caption, design: .monospaced))
-                                .foregroundStyle(.secondary)
+                    Spacer()
+                    Button {
+                        UIPasteboard.general.string = code
+                        codeCopied = true
+                        copyHapticTrigger.toggle()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            codeCopied = false
                         }
-                        Spacer()
+                    } label: {
                         Image(systemName: codeCopied ? "checkmark" : "doc.on.doc")
                             .foregroundStyle(.tint)
                     }
+                    .buttonStyle(.borderless)
+                    ShareLink(item: restoreCodeShareText(code)) {
+                        Image(systemName: "square.and.arrow.up")
+                            .foregroundStyle(.tint)
+                    }
+                    .buttonStyle(.borderless)
                 }
             }
 
@@ -309,6 +315,10 @@ struct SettingsView: View {
         } catch {
             errorMessage = "Alexaコードの生成に失敗しました: \(error.localizedDescription)"
         }
+    }
+
+    private func restoreCodeShareText(_ code: String) -> String {
+        "【かえたお リストアコード】\n\(code)\n\n機種変更や再インストール時に必要です。大切に保管してください。"
     }
 
     private func saveDisplayName() async {

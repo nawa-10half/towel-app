@@ -110,6 +110,11 @@ struct SignInView: View {
                         .font(.callout)
                     }
 
+                    ShareLink(item: restoreCodeShareText(generatedCode)) {
+                        Label("コードを共有", systemImage: "square.and.arrow.up")
+                            .font(.callout)
+                    }
+
                     Text("機種変更や再インストール時に必要です。\n忘れるとデータを復元できません。")
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -313,6 +318,10 @@ struct SignInView: View {
         if authService.isAuthenticated {
             try? await authService.ensureUserDocument(displayName: displayNameInput)
         }
+    }
+
+    private func restoreCodeShareText(_ code: String) -> String {
+        "【かえたお リストアコード】\n\(code)\n\n機種変更や再インストール時に必要です。大切に保管してください。"
     }
 
     private func restoreSignIn() async {
