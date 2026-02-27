@@ -19,7 +19,9 @@ final class GroupService {
 
     private static let inviteCodeCharacters = Array("23456789ABCDEFGHJKLMNPQRSTUVWXYZ")
     private static let inviteCodeLength = 6
-    private static let maxMembers = 10
+    private static var maxMembers: Int {
+        ProLimits.maxGroupMembers(isPro: StoreService.shared.isPro)
+    }
     private static let maxInviteCodeRetries = 5
 
     private init() {}
@@ -418,7 +420,7 @@ enum GroupError: LocalizedError {
         case .notInGroup: return "グループに所属していません"
         case .invalidInviteCode: return "招待コードが無効です"
         case .groupNotFound: return "グループが見つかりません"
-        case .groupFull: return "グループの人数上限（10名）に達しています"
+        case .groupFull: return "グループの人数上限に達しています。Pro プランにアップグレードすると最大10名まで参加できます。"
         case .inviteCodeGenerationFailed: return "招待コードの生成に失敗しました。再度お試しください"
         }
     }

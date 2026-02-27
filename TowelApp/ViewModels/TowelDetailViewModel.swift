@@ -10,9 +10,12 @@ final class TowelDetailViewModel {
     var errorMessage: String?
     var isAssessing = false
     var dailyAssessmentCount: Int = 0
-    let maxDailyAssessments: Int = 2
-    var canAssess: Bool { dailyAssessmentCount < maxDailyAssessments }
+    var canAssess: Bool {
+        let limit = ProLimits.maxDailyAssessments(isPro: StoreService.shared.isPro)
+        return dailyAssessmentCount < limit
+    }
     var assessmentSucceeded = false
+    var showingPaywall = false
 
     init(towelId: String) {
         self.towelId = towelId
@@ -56,7 +59,9 @@ final class TowelDetailViewModel {
 
     func assessCondition(imageData: Data, image: UIImage) async {
         guard canAssess else {
-            errorMessage = "本日の状態診断は2回までです。\n明日また試してください。"
+            if !StoreService.shared.isPro {
+                showingPaywall = true
+            }
             return
         }
 

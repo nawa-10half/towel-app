@@ -8,6 +8,7 @@ struct TowelListView: View {
     @State private var towelToExchange: Towel?
     @State private var towelToDelete: Towel?
     @State private var deleteTrigger = false
+    @State private var showingPaywall = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -38,7 +39,12 @@ struct TowelListView: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {
-                    showingAddForm = true
+                    let limit = ProLimits.maxTowels(isPro: StoreService.shared.isPro)
+                    if firestoreService.towels.count >= limit {
+                        showingPaywall = true
+                    } else {
+                        showingAddForm = true
+                    }
                 } label: {
                     Image(systemName: "plus")
                 }
@@ -47,6 +53,9 @@ struct TowelListView: View {
         .searchable(text: $viewModel.searchText, prompt: "タオルを検索")
         .sheet(isPresented: $showingAddForm) {
             TowelFormView()
+        }
+        .sheet(isPresented: $showingPaywall) {
+            ProPaywallView(feature: .towelLimit)
         }
         .alert("エラー", isPresented: Binding(
             get: { viewModel.errorMessage != nil },

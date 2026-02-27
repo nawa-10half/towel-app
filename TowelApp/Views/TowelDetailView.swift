@@ -16,6 +16,8 @@ struct TowelDetailView: View {
     @State private var recordToDelete: ExchangeRecord?
     @State private var conditionCheckToDelete: ConditionCheck?
     @State private var deleteHapticTrigger = false
+    @State private var showingPaywall = false
+    @State private var paywallFeature: ProFeature = .assessment
 
     init(towelId: String) {
         self.towelId = towelId
@@ -82,6 +84,16 @@ struct TowelDetailView: View {
             Button("OK") { viewModel.errorMessage = nil }
         } message: {
             Text(viewModel.errorMessage ?? "")
+        }
+        .sheet(isPresented: $showingPaywall) {
+            ProPaywallView(feature: paywallFeature)
+        }
+        .onChange(of: viewModel.showingPaywall) { _, show in
+            if show {
+                paywallFeature = .assessment
+                showingPaywall = true
+                viewModel.showingPaywall = false
+            }
         }
         .sensoryFeedback(.warning, trigger: deleteHapticTrigger)
         .sensoryFeedback(.success, trigger: viewModel.assessmentSucceeded)
@@ -202,12 +214,15 @@ struct TowelDetailView: View {
                         .padding(.leading, 8)
                 }
             } else {
-                let remaining = max(0, viewModel.maxDailyAssessments - viewModel.dailyAssessmentCount)
-                Text("今日の診断: あと\(remaining)回")
-                    .font(.caption2)
-                    .foregroundStyle(remaining == 0 ? .red : .secondary)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                    .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 0, trailing: 16))
+                if !StoreService.shared.isPro {
+                    let limit = ProLimits.maxDailyAssessments(isPro: false)
+                    let remaining = max(0, limit - viewModel.dailyAssessmentCount)
+                    Text("今日の診断: あと\(remaining)回")
+                        .font(.caption2)
+                        .foregroundStyle(remaining == 0 ? .red : .secondary)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 0, trailing: 16))
+                }
 
                 Button {
                     checkCameraPermission()
@@ -254,7 +269,9 @@ struct TowelDetailView: View {
                 Text("診断履歴がありません")
                     .foregroundStyle(.secondary)
             } else {
-                ForEach(viewModel.sortedConditionChecks) { check in
+                let limit = ProLimits.maxVisibleConditionChecks(isPro: StoreService.shared.isPro)
+                let visibleChecks = Array(viewModel.sortedConditionChecks.prefix(limit))
+                ForEach(visibleChecks) { check in
                     NavigationLink {
                         ConditionCheckDetailView(conditionCheck: check)
                     } label: {
@@ -267,6 +284,17 @@ struct TowelDetailView: View {
                             Label("削除", systemImage: "trash")
                         }
                         .tint(.red)
+                    }
+                }
+
+                if !StoreService.shared.isPro && viewModel.sortedConditionChecks.count > limit {
+                    Button {
+                        paywallFeature = .history
+                        showingPaywall = true
+                    } label: {
+                        Label("Proですべて見る", systemImage: "lock")
+                            .font(.subheadline)
+                            .foregroundStyle(.tint)
                     }
                 }
             }
