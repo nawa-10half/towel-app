@@ -21,12 +21,20 @@ final class StoreService {
         Bundle.main.object(forInfoDictionaryKey: "ProAnnualProductID") as? String ?? ""
     }
 
+    private var lifetimeProductId: String {
+        Bundle.main.object(forInfoDictionaryKey: "ProLifetimeProductID") as? String ?? ""
+    }
+
     var monthlyProduct: Product? {
         products.first { $0.id == monthlyProductId }
     }
 
     var annualProduct: Product? {
         products.first { $0.id == annualProductId }
+    }
+
+    var lifetimeProduct: Product? {
+        products.first { $0.id == lifetimeProductId }
     }
 
     private init() {}
@@ -55,7 +63,7 @@ final class StoreService {
     // MARK: - Load Products
 
     private func loadProducts() async {
-        let ids = [monthlyProductId, annualProductId].filter { !$0.isEmpty }
+        let ids = [monthlyProductId, annualProductId, lifetimeProductId].filter { !$0.isEmpty }
         guard !ids.isEmpty else { return }
 
         do {
@@ -68,17 +76,18 @@ final class StoreService {
     // MARK: - Refresh Entitlements
 
     func refreshEntitlements() async {
-        var hasActiveSubscription = false
+        var hasPro = false
 
         for await result in Transaction.currentEntitlements {
             if case .verified(let transaction) = result {
-                if transaction.productID == monthlyProductId || transaction.productID == annualProductId {
-                    hasActiveSubscription = true
+                let id = transaction.productID
+                if id == monthlyProductId || id == annualProductId || id == lifetimeProductId {
+                    hasPro = true
                 }
             }
         }
 
-        isPro = hasActiveSubscription
+        isPro = hasPro
     }
 
     // MARK: - Purchase

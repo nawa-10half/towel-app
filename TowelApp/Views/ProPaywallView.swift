@@ -115,6 +115,9 @@ struct ProPaywallView: View {
 
     private var productsSection: some View {
         VStack(spacing: 12) {
+            if let lifetime = storeService.lifetimeProduct {
+                productCard(product: lifetime, badge: "買い切り")
+            }
             if let annual = storeService.annualProduct {
                 productCard(product: annual, badge: "お得")
             }

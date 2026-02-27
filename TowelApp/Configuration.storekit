@@ -4,7 +4,21 @@
 
   ],
   "products" : [
-
+    {
+      "displayPrice" : "500",
+      "familyShareable" : false,
+      "internalID" : "C3D4E5F6-A7B8-9012-CDEF-345678901234",
+      "localizations" : [
+        {
+          "description" : "一度の購入でかえたおの全機能が永久に使い放題",
+          "displayName" : "Pro 買い切り",
+          "locale" : "ja"
+        }
+      ],
+      "productID" : "com.kaetao-app.TowelApp.pro.lifetime",
+      "referenceName" : "Pro Lifetime",
+      "type" : "NonConsumable"
+    }
   ],
   "settings" : {
     "_applicationInternalID" : "6741924543",
@@ -79,7 +93,7 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "480",
+          "displayPrice" : "100",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "A1B2C3D4-E5F6-7890-ABCD-EF1234567890",
@@ -105,7 +119,7 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "3800",
+          "displayPrice" : "1000",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "B2C3D4E5-F6A7-8901-BCDE-F23456789012",
