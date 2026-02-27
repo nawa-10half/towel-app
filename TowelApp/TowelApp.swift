@@ -34,6 +34,7 @@ struct TowelApp: App {
                 ContentView()
                     .task {
                         _ = await NotificationService.shared.requestPermission()
+                        StoreService.shared.startObserving()
                     }
             } else {
                 SignInView()

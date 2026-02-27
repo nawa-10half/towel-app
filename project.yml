@@ -48,6 +48,8 @@ targets:
         NSCameraUsageDescription: タオルの状態を診断するために写真を撮影します
         ConditionCheckAPIURL: $(CONDITION_CHECK_API_URL)
         RestoreCodeAuthURL: $(RESTORE_CODE_AUTH_URL)
+        ProMonthlyProductID: $(PRO_MONTHLY_PRODUCT_ID)
+        ProAnnualProductID: $(PRO_ANNUAL_PRODUCT_ID)
         UIRequiresFullScreen: true
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
@@ -71,6 +73,8 @@ targets:
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         CONDITION_CHECK_API_URL: https://REDACTED.execute-api.ap-northeast-1.amazonaws.com/prod/assess-nova
         RESTORE_CODE_AUTH_URL: https://REDACTED.execute-api.ap-northeast-1.amazonaws.com/prod/restore-auth
+        PRO_MONTHLY_PRODUCT_ID: com.kaetao-app.TowelApp.pro.monthly
+        PRO_ANNUAL_PRODUCT_ID: com.kaetao-app.TowelApp.pro.annual
 
   TowelAppTests:
     type: bundle.unit-test
