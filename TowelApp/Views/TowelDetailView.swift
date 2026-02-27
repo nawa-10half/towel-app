@@ -260,25 +260,24 @@ struct TowelDetailView: View {
                     } label: {
                         ConditionCheckRowView(conditionCheck: check)
                     }
-                    .swipeActions(edge: .trailing) {
-                        Button(role: .destructive) {
-                            conditionCheckToDelete = check
-                        } label: {
-                            Label("削除", systemImage: "trash")
-                        }
+                }
+                .onDelete { indexSet in
+                    if let index = indexSet.first {
+                        conditionCheckToDelete = viewModel.sortedConditionChecks[index]
                     }
                 }
             }
         } header: {
             Text("診断履歴")
         }
-        .alert("診断記録を削除しますか？", isPresented: Binding(
-            get: { conditionCheckToDelete != nil },
-            set: { if !$0 { conditionCheckToDelete = nil } }
-        )) {
-            Button("キャンセル", role: .cancel) {
-                conditionCheckToDelete = nil
-            }
+        .confirmationDialog(
+            "診断記録を削除しますか？",
+            isPresented: Binding(
+                get: { conditionCheckToDelete != nil },
+                set: { if !$0 { conditionCheckToDelete = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
             Button("削除", role: .destructive) {
                 if let check = conditionCheckToDelete {
                     viewModel.deleteConditionCheck(check)
@@ -305,25 +304,24 @@ struct TowelDetailView: View {
                                 .foregroundStyle(.secondary)
                         }
                     }
-                    .swipeActions(edge: .trailing) {
-                        Button(role: .destructive) {
-                            recordToDelete = record
-                        } label: {
-                            Label("削除", systemImage: "trash")
-                        }
+                }
+                .onDelete { indexSet in
+                    if let index = indexSet.first {
+                        recordToDelete = viewModel.sortedRecords[index]
                     }
                 }
             }
         } header: {
             Text("交換履歴")
         }
-        .alert("交換記録を削除しますか？", isPresented: Binding(
-            get: { recordToDelete != nil },
-            set: { if !$0 { recordToDelete = nil } }
-        )) {
-            Button("キャンセル", role: .cancel) {
-                recordToDelete = nil
-            }
+        .confirmationDialog(
+            "交換記録を削除しますか？",
+            isPresented: Binding(
+                get: { recordToDelete != nil },
+                set: { if !$0 { recordToDelete = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
             Button("削除", role: .destructive) {
                 if let record = recordToDelete {
                     viewModel.deleteRecord(record)
