@@ -1,7 +1,7 @@
 {
   "name": "towel-alexa-device-link",
   "version": "1.0.0",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
     "firebase-admin": "^12.0.0"
   }
