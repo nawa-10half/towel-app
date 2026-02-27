@@ -31,7 +31,7 @@ final class AdService: NSObject {
         return f.string(from: Date())
     }
 
-    private func resetIfNewDay() {
+    func resetIfNewDay() {
         let today = todayDateKey
         if lastResetDate != today {
             bonusAssessmentCount = 0

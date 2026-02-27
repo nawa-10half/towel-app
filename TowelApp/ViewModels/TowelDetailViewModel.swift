@@ -77,6 +77,7 @@ final class TowelDetailViewModel {
     }
 
     func loadDailyAssessmentCount() async {
+        AdService.shared.resetIfNewDay()
         dailyAssessmentCount = (try? await FirestoreService.shared.getDailyAssessmentCount()) ?? 0
     }
 
