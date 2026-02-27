@@ -1,5 +1,6 @@
 import SwiftUI
 import FirebaseCore
+import GoogleMobileAds
 
 @main
 struct TowelApp: App {
@@ -9,6 +10,7 @@ struct TowelApp: App {
 
     init() {
         FirebaseApp.configure()
+        MobileAds.shared.start(completionHandler: nil)
         _authService = State(initialValue: AuthService.shared)
         UserDefaults.standard.register(defaults: [
             "notificationsEnabled": true,
@@ -35,6 +37,7 @@ struct TowelApp: App {
                     .task {
                         _ = await NotificationService.shared.requestPermission()
                         StoreService.shared.startObserving()
+                        AdService.shared.loadRewardedAd()
                     }
             } else {
                 SignInView()

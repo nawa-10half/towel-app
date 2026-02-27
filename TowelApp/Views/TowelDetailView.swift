@@ -215,8 +215,9 @@ struct TowelDetailView: View {
                 }
             } else {
                 if !StoreService.shared.isPro {
-                    let limit = ProLimits.maxDailyAssessments(isPro: false)
-                    let remaining = max(0, limit - viewModel.dailyAssessmentCount)
+                    let baseLimit = ProLimits.maxDailyAssessments(isPro: false)
+                    let total = baseLimit + AdService.shared.bonusAssessmentCount
+                    let remaining = max(0, total - viewModel.dailyAssessmentCount)
                     Text("今日の診断: あと\(remaining)回")
                         .font(.caption2)
                         .foregroundStyle(remaining == 0 ? .red : .secondary)
@@ -249,6 +250,33 @@ struct TowelDetailView: View {
                 .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 8, trailing: 16))
                 .disabled(!viewModel.canAssess)
                 .opacity(viewModel.canAssess ? 1 : 0.5)
+
+                if viewModel.showAdButton {
+                    Button {
+                        AdService.shared.showRewardedAd()
+                    } label: {
+                        Label("広告を見て診断する", systemImage: "play.rectangle")
+                            .font(.subheadline)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 4)
+                    }
+                    .tint(.orange)
+                    .buttonStyle(.bordered)
+                    .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
+                } else if !viewModel.canAssess && !StoreService.shared.isPro {
+                    Button {
+                        paywallFeature = .assessment
+                        showingPaywall = true
+                    } label: {
+                        Label("Proプランで無制限に", systemImage: "star")
+                            .font(.subheadline)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 4)
+                    }
+                    .tint(.tint)
+                    .buttonStyle(.bordered)
+                    .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
+                }
             }
 
             if let latest = towel.latestConditionCheck {

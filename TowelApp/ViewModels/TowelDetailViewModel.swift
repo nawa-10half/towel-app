@@ -11,8 +11,13 @@ final class TowelDetailViewModel {
     var isAssessing = false
     var dailyAssessmentCount: Int = 0
     var canAssess: Bool {
-        let limit = ProLimits.maxDailyAssessments(isPro: StoreService.shared.isPro)
-        return dailyAssessmentCount < limit
+        let isPro = StoreService.shared.isPro
+        let baseLimit = ProLimits.maxDailyAssessments(isPro: isPro)
+        let bonus = isPro ? 0 : AdService.shared.bonusAssessmentCount
+        return dailyAssessmentCount < baseLimit + bonus
+    }
+    var showAdButton: Bool {
+        !canAssess && !StoreService.shared.isPro && AdService.shared.isRewardedAdReady
     }
     var assessmentSucceeded = false
     var showingPaywall = false
