@@ -118,9 +118,6 @@ struct ProPaywallView: View {
             if let lifetime = storeService.lifetimeProduct {
                 productCard(product: lifetime, badge: "買い切り")
             }
-            if let annual = storeService.annualProduct {
-                productCard(product: annual, badge: "お得")
-            }
             if let monthly = storeService.monthlyProduct {
                 productCard(product: monthly, badge: nil)
             }

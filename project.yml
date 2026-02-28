@@ -48,13 +48,12 @@ targets:
       path: TowelApp/Info.plist
       properties:
         CFBundleDisplayName: かえたお
-        CFBundleShortVersionString: "1.1"
+        CFBundleShortVersionString: "1.2.0"
         CFBundleVersion: "1"
         NSCameraUsageDescription: タオルの状態を診断するために写真を撮影します
         ConditionCheckAPIURL: $(CONDITION_CHECK_API_URL)
         RestoreCodeAuthURL: $(RESTORE_CODE_AUTH_URL)
         ProMonthlyProductID: $(PRO_MONTHLY_PRODUCT_ID)
-        ProAnnualProductID: $(PRO_ANNUAL_PRODUCT_ID)
         ProLifetimeProductID: $(PRO_LIFETIME_PRODUCT_ID)
         GADApplicationIdentifier: $(ADMOB_APP_ID)
         AdMobRewardedAdUnitID: $(ADMOB_REWARDED_AD_UNIT_ID)
@@ -84,7 +83,6 @@ targets:
         CONDITION_CHECK_API_URL: https://REDACTED.execute-api.ap-northeast-1.amazonaws.com/prod/assess-nova
         RESTORE_CODE_AUTH_URL: https://REDACTED.execute-api.ap-northeast-1.amazonaws.com/prod/restore-auth
         PRO_MONTHLY_PRODUCT_ID: com.kaetao_app.TowelApp.pro.monthly
-        PRO_ANNUAL_PRODUCT_ID: com.kaetao_app.TowelApp.pro.annual
         PRO_LIFETIME_PRODUCT_ID: com.kaetao_app.TowelApp.pro.lifetime
         ADMOB_APP_ID: ca-app-pub-4773362073066777~5141753527
         ADMOB_REWARDED_AD_UNIT_ID: ca-app-pub-4773362073066777/2097767727
@@ -99,6 +97,22 @@ targets:
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
+
+schemes:
+  TowelApp:
+    build:
+      targets:
+        TowelApp: all
+        TowelAppTests: [test]
+    run:
+      config: Debug
+      storeKitConfiguration: TowelApp/Configuration.storekit
+    test:
+      config: Debug
+      targets:
+        - TowelAppTests
+    archive:
+      config: Release
 
   # Widget temporarily disabled — depends on SwiftData which has been removed.
   # Will be re-implemented using App Groups cache approach.

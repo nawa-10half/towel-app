@@ -97,11 +97,12 @@ struct TowelListView: View {
                     .tint(.blue)
                 }
                 .swipeActions(edge: .trailing) {
-                    Button(role: .destructive) {
+                    Button {
                         towelToDelete = towel
                     } label: {
                         Label("削除", systemImage: "trash")
                     }
+                    .tint(.red)
                 }
             }
         }

@@ -56,6 +56,9 @@ struct SettingsView: View {
         .sheet(isPresented: $showingJoinSheet) {
             JoinGroupView()
         }
+        .sheet(isPresented: $showingPaywall) {
+            ProPaywallView(feature: .assessment)
+        }
         .alert("通知が許可されていません", isPresented: $notificationPermissionDenied) {
             Button("設定を開く") {
                 if let url = URL(string: UIApplication.openSettingsURLString) {
@@ -278,9 +281,6 @@ struct SettingsView: View {
             }
         } header: {
             Text("サブスクリプション")
-        }
-        .sheet(isPresented: $showingPaywall) {
-            ProPaywallView(feature: .assessment)
         }
     }
 

@@ -111,32 +111,6 @@
           "referenceName" : "Pro Monthly",
           "subscriptionGroupID" : "kaetao_pro",
           "type" : "RecurringSubscription"
-        },
-        {
-          "adHocOffers" : [
-
-          ],
-          "codeOffers" : [
-
-          ],
-          "displayPrice" : "1000",
-          "familyShareable" : false,
-          "groupNumber" : 1,
-          "internalID" : "B2C3D4E5-F6A7-8901-BCDE-F23456789012",
-          "introductoryOffer" : null,
-          "localizations" : [
-            {
-              "description" : "かえたおの全機能が年額でお得に使い放題",
-              "displayName" : "Pro 年額プラン",
-              "locale" : "ja"
-            }
-          ],
-          "name" : "Pro Annual",
-          "productID" : "com.kaetao_app.TowelApp.pro.annual",
-          "recurringSubscriptionPeriod" : "P1Y",
-          "referenceName" : "Pro Annual",
-          "subscriptionGroupID" : "kaetao_pro",
-          "type" : "RecurringSubscription"
         }
       ]
     }
