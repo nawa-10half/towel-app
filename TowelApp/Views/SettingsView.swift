@@ -341,7 +341,11 @@ struct SettingsView: View {
                 Task { await authService.deleteAccount() }
             }
         } message: {
-            Text("この操作は取り消せません。すべてのデータが削除されます。")
+            if StoreService.shared.isPro {
+                Text("この操作は取り消せません。すべてのデータが削除されます。\n\nサブスクリプションをご利用の場合、アカウント削除後もApple IDへの課金は継続されます。設定アプリ → サブスクリプションから解約してください。")
+            } else {
+                Text("この操作は取り消せません。すべてのデータが削除されます。")
+            }
         }
     }
 

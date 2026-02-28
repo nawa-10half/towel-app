@@ -11,7 +11,7 @@ final class AdService: NSObject {
     var bonusAssessmentCount = 0
 
     private var rewardedAd: RewardedAd?
-    private var lastResetDate: String = ""
+    private var lastResetPeriod: String = ""
 
     private var adUnitId: String {
         Bundle.main.object(forInfoDictionaryKey: "AdMobRewardedAdUnitID") as? String ?? ""
@@ -21,21 +21,19 @@ final class AdService: NSObject {
         super.init()
     }
 
-    // MARK: - Daily Reset
+    // MARK: - Period Reset (3日ごと)
 
-    private var todayDateKey: String {
-        let f = DateFormatter()
-        f.dateFormat = "yyyy-MM-dd"
-        f.locale = Locale(identifier: "ja_JP")
-        f.timeZone = .current
-        return f.string(from: Date())
+    private var currentPeriodKey: String {
+        let reference = Calendar.current.date(from: DateComponents(year: 2026, month: 1, day: 1))!
+        let days = Calendar.current.dateComponents([.day], from: reference, to: Date()).day ?? 0
+        return "period-\(days / 3)"
     }
 
     func resetIfNewDay() {
-        let today = todayDateKey
-        if lastResetDate != today {
+        let period = currentPeriodKey
+        if lastResetPeriod != period {
             bonusAssessmentCount = 0
-            lastResetDate = today
+            lastResetPeriod = period
         }
     }
 

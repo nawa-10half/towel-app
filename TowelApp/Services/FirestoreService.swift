@@ -391,12 +391,11 @@ final class FirestoreService {
 
     // MARK: - Daily Assessment Limit
 
-    private var todayDateKey: String {
-        let f = DateFormatter()
-        f.dateFormat = "yyyy-MM-dd"
-        f.locale = Locale(identifier: "ja_JP")
-        f.timeZone = TimeZone.current
-        return f.string(from: Date())
+    // 3日ごとにリセットされる周期キー（2026-01-01 を基準に 3 日単位で区切る）
+    private var currentPeriodKey: String {
+        let reference = Calendar.current.date(from: DateComponents(year: 2026, month: 1, day: 1))!
+        let days = Calendar.current.dateComponents([.day], from: reference, to: Date()).day ?? 0
+        return "period-\(days / 3)"
     }
 
     func getDailyAssessmentCount() async throws -> Int {
@@ -404,7 +403,7 @@ final class FirestoreService {
             throw FirestoreError.notAuthenticated
         }
         let docRef = db.collection("users").document(userId)
-            .collection("dailyAssessments").document(todayDateKey)
+            .collection("dailyAssessments").document(currentPeriodKey)
         let snapshot = try await docRef.getDocument()
         return snapshot.data()?["count"] as? Int ?? 0
     }
@@ -414,7 +413,7 @@ final class FirestoreService {
             throw FirestoreError.notAuthenticated
         }
         let docRef = db.collection("users").document(userId)
-            .collection("dailyAssessments").document(todayDateKey)
+            .collection("dailyAssessments").document(currentPeriodKey)
         try await docRef.setData(["count": FieldValue.increment(Int64(1))], merge: true)
     }
 }

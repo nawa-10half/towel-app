@@ -218,7 +218,7 @@ struct TowelDetailView: View {
                     let baseLimit = ProLimits.maxDailyAssessments(isPro: false)
                     let total = baseLimit + AdService.shared.bonusAssessmentCount
                     let remaining = max(0, total - viewModel.dailyAssessmentCount)
-                    Text("今日の診断: あと\(remaining)回")
+                    Text("3日間の診断: あと\(remaining)回")
                         .font(.caption2)
                         .foregroundStyle(remaining == 0 ? .red : .secondary)
                         .frame(maxWidth: .infinity, alignment: .trailing)
