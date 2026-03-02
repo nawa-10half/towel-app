@@ -1,6 +1,7 @@
 import SwiftUI
 import FirebaseCore
 import GoogleMobileAds
+import AppTrackingTransparency
 
 @main
 struct TowelApp: App {
@@ -10,7 +11,6 @@ struct TowelApp: App {
 
     init() {
         FirebaseApp.configure()
-        MobileAds.shared.start()
         _authService = State(initialValue: AuthService.shared)
         UserDefaults.standard.register(defaults: [
             "notificationsEnabled": true,
@@ -35,6 +35,7 @@ struct TowelApp: App {
             } else if authService.isAuthenticated {
                 ContentView()
                     .task {
+                        await requestTrackingAndStartAdMob()
                         _ = await NotificationService.shared.requestPermission()
                         StoreService.shared.startObserving()
                         AdService.shared.loadRewardedAd()
@@ -43,6 +44,14 @@ struct TowelApp: App {
                 SignInView()
             }
         }
+    }
+
+    @MainActor
+    private func requestTrackingAndStartAdMob() async {
+        if #available(iOS 14, *) {
+            _ = await ATTrackingManager.requestTrackingAuthorization()
+        }
+        MobileAds.shared.start()
     }
 }
 

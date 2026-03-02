@@ -35,6 +35,8 @@
 	<string>$(CONDITION_CHECK_API_URL)</string>
 	<key>GADApplicationIdentifier</key>
 	<string>$(ADMOB_APP_ID)</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>広告をパーソナライズするために使用します。許可しない場合でも広告は表示されますが、あなたの関心に合わない広告が表示される場合があります。</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>NSCameraUsageDescription</key>
