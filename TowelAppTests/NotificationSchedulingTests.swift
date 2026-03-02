@@ -62,13 +62,13 @@ final class NotificationSchedulingTests: XCTestCase {
 
     func testOverdueTowel_getsNextNotificationTime() {
         // 3日前に交換、交換間隔1日 → 2日前が期限 → overdue
-        let now = date(2026, 2, 26, hour: 10, minute: 0)
-        let threeDaysAgo = Calendar.current.date(byAdding: .day, value: -3, to: now)!
+        let threeDaysAgo = Calendar.current.date(byAdding: .day, value: -3, to: .now)!
         let towel = makeTowel(lastExchangedAt: threeDaysAgo, intervalDays: 1)
 
         XCTAssertEqual(towel.status, .overdue)
 
-        // overdue なので次の通知時刻が返るはず
+        // overdue なので次の通知時刻が返るはず (通知ロジックは固定日時でテスト)
+        let now = date(2026, 2, 26, hour: 10, minute: 0)
         let result = NotificationService.nextNotificationDateComponents(hour: 8, minute: 0, now: now)
         // 10:00 に設定時刻 08:00 は過ぎている → 明日
         XCTAssertEqual(result.day, 27)
@@ -76,16 +76,14 @@ final class NotificationSchedulingTests: XCTestCase {
 
     func testFutureTowel_isNotOverdue() {
         // 今日交換、交換間隔7日 → 7日後が期限 → ok
-        let now = date(2026, 2, 26, hour: 10, minute: 0)
-        let towel = makeTowel(lastExchangedAt: now, intervalDays: 7)
+        let towel = makeTowel(lastExchangedAt: .now, intervalDays: 7)
 
         XCTAssertEqual(towel.status, .ok)
     }
 
     func testSoonTowel_isSoon() {
-        // 昨日交換、交換間隔1日 → 今日が期限 → soon
-        let now = date(2026, 2, 26, hour: 10, minute: 0)
-        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: now)!
+        // 昨日交換、交換間隔2日 → 明日が期限 → soon (remaining=1, <=1)
+        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: .now)!
         let towel = makeTowel(lastExchangedAt: yesterday, intervalDays: 2)
 
         XCTAssertEqual(towel.status, .soon)

@@ -51,7 +51,7 @@ struct TowelApp: App {
         if #available(iOS 14, *) {
             _ = await ATTrackingManager.requestTrackingAuthorization()
         }
-        MobileAds.shared.start()
+        await MobileAds.shared.start()
     }
 }
 

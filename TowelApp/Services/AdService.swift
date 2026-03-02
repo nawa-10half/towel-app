@@ -24,9 +24,7 @@ final class AdService: NSObject {
     // MARK: - Period Reset (3日ごと)
 
     private var currentPeriodKey: String {
-        let reference = Calendar.current.date(from: DateComponents(year: 2026, month: 1, day: 1))!
-        let days = Calendar.current.dateComponents([.day], from: reference, to: Date()).day ?? 0
-        return "period-\(days / 3)"
+        PeriodKey.current()
     }
 
     func resetIfNewDay() {

@@ -393,9 +393,7 @@ final class FirestoreService {
 
     // 3日ごとにリセットされる周期キー（2026-01-01 を基準に 3 日単位で区切る）
     private var currentPeriodKey: String {
-        let reference = Calendar.current.date(from: DateComponents(year: 2026, month: 1, day: 1))!
-        let days = Calendar.current.dateComponents([.day], from: reference, to: Date()).day ?? 0
-        return "period-\(days / 3)"
+        PeriodKey.current()
     }
 
     func getDailyAssessmentCount() async throws -> Int {
