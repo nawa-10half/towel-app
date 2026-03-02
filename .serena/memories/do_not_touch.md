@@ -37,9 +37,16 @@
 - **対応**: どちらかを変更する場合、もう一方への影響を必ず確認
 
 ### `AuthService` (認証フロー)
-- Apple/Google Sign-In + アカウント削除
+- リストアコード方式認証 + アカウント削除
 - `deleteAccount()` は GroupService.handleAccountDeletion → FirestoreService.deleteAllTowels/deleteUserDocument → StorageService.deleteAllUserPhotos を連鎖呼出
+- `deleteAccount()` は `requiresRecentLogin` エラー時に `reauthenticateWithRestoreCode()` で Lambda 再認証 → リトライする
+- `signOut()` は UserDefaults `wasSignedOut` フラグをセット（自動サインイン抑制）
 - **対応**: 削除フローの変更は全Serviceの連携を確認
+
+### `TowelDetailViewModel.assessCondition()` (非同期処理の最密集点)
+- `ConditionCheckService`（Lambda）→ `FirestoreService`（保存）→ `StorageService`（写真 Upload）を直列実行
+- 途中失敗時のロールバック処理が複雑。エラーハンドリングの追加・変更は全ステップを確認
+- **対応**: 変更前に `TowelDetailViewModel.swift` の `assessCondition` メソッド全体を読む
 
 ### `TowelDetailView` (最も機能が集中するView)
 - 交換記録の作成、AI状態診断（カメラ+API）、履歴表示、削除
@@ -48,7 +55,6 @@
 ### `TowelStatus` enum (`Towel.swift` 内)
 - case の追加/削除は `TowelRowView`, `TowelListViewModel` の switch 文に影響
 
-## グループUI遷移の既知バグ
-- 「Attempt to present while a presentation is in progress」
-- グループ作成/参加/退出時の `@Observable` 状態変更が alert/sheet と競合
-- 根本対策未実施 (NavigationDestination ベースへの移行を検討中)
+## グループUI遷移の presentation 競合（解決済み 2026-02-25）
+- 全操作（作成/参加/退出/コード再生成）で「Attempt to present」警告なし — 実機テスト確認済み
+- Bug 1〜3 修正で自然解消

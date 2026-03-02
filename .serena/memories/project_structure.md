@@ -6,7 +6,7 @@ towel-app/
 ├── project.yml                    # XcodeGen project definition
 ├── .gitignore                     # Git ignore rules (*.xcodeproj, node_modules, AuthKey_*.p8)
 ├── TowelApp/
-│   ├── TowelApp.swift             # @main entry point, Firebase初期化, 認証ルーティング
+│   ├── TowelApp.swift             # @main entry point, Firebase初期化, 認証ルーティング, SplashView
 │   ├── Info.plist                 # App info (ConditionCheckAPIURL含む)
 │   ├── GoogleService-Info.plist   # Firebase iOS設定
 │   ├── TowelApp.entitlements      # Entitlements (保持、未リンク)
@@ -19,7 +19,7 @@ towel-app/
 │   │   ├── TowelListViewModel.swift   # List filtering, sorting, deletion
 │   │   └── TowelDetailViewModel.swift # Detail/exchange/condition assessment
 │   ├── Views/
-│   │   ├── SignInView.swift           # Apple/Google サインイン
+│   │   ├── SignInView.swift           # リストアコード認証（Bundle.icon でアプリアイコン表示）
 │   │   ├── ContentView.swift          # TabView root (タオルリスト + 設定)
 │   │   ├── TowelListView.swift        # メイン一覧
 │   │   ├── TowelRowView.swift         # 個別行
@@ -33,7 +33,7 @@ towel-app/
 │   │   ├── JoinGroupView.swift        # 6文字招待コード入力
 │   │   └── AppleReauthView.swift      # Apple再認証 (アカウント削除用)
 │   ├── Services/
-│   │   ├── AuthService.swift          # @Observable singleton, Apple/Google Sign-In
+│   │   ├── AuthService.swift          # @Observable singleton, リストアコード認証, requiresRecentLogin再認証
 │   │   ├── FirestoreService.swift     # @Observable singleton, リアルタイムリスナー, CRUD
 │   │   ├── StorageService.swift       # @MainActor singleton, 写真アップロード/削除
 │   │   ├── GroupService.swift         # @Observable @MainActor singleton, グループCRUD/招待コード

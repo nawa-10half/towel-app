@@ -211,8 +211,9 @@ final class GroupService {
             // Owner が退出する場合、他のメンバーに owner を委譲
             let myMember = members.first { $0.id == userId }
             if myMember?.role == "owner" {
-                if let nextOwner = members.first(where: { $0.id != userId }) {
-                    try await groupRef.collection("members").document(nextOwner.id!).updateData([
+                if let nextOwner = members.first(where: { $0.id != userId }),
+                   let nextOwnerId = nextOwner.id {
+                    try await groupRef.collection("members").document(nextOwnerId).updateData([
                         "role": "owner"
                     ])
                 }
