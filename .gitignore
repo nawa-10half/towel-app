@@ -46,6 +46,10 @@ xcuserdata/
 # Apple private keys
 AuthKey_*.p8
 
+# Firebase credentials
+GoogleService-Info.plist
+google-services.json
+
 # Environment variables
 .env
 .env.*
