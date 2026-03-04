@@ -39,8 +39,6 @@
 	<false/>
 	<key>NSCameraUsageDescription</key>
 	<string>タオルの状態を診断するために写真を撮影します</string>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>あなたに最適な広告を表示するために使用します</string>
 	<key>ProLifetimeProductID</key>
 	<string>$(PRO_LIFETIME_PRODUCT_ID)</string>
 	<key>ProMonthlyProductID</key>
