@@ -139,6 +139,11 @@ Storage path: `users/{userId}/towels/{towelId}/conditions/{checkId}.jpg`
 - **iOS Widget**: SwiftData依存のため一時無効化（project.ymlでコメントアウト）。App Groupsキャッシュ方式で再実装予定
 - **Siri / App Intents**: SwiftData依存のため一時ビルド除外（project.ymlのexcludes）。Firebase対応で再実装予定
 
+## XcodeGen 注意事項
+
+- `CFBundleVersion` と `NSUserTrackingUsageDescription` は必ず `project.yml` の `info.properties` に記載すること。省略すると `xcodegen generate` 時に Info.plist から消える or デフォルト値で上書きされる
+- **ビルド番号を上げる際は `project.yml` の `CFBundleVersion` も更新すること**（Info.plist だけ変更しても xcodegen で戻る）
+
 ## AWS / Lambda
 
 - **状態診断API**: `towel-condition-assess-nova` (Node.js 22.x, Claude Haiku 4.5)
