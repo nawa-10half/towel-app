@@ -103,6 +103,9 @@ struct TowelDetailView: View {
         }
         .onAppear {
             viewModel.startListening()
+            if !AdService.shared.isRewardedAdReady {
+                AdService.shared.loadRewardedAd()
+            }
         }
         .onDisappear {
             viewModel.stopListening()
