@@ -30,7 +30,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>3</string>
+	<string>4</string>
 	<key>ConditionCheckAPIURL</key>
 	<string>$(CONDITION_CHECK_API_URL)</string>
 	<key>GADApplicationIdentifier</key>

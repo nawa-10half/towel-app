@@ -48,6 +48,7 @@ struct ProPaywallView: View {
                     featuresSection
                     productsSection
                     restoreButton
+                    legalLinks
                 }
                 .padding()
             }
@@ -155,8 +156,15 @@ struct ProPaywallView: View {
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
-                Text(product.displayPrice)
-                    .fontWeight(.bold)
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text(product.displayPrice)
+                        .fontWeight(.bold)
+                    if let period = product.subscription?.subscriptionPeriod {
+                        Text(period.displayUnit)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+                }
             }
             .padding()
             .background(.fill.quaternary)
@@ -173,6 +181,27 @@ struct ProPaywallView: View {
         }
         .font(.caption)
         .foregroundStyle(.secondary)
+    }
+
+    private var legalLinks: some View {
+        HStack(spacing: 16) {
+            Link("プライバシーポリシー", destination: URL(string: "https://kaetao-c43f1.web.app/privacy-policy")!)
+            Link("利用規約", destination: URL(string: "https://kaetao-c43f1.web.app/terms-of-use")!)
+        }
+        .font(.caption2)
+        .foregroundStyle(.secondary)
+    }
+}
+
+private extension Product.SubscriptionPeriod {
+    var displayUnit: String {
+        switch unit {
+        case .day: return value == 7 ? "/ 週" : "/ \(value)日"
+        case .week: return "/ 週"
+        case .month: return value == 1 ? "/ 月" : "/ \(value)ヶ月"
+        case .year: return value == 1 ? "/ 年" : "/ \(value)年"
+        @unknown default: return ""
+        }
     }
 }
 

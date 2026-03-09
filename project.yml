@@ -49,7 +49,7 @@ targets:
       properties:
         CFBundleDisplayName: かえたお
         CFBundleShortVersionString: "1.2.0"
-        CFBundleVersion: "3"
+        CFBundleVersion: "4"
         NSCameraUsageDescription: タオルの状態を診断するために写真を撮影します
         NSUserTrackingUsageDescription: あなたに最適な広告を表示するために使用します
         ConditionCheckAPIURL: $(CONDITION_CHECK_API_URL)
