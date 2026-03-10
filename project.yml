@@ -48,8 +48,8 @@ targets:
       path: TowelApp/Info.plist
       properties:
         CFBundleDisplayName: かえたお
-        CFBundleShortVersionString: "1.2.0"
-        CFBundleVersion: "4"
+        CFBundleShortVersionString: "1.2.1"
+        CFBundleVersion: "1"
         NSCameraUsageDescription: タオルの状態を診断するために写真を撮影します
         NSUserTrackingUsageDescription: あなたに最適な広告を表示するために使用します
         ConditionCheckAPIURL: $(CONDITION_CHECK_API_URL)
@@ -83,8 +83,8 @@ targets:
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         CONDITION_CHECK_API_URL: https://REDACTED.execute-api.ap-northeast-1.amazonaws.com/prod/assess-nova
         RESTORE_CODE_AUTH_URL: https://REDACTED.execute-api.ap-northeast-1.amazonaws.com/prod/restore-auth
-        PRO_MONTHLY_PRODUCT_ID: com.kaetao_app.TowelApp.pro.monthly
-        PRO_LIFETIME_PRODUCT_ID: com.kaetao_app.TowelApp.pro.lifetime
+        PRO_MONTHLY_PRODUCT_ID: com.kaetao_app.TowelApp.pro.monthly2
+        PRO_LIFETIME_PRODUCT_ID: com.kaetao_app.TowelApp.pro.lifetime2
         ADMOB_APP_ID: ca-app-pub-4773362073066777~5141753527
         ADMOB_REWARDED_AD_UNIT_ID: ca-app-pub-4773362073066777/2097767727
 
