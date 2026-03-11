@@ -308,6 +308,14 @@ struct SettingsView: View {
                         .foregroundStyle(.secondary)
                 }
             }
+            Link(destination: URL(string: "https://kaetao-c43f1.web.app/support")!) {
+                HStack {
+                    Text("よくある質問")
+                    Spacer()
+                    Image(systemName: "arrow.up.right.square")
+                        .foregroundStyle(.secondary)
+                }
+            }
         } header: {
             Text("アプリ情報")
         }

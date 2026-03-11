@@ -15,7 +15,7 @@
           "locale" : "ja"
         }
       ],
-      "productID" : "com.kaetao_app.TowelApp.pro.lifetime2",
+      "productID" : "com.kaetao_app.TowelApp.pro.lifetime",
       "referenceName" : "Pro Lifetime",
       "type" : "NonConsumable"
     }
@@ -106,7 +106,7 @@
             }
           ],
           "name" : "Pro Monthly",
-          "productID" : "com.kaetao_app.TowelApp.pro.monthly2",
+          "productID" : "com.kaetao_app.TowelApp.pro.monthly",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Pro Monthly",
           "subscriptionGroupID" : "kaetao_pro",
