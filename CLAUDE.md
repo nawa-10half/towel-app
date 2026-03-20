@@ -147,8 +147,7 @@ Storage path: `users/{userId}/towels/{towelId}/conditions/{checkId}.jpg`
 ## AWS / Lambda
 
 - **状態診断API**: `towel-condition-assess-nova` (Node.js 22.x, Claude Haiku 4.5)
-- **API URL**: `https://REDACTED.execute-api.ap-northeast-1.amazonaws.com/prod/assess-nova`
-- **API Gateway**: ID `REDACTED`, ステージ: `prod`
+- **API URL**: `Secrets.xcconfig` の `CONDITION_CHECK_API_URL` で設定（git管理外）
 - Info.plist の `ConditionCheckAPIURL` にビルド設定経由で注入
 - **Alexa Skill Lambda**: `lambda/alexa-skill/` (Node.js, ask-sdk-core + firebase-admin)
 - **Alexa Skill ID**: `amzn1.ask.skill.e2a7d5de-b980-401c-a173-09c8c1c441b1`

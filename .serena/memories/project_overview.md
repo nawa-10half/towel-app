@@ -26,7 +26,7 @@
 ## AWS / Lambda
 - **AWS Account**: `606220590854` (ap-northeast-1)
 - **状態診断API**: `towel-condition-assess-nova` (Node.js 22.x, Claude Haiku 4.5)
-- **API Gateway**: `REDACTED` → `https://REDACTED.execute-api.ap-northeast-1.amazonaws.com/prod/assess-nova`
+- **API Gateway**: `Secrets.xcconfig` で設定（git管理外）
 - **Alexa Skill Lambda**: `lambda/alexa-skill/` (Node.js, ask-sdk-core + firebase-admin)
 
 ## Firebase CLI

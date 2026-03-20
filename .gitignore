@@ -54,6 +54,9 @@ google-services.json
 .env
 .env.*
 
+# Secrets (API URLs etc.)
+Secrets.xcconfig
+
 # Lambda dependencies
 lambda/*/node_modules/
 lambda/*.zip

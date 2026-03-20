@@ -365,7 +365,7 @@ Firestore の CRUD 操作は **非 async** で実行:
 | `towel-condition-assess-nova` | ap-northeast-1 | Node.js (ESM) | AI 状態診断 (Bedrock Claude Haiku 4.5) | `/prod/assess-nova` |
 | `alexa-skill-kaetao` | us-east-1 | Node.js (CJS) | Alexa スキルハンドラー | (Alexa 直接呼出し) |
 
-**API Gateway**: ID `REDACTED`, ステージ `prod`
+**API Gateway**: `Secrets.xcconfig` で設定（git管理外）
 **共通依存**: `firebase-admin` (Admin SDK)
 
 ---
@@ -432,7 +432,7 @@ Firestore の CRUD 操作は **非 async** で実行:
 | Firebase Project | `kaetao-c43f1` |
 | iOS Bundle ID | `com.kaetao-app.TowelApp` |
 | AWS アカウント | `606220590854` |
-| API Gateway | `REDACTED` (ap-northeast-1) |
+| API Gateway | `Secrets.xcconfig` で設定 (ap-northeast-1) |
 | Alexa Skill ID | `amzn1.ask.skill.e2a7d5de-b980-401c-a173-09c8c1c441b1` |
 | Firebase Hosting | `kaetao-c43f1.web.app` |
 | GitHub | `github.com/nawa-10half/towel-app` (Private) |
