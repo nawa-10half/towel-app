@@ -129,10 +129,32 @@ Storage path: `users/{userId}/towels/{towelId}/conditions/{checkId}.jpg`
 
 ## Git / GitHub
 
-- **Repository**: https://github.com/nawa-10half/towel-app (Private)
-- **Branch**: `main`
-- 変更のたびにコミットを作成し、GitHubにプッシュすること
+- **Repository**: https://github.com/nawa-10half/towel-app (Public)
+- **Branch**: `main`（Branch Protection 有効）
+
+### ブランチ運用
+
+- `main` への直接 push は禁止。必ず PR 経由でマージすること
+- マージ方法は **Squash merge** のみ（GitHub 側で設定済み）
+- マージ後の feature ブランチは自動削除される
+
+### ブランチ命名規則
+
+- `feature/<内容>` — 新機能（例: `feature/add-notification-settings`）
+- `fix/<内容>` — バグ修正（例: `fix/crash-on-towel-delete`）
+- `chore/<内容>` — 設定変更・依存更新等（例: `chore/update-firebase-sdk`）
+
+### PR ルール
+
+- レビュー1人以上の承認が必要
+- PR タイトル・本文は日本語で記載
 - コミットは変更内容ごとに分けて管理する
+
+### セットアップ（初回クローン時）
+
+1. `Secrets.xcconfig.example` を `Secrets.xcconfig` にコピー
+2. 実際の API Gateway URL を記入
+3. `xcodegen generate` で Xcode プロジェクトを生成
 
 ## 一時無効化中の機能
 
