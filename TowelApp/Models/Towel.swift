@@ -39,10 +39,11 @@ struct Towel: Codable, Identifiable, Hashable {
     }
 
     var status: TowelStatus {
-        let remaining = Calendar.current.dateComponents([.day], from: .now, to: nextExchangeDate).day ?? 0
-        if remaining < 0 {
+        let remainingSeconds = nextExchangeDate.timeIntervalSinceNow
+        let totalSeconds = Double(exchangeIntervalDays) * 86400
+        if remainingSeconds < 0 {
             return .overdue
-        } else if remaining <= 1 {
+        } else if remainingSeconds < totalSeconds * 0.3 {
             return .soon
         } else {
             return .ok
