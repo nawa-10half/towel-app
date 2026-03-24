@@ -156,6 +156,8 @@ Storage path: `users/{userId}/towels/{towelId}/conditions/{checkId}.jpg`
 2. 実際の API Gateway URL を記入
 3. `xcodegen generate` で Xcode プロジェクトを生成
 
+> **注意**: xcconfig では `//` がコメントとして扱われるため、URL は `https:$()/$()/` 形式で記述すること（`https://` と書くと `https:` だけになる）。`Secrets.xcconfig.example` の形式に従うこと。
+
 ## 一時無効化中の機能
 
 - **iOS Widget**: SwiftData依存のため一時無効化（project.ymlでコメントアウト）。App Groupsキャッシュ方式で再実装予定
