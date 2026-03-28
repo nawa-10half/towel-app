@@ -4,105 +4,207 @@
     "CFBundleDisplayName" : {
       "extractionState" : "manual",
       "localizations" : {
-        "ja" : {
-          "stringUnit" : { "state" : "translated", "value" : "かえたお" }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaetao"
+          }
         },
         "en" : {
-          "stringUnit" : { "state" : "translated", "value" : "Kaetao" }
-        },
-        "zh-Hans" : {
-          "stringUnit" : { "state" : "translated", "value" : "Kaetao" }
-        },
-        "ko" : {
-          "stringUnit" : { "state" : "translated", "value" : "Kaetao" }
-        },
-        "fr" : {
-          "stringUnit" : { "state" : "translated", "value" : "Kaetao" }
-        },
-        "de" : {
-          "stringUnit" : { "state" : "translated", "value" : "Kaetao" }
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaetao"
+          }
         },
         "es" : {
-          "stringUnit" : { "state" : "translated", "value" : "Kaetao" }
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaetao"
+          }
         },
-        "pt-BR" : {
-          "stringUnit" : { "state" : "translated", "value" : "Kaetao" }
-        },
-        "ru" : {
-          "stringUnit" : { "state" : "translated", "value" : "Kaetao" }
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaetao"
+          }
         },
         "it" : {
-          "stringUnit" : { "state" : "translated", "value" : "Kaetao" }
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaetao"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "かえたお"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaetao"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaetao"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaetao"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaetao"
+          }
+        }
+      }
+    },
+    "CFBundleName" : {
+      "comment" : "Bundle name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "TowelApp"
+          }
         }
       }
     },
     "NSCameraUsageDescription" : {
       "extractionState" : "manual",
       "localizations" : {
-        "ja" : {
-          "stringUnit" : { "state" : "translated", "value" : "タオルの状態を診断するために写真を撮影します" }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotos aufnehmen, um den Handtuchzustand zu diagnostizieren"
+          }
         },
         "en" : {
-          "stringUnit" : { "state" : "translated", "value" : "Take photos to diagnose towel condition" }
-        },
-        "zh-Hans" : {
-          "stringUnit" : { "state" : "translated", "value" : "拍摄照片以诊断毛巾状态" }
-        },
-        "ko" : {
-          "stringUnit" : { "state" : "translated", "value" : "수건 상태를 진단하기 위해 사진을 촬영합니다" }
-        },
-        "fr" : {
-          "stringUnit" : { "state" : "translated", "value" : "Prendre des photos pour diagnostiquer l'état de la serviette" }
-        },
-        "de" : {
-          "stringUnit" : { "state" : "translated", "value" : "Fotos aufnehmen, um den Handtuchzustand zu diagnostizieren" }
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Take photos to diagnose towel condition"
+          }
         },
         "es" : {
-          "stringUnit" : { "state" : "translated", "value" : "Tomar fotos para diagnosticar el estado de la toalla" }
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tomar fotos para diagnosticar el estado de la toalla"
+          }
         },
-        "pt-BR" : {
-          "stringUnit" : { "state" : "translated", "value" : "Tirar fotos para diagnosticar a condição da toalha" }
-        },
-        "ru" : {
-          "stringUnit" : { "state" : "translated", "value" : "Сделать фото для диагностики состояния полотенца" }
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prendre des photos pour diagnostiquer l'état de la serviette"
+          }
         },
         "it" : {
-          "stringUnit" : { "state" : "translated", "value" : "Scattare foto per diagnosticare lo stato dell'asciugamano" }
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scattare foto per diagnosticare lo stato dell'asciugamano"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "タオルの状態を診断するために写真を撮影します"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "수건 상태를 진단하기 위해 사진을 촬영합니다"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tirar fotos para diagnosticar a condição da toalha"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сделать фото для диагностики состояния полотенца"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拍摄照片以诊断毛巾状态"
+          }
         }
       }
     },
     "NSUserTrackingUsageDescription" : {
       "extractionState" : "manual",
       "localizations" : {
-        "ja" : {
-          "stringUnit" : { "state" : "translated", "value" : "あなたに合った広告を表示するために使用します" }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wird verwendet, um relevante Werbung anzuzeigen"
+          }
         },
         "en" : {
-          "stringUnit" : { "state" : "translated", "value" : "Used to show ads relevant to you" }
-        },
-        "zh-Hans" : {
-          "stringUnit" : { "state" : "translated", "value" : "用于向您展示相关广告" }
-        },
-        "ko" : {
-          "stringUnit" : { "state" : "translated", "value" : "맞춤 광고를 표시하는 데 사용됩니다" }
-        },
-        "fr" : {
-          "stringUnit" : { "state" : "translated", "value" : "Utilisé pour afficher des publicités pertinentes" }
-        },
-        "de" : {
-          "stringUnit" : { "state" : "translated", "value" : "Wird verwendet, um relevante Werbung anzuzeigen" }
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Used to show ads relevant to you"
+          }
         },
         "es" : {
-          "stringUnit" : { "state" : "translated", "value" : "Se utiliza para mostrar anuncios relevantes" }
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se utiliza para mostrar anuncios relevantes"
+          }
         },
-        "pt-BR" : {
-          "stringUnit" : { "state" : "translated", "value" : "Usado para exibir anúncios relevantes para você" }
-        },
-        "ru" : {
-          "stringUnit" : { "state" : "translated", "value" : "Используется для показа релевантной рекламы" }
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilisé pour afficher des publicités pertinentes"
+          }
         },
         "it" : {
-          "stringUnit" : { "state" : "translated", "value" : "Utilizzato per mostrare annunci pertinenti" }
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilizzato per mostrare annunci pertinenti"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あなたに合った広告を表示するために使用します"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "맞춤 광고를 표시하는 데 사용됩니다"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usado para exibir anúncios relevantes para você"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Используется для показа релевантной рекламы"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用于向您展示相关广告"
+          }
         }
       }
     }

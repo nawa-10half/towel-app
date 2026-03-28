@@ -104,7 +104,7 @@ struct ProPaywallView: View {
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
-    private func featureRow(icon: String, text: String) -> some View {
+    private func featureRow(icon: String, text: LocalizedStringKey) -> some View {
         HStack(spacing: 12) {
             Image(systemName: icon)
                 .foregroundStyle(.tint)
@@ -117,7 +117,7 @@ struct ProPaywallView: View {
     private var productsSection: some View {
         VStack(spacing: 12) {
             if let lifetime = storeService.lifetimeProduct {
-                productCard(product: lifetime, badge: "買い切り")
+                productCard(product: lifetime, badge: String(localized: "買い切り"))
             }
             if let monthly = storeService.monthlyProduct {
                 productCard(product: monthly, badge: nil)
