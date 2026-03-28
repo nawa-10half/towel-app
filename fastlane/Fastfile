@@ -1,0 +1,34 @@
+default_platform(:ios)
+
+platform :ios do
+  before_all do
+    app_store_connect_api_key(
+      key_id: "2TSPA3N6R6",
+      issuer_id: "adf22828-b0bd-4f08-9528-d869800bdffb",
+      key_filepath: File.expand_path("~/.appstoreconnect/private_keys/AuthKey_2TSPA3N6R6.p8")
+    )
+  end
+
+  desc "App Store Connect からメタデータをダウンロード"
+  lane :fetch_metadata do
+    deliver(
+      app_identifier: "com.kaetao-app.TowelApp",
+      skip_binary_upload: true,
+      skip_screenshots: true,
+      run_precheck_before_submit: false,
+      force: true,
+      skip_metadata: false
+    )
+  end
+
+  desc "メタデータとスクリーンショットを App Store Connect にアップロード"
+  lane :upload_metadata do
+    deliver(
+      app_identifier: "com.kaetao-app.TowelApp",
+      skip_binary_upload: true,
+      skip_app_version_update: true,
+      run_precheck_before_submit: false,
+      force: true
+    )
+  end
+end
