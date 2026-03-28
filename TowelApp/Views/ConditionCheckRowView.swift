@@ -28,7 +28,7 @@ struct ConditionCheckRowView: View {
             }
 
             VStack(alignment: .leading, spacing: 4) {
-                Text((conditionCheck.checkedAt ?? .now).formatted日本語)
+                Text((conditionCheck.checkedAt ?? .now).formattedLocalized)
                     .font(.subheadline)
 
                 Text(conditionCheck.recommendation)

@@ -171,7 +171,7 @@ struct TowelDetailView: View {
 
             if let lastDate = towel.lastExchangedAt {
                 HStack {
-                    Label(lastDate.formatted日本語, systemImage: "arrow.counterclockwise")
+                    Label(lastDate.formattedLocalized, systemImage: "arrow.counterclockwise")
                     Spacer()
                     Text("最終交換")
                         .foregroundStyle(.secondary)
@@ -366,7 +366,7 @@ struct TowelDetailView: View {
             } else {
                 ForEach(viewModel.sortedRecords) { record in
                     VStack(alignment: .leading, spacing: 4) {
-                        Text((record.exchangedAt ?? .now).formatted日本語)
+                        Text((record.exchangedAt ?? .now).formattedLocalized)
                             .font(.subheadline)
                         if let note = record.note, !note.isEmpty {
                             Text(note)

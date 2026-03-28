@@ -57,7 +57,7 @@ final class FirestoreService {
                 guard let self else { return }
 
                 if let error {
-                    self.errorMessage = "データの読み込みに失敗しました: \(error.localizedDescription)"
+                    self.errorMessage = String(localized: "データの読み込みに失敗しました: \(error.localizedDescription)")
                     self.isLoading = false
                     return
                 }
@@ -422,7 +422,7 @@ enum FirestoreError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .notAuthenticated:
-            return "サインインが必要です"
+            return String(localized: "サインインが必要です")
         }
     }
 }

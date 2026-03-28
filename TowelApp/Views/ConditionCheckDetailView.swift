@@ -66,7 +66,7 @@ struct ConditionCheckDetailView: View {
                     .foregroundStyle(scoreColor(conditionCheck.overallScore))
             }
 
-            Text((conditionCheck.checkedAt ?? .now).formatted日本語)
+            Text((conditionCheck.checkedAt ?? .now).formattedLocalized)
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }

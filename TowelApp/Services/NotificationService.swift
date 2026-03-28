@@ -44,8 +44,8 @@ final class NotificationService: @unchecked Sendable {
             guard let self, settings.authorizationStatus == .authorized else { return }
 
             let content = UNMutableNotificationContent()
-            content.title = "タオル交換のお知らせ"
-            content.body = "\(towel.name)（\(towel.location)）の交換時期です"
+            content.title = String(localized: "タオル交換のお知らせ")
+            content.body = String(localized: "\(towel.name)（\(towel.location)）の交換時期です")
             content.sound = .default
             content.categoryIdentifier = "TOWEL_EXCHANGE"
 

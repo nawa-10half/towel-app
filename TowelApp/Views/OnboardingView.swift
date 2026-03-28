@@ -2,37 +2,42 @@ import SwiftUI
 
 private struct OnboardingPage {
     let icon: String
-    let title: String
-    let description: String
+    let title: LocalizedStringKey
+    let description: LocalizedStringKey
     let color: Color
 }
 
-private let onboardingPages: [OnboardingPage] = [
-    OnboardingPage(
-        icon: "drop.fill",
-        title: "交換のタイミングを\n見える化",
-        description: "タオルごとに交換間隔を設定すると、\n余裕あり・もうすぐ・超過をひと目で把握できます。",
-        color: .blue
-    ),
-    OnboardingPage(
-        icon: "camera.fill",
-        title: "AIがタオルの\n状態を診断",
-        description: "写真を撮るだけで、色あせ・汚れ・\nふわふわ感・ほつれをAIが自動採点します。",
-        color: .indigo
-    ),
-    OnboardingPage(
-        icon: "person.3.sequence.fill",
-        title: "家族と\nシェアできる",
-        description: "招待コードで家族グループを作成。\n誰かが交換を記録すれば全員の画面に即反映。",
-        color: .teal
-    ),
-    OnboardingPage(
-        icon: "mic.fill",
-        title: "Alexaで\nハンズフリー管理",
-        description: "「アレクサ、かえたおアプリで状態教えて」\nと声だけで確認・記録ができます。",
-        color: .orange
-    ),
-]
+private let onboardingPages: [OnboardingPage] = {
+    var pages: [OnboardingPage] = [
+        OnboardingPage(
+            icon: "drop.fill",
+            title: "交換のタイミングを\n見える化",
+            description: "タオルごとに交換間隔を設定すると、\n余裕あり・もうすぐ・超過をひと目で把握できます。",
+            color: .blue
+        ),
+        OnboardingPage(
+            icon: "camera.fill",
+            title: "AIがタオルの\n状態を診断",
+            description: "写真を撮るだけで、色あせ・汚れ・\nふわふわ感・ほつれをAIが自動採点します。",
+            color: .indigo
+        ),
+        OnboardingPage(
+            icon: "person.3.sequence.fill",
+            title: "家族と\nシェアできる",
+            description: "招待コードで家族グループを作成。\n誰かが交換を記録すれば全員の画面に即反映。",
+            color: .teal
+        ),
+    ]
+    if Locale.current.language.languageCode == .japanese {
+        pages.append(OnboardingPage(
+            icon: "mic.fill",
+            title: "Alexaで\nハンズフリー管理",
+            description: "「アレクサ、かえたおアプリで状態教えて」\nと声だけで確認・記録ができます。",
+            color: .orange
+        ))
+    }
+    return pages
+}()
 
 struct OnboardingView: View {
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false

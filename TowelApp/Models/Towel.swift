@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import FirebaseFirestore
 
 struct Towel: Codable, Identifiable, Hashable {
@@ -86,9 +87,9 @@ enum TowelStatus {
 
     var label: String {
         switch self {
-        case .ok: return "余裕あり"
-        case .soon: return "もうすぐ"
-        case .overdue: return "交換時期超過"
+        case .ok: return String(localized: "余裕あり")
+        case .soon: return String(localized: "もうすぐ")
+        case .overdue: return String(localized: "交換時期超過")
         }
     }
 }

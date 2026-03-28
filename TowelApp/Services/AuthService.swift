@@ -63,7 +63,7 @@ final class AuthService {
     func signInWithRestoreCode(_ code: String, isNewUser: Bool = false) async {
         guard let urlString = Bundle.main.infoDictionary?["RestoreCodeAuthURL"] as? String,
               let apiURL = URL(string: urlString) else {
-            errorMessage = "API URLの設定が見つかりません"
+            errorMessage = String(localized: "API URLの設定が見つかりません")
             return
         }
 
@@ -77,13 +77,13 @@ final class AuthService {
 
             let (data, response) = try await URLSession.shared.data(for: request)
             guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                errorMessage = "コードが無効です"
+                errorMessage = String(localized: "コードが無効です")
                 return
             }
 
             let json = try JSONDecoder().decode([String: String].self, from: data)
             guard let customToken = json["customToken"] else {
-                errorMessage = "認証トークンの取得に失敗しました"
+                errorMessage = String(localized: "認証トークンの取得に失敗しました")
                 return
             }
 
@@ -94,7 +94,7 @@ final class AuthService {
             self.restoreCode = code
             UserDefaults.standard.set(false, forKey: Self.wasSignedOutKey)
         } catch {
-            errorMessage = "サインインに失敗しました: \(error.localizedDescription)"
+            errorMessage = String(localized: "サインインに失敗しました: \(error.localizedDescription)")
         }
     }
 
@@ -157,7 +157,7 @@ final class AuthService {
         } catch {
             // サインアウト失敗時はリスナーを再開
             FirestoreService.shared.startListening()
-            errorMessage = "サインアウトに失敗しました: \(error.localizedDescription)"
+            errorMessage = String(localized: "サインアウトに失敗しました: \(error.localizedDescription)")
         }
     }
 
@@ -195,18 +195,18 @@ final class AuthService {
         } catch let error as NSError where error.code == AuthErrorCode.requiresRecentLogin.rawValue {
             // トークン失効時: リストアコードで再認証してリトライ
             guard let code = savedRestoreCode else {
-                errorMessage = "再認証に必要なリストアコードが見つかりません"
+                errorMessage = String(localized: "再認証に必要なリストアコードが見つかりません")
                 return
             }
             do {
                 try await reauthenticateWithRestoreCode(code)
                 try await Auth.auth().currentUser?.delete()
             } catch {
-                errorMessage = "アカウント削除に失敗しました: \(error.localizedDescription)"
+                errorMessage = String(localized: "アカウント削除に失敗しました: \(error.localizedDescription)")
                 return
             }
         } catch {
-            errorMessage = "アカウント削除に失敗しました: \(error.localizedDescription)"
+            errorMessage = String(localized: "アカウント削除に失敗しました: \(error.localizedDescription)")
             return
         }
 
@@ -222,7 +222,7 @@ final class AuthService {
         guard let urlString = Bundle.main.infoDictionary?["RestoreCodeAuthURL"] as? String,
               let apiURL = URL(string: urlString) else {
             throw NSError(domain: "AuthService", code: -1,
-                          userInfo: [NSLocalizedDescriptionKey: "API URLの設定が見つかりません"])
+                          userInfo: [NSLocalizedDescriptionKey: String(localized: "API URLの設定が見つかりません")])
         }
 
         var request = URLRequest(url: apiURL)
@@ -233,13 +233,13 @@ final class AuthService {
         let (data, response) = try await URLSession.shared.data(for: request)
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             throw NSError(domain: "AuthService", code: -1,
-                          userInfo: [NSLocalizedDescriptionKey: "再認証に失敗しました"])
+                          userInfo: [NSLocalizedDescriptionKey: String(localized: "再認証に失敗しました")])
         }
 
         let json = try JSONDecoder().decode([String: String].self, from: data)
         guard let customToken = json["customToken"] else {
             throw NSError(domain: "AuthService", code: -1,
-                          userInfo: [NSLocalizedDescriptionKey: "認証トークンの取得に失敗しました"])
+                          userInfo: [NSLocalizedDescriptionKey: String(localized: "認証トークンの取得に失敗しました")])
         }
 
         try await Auth.auth().signIn(withCustomToken: customToken)
@@ -250,7 +250,7 @@ final class AuthService {
     func generateAlexaLinkCode() async throws -> String {
         guard let uid = currentUser?.uid else {
             throw NSError(domain: "AuthService", code: 401,
-                          userInfo: [NSLocalizedDescriptionKey: "サインインが必要です"])
+                          userInfo: [NSLocalizedDescriptionKey: String(localized: "サインインが必要です")])
         }
 
         let code = String((0..<6).map { _ in Self.codeCharacters.randomElement()! })

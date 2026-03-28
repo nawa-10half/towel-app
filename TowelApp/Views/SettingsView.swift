@@ -47,7 +47,9 @@ struct SettingsView: View {
             accountSection
             GroupSettingsView(onJoinGroupTapped: { showingJoinSheet = true })
             notificationSection
-            alexaSection
+            if Locale.current.language.languageCode == .japanese {
+                alexaSection
+            }
             subscriptionSection
             aboutSection
             dangerSection
@@ -359,7 +361,7 @@ struct SettingsView: View {
 
     private func generateAlexaCode() async {
         guard NetworkMonitor.shared.isConnected else {
-            errorMessage = "オフラインのためAlexaコードを生成できません。ネットワーク接続後に再度お試しください。"
+            errorMessage = String(localized: "オフラインのためAlexaコードを生成できません。ネットワーク接続後に再度お試しください。")
             return
         }
         isGeneratingAlexaCode = true
@@ -369,25 +371,25 @@ struct SettingsView: View {
             alexaLinkCode = code
             alexaLinkExpiry = Date().addingTimeInterval(10 * 60)
         } catch {
-            errorMessage = "Alexaコードの生成に失敗しました: \(error.localizedDescription)"
+            errorMessage = String(localized: "Alexaコードの生成に失敗しました: \(error.localizedDescription)")
         }
     }
 
     private func restoreCodeShareText(_ code: String) -> String {
-        "【かえたお リストアコード】\n\(code)\n\n機種変更や再インストール時に必要です。大切に保管してください。"
+        String(localized: "【かえたお リストアコード】\n\(code)\n\n機種変更や再インストール時に必要です。大切に保管してください。")
     }
 
     private func saveDisplayName() async {
         guard NetworkMonitor.shared.isConnected else {
             editingDisplayName = authService.displayName
-            errorMessage = "オフラインのため表示名を変更できません。ネットワーク接続後に再度お試しください。"
+            errorMessage = String(localized: "オフラインのため表示名を変更できません。ネットワーク接続後に再度お試しください。")
             return
         }
         do {
             try await authService.updateDisplayName(editingDisplayName)
         } catch {
             editingDisplayName = authService.displayName
-            errorMessage = "表示名の保存に失敗しました: \(error.localizedDescription)"
+            errorMessage = String(localized: "表示名の保存に失敗しました: \(error.localizedDescription)")
         }
     }
 }

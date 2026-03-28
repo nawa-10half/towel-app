@@ -32,7 +32,13 @@ struct TowelFormView: View {
     ]
 
     private static let locationSuggestions = [
-        "浴室", "キッチン", "トイレ", "洗面所", "リビング", "寝室", "ジム"
+        String(localized: "浴室"),
+        String(localized: "キッチン"),
+        String(localized: "トイレ"),
+        String(localized: "洗面所"),
+        String(localized: "リビング"),
+        String(localized: "寝室"),
+        String(localized: "ジム"),
     ]
 
     init(towel: Towel? = nil) {
@@ -135,7 +141,7 @@ struct TowelFormView: View {
 
     private var intervalSection: some View {
         Section {
-            Stepper("\(exchangeIntervalDays)日ごと", value: $exchangeIntervalDays, in: 1...30)
+            Stepper(String(localized: "\(exchangeIntervalDays)日ごと"), value: $exchangeIntervalDays, in: 1...30)
         } header: {
             Text("交換間隔")
         } footer: {
@@ -169,7 +175,7 @@ struct TowelFormView: View {
             dismiss()
         } catch {
             isSaving = false
-            errorMessage = "保存に失敗しました: \(error.localizedDescription)"
+            errorMessage = String(localized: "保存に失敗しました: \(error.localizedDescription)")
         }
     }
 }

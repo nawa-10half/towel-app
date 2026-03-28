@@ -9,19 +9,19 @@ enum ProFeature {
 
     var title: String {
         switch self {
-        case .assessment: return "AI状態診断"
-        case .towelLimit: return "タオル登録数"
-        case .groupMembers: return "グループメンバー"
-        case .history: return "診断履歴"
+        case .assessment: return String(localized: "AI状態診断")
+        case .towelLimit: return String(localized: "タオル登録数")
+        case .groupMembers: return String(localized: "グループメンバー")
+        case .history: return String(localized: "診断履歴")
         }
     }
 
     var description: String {
         switch self {
-        case .assessment: return "AIによる状態診断が無制限に"
-        case .towelLimit: return "タオルを何枚でも登録可能"
-        case .groupMembers: return "グループメンバーを最大10人まで"
-        case .history: return "すべての診断履歴を閲覧可能"
+        case .assessment: return String(localized: "AIによる状態診断が無制限に")
+        case .towelLimit: return String(localized: "タオルを何枚でも登録可能")
+        case .groupMembers: return String(localized: "グループメンバーを最大10人まで")
+        case .history: return String(localized: "すべての診断履歴を閲覧可能")
         }
     }
 
@@ -196,10 +196,10 @@ struct ProPaywallView: View {
 private extension Product.SubscriptionPeriod {
     var displayUnit: String {
         switch unit {
-        case .day: return value == 7 ? "/ 週" : "/ \(value)日"
-        case .week: return "/ 週"
-        case .month: return value == 1 ? "/ 月" : "/ \(value)ヶ月"
-        case .year: return value == 1 ? "/ 年" : "/ \(value)年"
+        case .day: return value == 7 ? String(localized: "/ 週") : String(localized: "/ \(value)日")
+        case .week: return String(localized: "/ 週")
+        case .month: return value == 1 ? String(localized: "/ 月") : String(localized: "/ \(value)ヶ月")
+        case .year: return value == 1 ? String(localized: "/ 年") : String(localized: "/ \(value)年")
         @unknown default: return ""
         }
     }

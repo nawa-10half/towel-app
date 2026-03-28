@@ -61,7 +61,7 @@ final class StoreService {
         do {
             products = try await Product.products(for: Set(ids))
         } catch {
-            purchaseError = "プロダクト情報の取得に失敗しました"
+            purchaseError = String(localized: "プロダクト情報の取得に失敗しました")
         }
     }
 
@@ -97,7 +97,7 @@ final class StoreService {
                     await transaction.finish()
                     await refreshEntitlements()
                 } else {
-                    purchaseError = "購入の検証に失敗しました"
+                    purchaseError = String(localized: "購入の検証に失敗しました")
                 }
             case .pending:
                 break
@@ -107,7 +107,7 @@ final class StoreService {
                 break
             }
         } catch {
-            purchaseError = "購入に失敗しました: \(error.localizedDescription)"
+            purchaseError = String(localized: "購入に失敗しました: \(error.localizedDescription)")
         }
     }
 
@@ -118,7 +118,7 @@ final class StoreService {
             try await AppStore.sync()
             await refreshEntitlements()
         } catch {
-            purchaseError = "購入の復元に失敗しました: \(error.localizedDescription)"
+            purchaseError = String(localized: "購入の復元に失敗しました: \(error.localizedDescription)")
         }
     }
 }

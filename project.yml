@@ -9,6 +9,7 @@ options:
   xcodeVersion: "16.0"
   generateEmptyDirectories: true
   developmentLanguage: ja
+  knownRegions: [Base, ja, en, zh-Hans, ko, fr, de, es, pt-BR, ru, it]
 
 packages:
   firebase-ios-sdk:

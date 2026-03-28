@@ -44,7 +44,7 @@ final class GroupService {
                 startListening(groupId: loadedGroupId)
             }
         } catch {
-            errorMessage = "グループ情報の読み込みに失敗しました"
+            errorMessage = String(localized: "グループ情報の読み込みに失敗しました")
         }
     }
 
@@ -57,7 +57,7 @@ final class GroupService {
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let self else { return }
                 if let error {
-                    self.errorMessage = "グループの読み込みに失敗しました: \(error.localizedDescription)"
+                    self.errorMessage = String(localized: "グループの読み込みに失敗しました: \(error.localizedDescription)")
                     return
                 }
                 self.group = try? snapshot?.data(as: FamilyGroup.self)
@@ -416,13 +416,13 @@ enum GroupError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .notAuthenticated: return "サインインが必要です"
-        case .alreadyInGroup: return "既にグループに所属しています"
-        case .notInGroup: return "グループに所属していません"
-        case .invalidInviteCode: return "招待コードが無効です"
-        case .groupNotFound: return "グループが見つかりません"
-        case .groupFull: return "グループの人数上限に達しています。Pro プランにアップグレードすると最大10名まで参加できます。"
-        case .inviteCodeGenerationFailed: return "招待コードの生成に失敗しました。再度お試しください"
+        case .notAuthenticated: return String(localized: "サインインが必要です")
+        case .alreadyInGroup: return String(localized: "既にグループに所属しています")
+        case .notInGroup: return String(localized: "グループに所属していません")
+        case .invalidInviteCode: return String(localized: "招待コードが無効です")
+        case .groupNotFound: return String(localized: "グループが見つかりません")
+        case .groupFull: return String(localized: "グループの人数上限に達しています。Pro プランにアップグレードすると最大10名まで参加できます。")
+        case .inviteCodeGenerationFailed: return String(localized: "招待コードの生成に失敗しました。再度お試しください")
         }
     }
 }

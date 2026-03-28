@@ -72,7 +72,7 @@ final class TowelDetailViewModel {
             try FirestoreService.shared.deleteRecord(towelId: towelId, recordId: recordId)
             WidgetCenter.shared.reloadAllTimelines()
         } catch {
-            errorMessage = "交換記録の削除に失敗しました: \(error.localizedDescription)"
+            errorMessage = String(localized: "交換記録の削除に失敗しました: \(error.localizedDescription)")
         }
     }
 
@@ -131,7 +131,7 @@ final class TowelDetailViewModel {
             dailyAssessmentCount += 1
             assessmentSucceeded.toggle()
         } catch {
-            errorMessage = "状態診断に失敗しました: \(error.localizedDescription)"
+            errorMessage = String(localized: "状態診断に失敗しました: \(error.localizedDescription)")
         }
     }
 
@@ -146,7 +146,7 @@ final class TowelDetailViewModel {
         do {
             try FirestoreService.shared.deleteConditionCheck(towelId: towelId, checkId: checkId)
         } catch {
-            errorMessage = "診断記録の削除に失敗しました: \(error.localizedDescription)"
+            errorMessage = String(localized: "診断記録の削除に失敗しました: \(error.localizedDescription)")
         }
     }
 }

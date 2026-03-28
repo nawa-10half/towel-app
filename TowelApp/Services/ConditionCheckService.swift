@@ -31,17 +31,17 @@ enum ConditionCheckError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .invalidResponse:
-            return "サーバーからの応答を解析できませんでした"
+            return String(localized: "サーバーからの応答を解析できませんでした")
         case .httpError(let code):
-            return "サーバーエラーが発生しました (HTTP \(code))"
+            return String(localized: "サーバーエラーが発生しました (HTTP \(code))")
         case .serverError(let message):
-            return "サーバーエラー: \(message)"
+            return String(localized: "サーバーエラー: \(message)")
         case .missingAPIURL:
-            return "APIのURLが設定されていません"
+            return String(localized: "APIのURLが設定されていません")
         case .imageTooLarge:
-            return "画像サイズが大きすぎます（5MB以下にしてください）"
+            return String(localized: "画像サイズが大きすぎます（5MB以下にしてください）")
         case .rateLimited:
-            return "しばらく時間をおいてから再度お試しください"
+            return String(localized: "しばらく時間をおいてから再度お試しください")
         }
     }
 }
@@ -70,10 +70,12 @@ final class ConditionCheckService: @unchecked Sendable {
         }
 
         let base64Image = imageData.base64EncodedString()
+        let languageCode = Locale.current.language.languageCode?.identifier ?? "ja"
         let requestBody: [String: Any] = [
             "image": base64Image,
             "towel_name": towelName,
-            "towel_location": towelLocation
+            "towel_location": towelLocation,
+            "language": languageCode
         ]
 
         var request = URLRequest(url: url)

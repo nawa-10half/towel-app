@@ -321,7 +321,7 @@ struct SignInView: View {
     }
 
     private func restoreCodeShareText(_ code: String) -> String {
-        "【かえたお リストアコード】\n\(code)\n\n機種変更や再インストール時に必要です。大切に保管してください。"
+        String(localized: "【かえたお リストアコード】\n\(code)\n\n機種変更や再インストール時に必要です。大切に保管してください。")
     }
 
     private func restoreSignIn() async {

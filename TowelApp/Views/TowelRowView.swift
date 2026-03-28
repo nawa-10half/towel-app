@@ -44,8 +44,8 @@ struct TowelRowView: View {
 
     private func formatDaysAgo(_ days: Int) -> String {
         switch days {
-        case 0: return "今日交換"
-        default: return "\(days)日前に交換"
+        case 0: return String(localized: "今日交換")
+        default: return String(localized: "\(days)日前に交換")
         }
     }
 
