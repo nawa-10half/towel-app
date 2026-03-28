@@ -233,7 +233,7 @@ struct SettingsView: View {
 
             if notificationsEnabled {
                 DatePicker(
-                    "通知時刻",
+                    String(localized: "通知時刻"),
                     selection: notificationTime,
                     displayedComponents: .hourAndMinute
                 )

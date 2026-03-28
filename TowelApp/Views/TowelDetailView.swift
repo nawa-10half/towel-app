@@ -452,7 +452,7 @@ struct ExchangeRecordSheet: View {
             Form {
                 Section {
                     DatePicker(
-                        "交換日時",
+                        String(localized: "交換日時"),
                         selection: $exchangeDate,
                         in: ...Date.now,
                         displayedComponents: [.date, .hourAndMinute]

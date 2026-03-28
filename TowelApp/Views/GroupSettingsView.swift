@@ -97,7 +97,7 @@ struct GroupSettingsView: View {
             }
 
             // Members
-            DisclosureGroup("メンバー（\(groupService.members.count)名）") {
+            DisclosureGroup(String(localized: "メンバー（\(groupService.members.count)名）")) {
                 ForEach(groupService.members) { member in
                     HStack {
                         Image(systemName: member.role == "owner" ? "star.circle.fill" : "person.circle")
