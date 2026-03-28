@@ -1,0 +1,3 @@
+v1.2.1
+ - Updated App Store preview images
+ - Added FAQ page link to app info section in settings
