@@ -1,3 +1,4 @@
-v1.2.1
- - Updated App Store preview images
- - Added FAQ page link to app info section in settings
+v1.3.0
+- Disponible en 10 idiomas (inglés, chino, coreano, francés, alemán, español, portugués, ruso, italiano)
+- Gestión de artículos del hogar (cepillos de dientes, esponjas, sábanas, etc.) además de toallas
+- Diagnóstico IA disponible en varios idiomas

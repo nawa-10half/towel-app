@@ -1,3 +1,4 @@
-v1.2.1
- - Updated App Store preview images
- - Added FAQ page link to app info section in settings
+v1.3.0
+- Disponível em 10 idiomas (inglês, chinês, coreano, francês, alemão, espanhol, português, russo, italiano)
+- Gerenciamento de itens do dia a dia (escovas de dentes, esponjas, lençóis, etc.) além de toalhas
+- Diagnóstico IA disponível em vários idiomas

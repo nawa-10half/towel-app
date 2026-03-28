@@ -1,3 +1,4 @@
-v1.2.1
- - Updated App Store preview images
- - Added FAQ page link to app info section in settings
+v1.3.0
+- 支持10种语言（英语、中文、韩语、法语、德语、西班牙语、葡萄牙语、俄语、意大利语）
+- 除毛巾外，还支持管理日用品（牙刷、海绵、床单等）
+- AI状态诊断支持多语言

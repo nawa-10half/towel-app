@@ -1,3 +1,4 @@
-v1.2.1
- - Updated App Store preview images
- - Added FAQ page link to app info section in settings
+v1.3.0
+- Disponibile in 10 lingue (inglese, cinese, coreano, francese, tedesco, spagnolo, portoghese, russo, italiano)
+- Gestione di articoli quotidiani (spazzolini, spugne, lenzuola, ecc.) oltre agli asciugamani
+- Diagnosi IA disponibile in più lingue

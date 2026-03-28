@@ -1,3 +1,4 @@
-v1.2.1
- - Updated App Store preview images
- - Added FAQ page link to app info section in settings
+v1.3.0
+- Now available in 10 languages (English, Chinese, Korean, French, German, Spanish, Portuguese, Russian, Italian)
+- Now supports managing everyday items (toothbrushes, sponges, sheets, etc.) in addition to towels
+- AI condition diagnosis now available in multiple languages

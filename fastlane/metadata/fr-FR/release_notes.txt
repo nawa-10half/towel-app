@@ -1,3 +1,4 @@
-v1.2.1
- - Updated App Store preview images
- - Added FAQ page link to app info section in settings
+v1.3.0
+- Disponible en 10 langues (anglais, chinois, coréen, français, allemand, espagnol, portugais, russe, italien)
+- Gestion des articles du quotidien (brosses à dents, éponges, draps, etc.) en plus des serviettes
+- Diagnostic IA disponible en plusieurs langues
