@@ -1,1 +1,1 @@
-serviette,change,hygiène,rappel,lessive,ménage,propre,famille,IA,bain,torchon,maison,entretien
+serviette,remplacement,hygiène,rappel,ménage,propre,famille,IA,brosse,éponge,draps,filtre,maison

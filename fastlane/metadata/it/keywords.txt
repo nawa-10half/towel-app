@@ -1,1 +1,1 @@
-asciugamano,cambio,igiene,promemoria,bucato,casa,pulito,famiglia,IA,bagno,timer,domestico,cura
+asciugamano,cambio,igiene,promemoria,casa,pulito,famiglia,IA,spazzolino,spugna,lenzuola,filtro

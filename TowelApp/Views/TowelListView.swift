@@ -35,7 +35,7 @@ struct TowelListView: View {
                 }
             }
         }
-        .navigationTitle("タオリスト")
+        .navigationTitle("アイテムリスト")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {
@@ -50,7 +50,7 @@ struct TowelListView: View {
                 }
             }
         }
-        .searchable(text: $viewModel.searchText, prompt: "タオルを検索")
+        .searchable(text: $viewModel.searchText, prompt: "アイテムを検索")
         .sheet(isPresented: $showingAddForm) {
             TowelFormView()
         }
@@ -69,11 +69,11 @@ struct TowelListView: View {
 
     private var emptyStateView: some View {
         ContentUnavailableView {
-            Label("タオルがありません", systemImage: "hand.raised.fill")
+            Label("アイテムがありません", systemImage: "hand.raised.fill")
         } description: {
-            Text("右上の＋ボタンからタオルを追加しましょう")
+            Text("右上の＋ボタンからアイテムを追加しましょう")
         } actions: {
-            Button("タオルを追加") {
+            Button("アイテムを追加") {
                 showingAddForm = true
             }
             .buttonStyle(.borderedProminent)

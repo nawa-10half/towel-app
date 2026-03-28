@@ -23,7 +23,7 @@ final class TowelListViewModel {
             try FirestoreService.shared.deleteTowel(towelId)
             WidgetCenter.shared.reloadAllTimelines()
         } catch {
-            errorMessage = String(localized: "タオルの削除に失敗しました: \(error.localizedDescription)")
+            errorMessage = String(localized: "アイテムの削除に失敗しました: \(error.localizedDescription)")
         }
     }
 

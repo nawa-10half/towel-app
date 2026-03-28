@@ -1,36 +1,36 @@
-Wann haben Sie zuletzt Ihr Handtuch gewechselt?
+Wann haben Sie zuletzt Ihre Haushaltsartikel ausgetauscht?
 
-Handtücher benutzen wir jeden Tag -- umso wichtiger, sie sauber zu halten. Aber Hand aufs Herz: Wissen Sie noch, wann Sie sie zuletzt gewechselt haben?
+Handtücher, Zahnbürsten, Schwämme, Bettwäsche, Wasserfilter… Wir benutzen sie jeden Tag – umso wichtiger, sie sauber und frisch zu halten. Aber Hand aufs Herz: Wissen Sie noch, wann Sie sie zuletzt gewechselt haben?
 
-Kaetao verwaltet automatisch den Wechselrhythmus Ihrer Handtücher. Tragen Sie einfach das Wechseldatum ein, und die App erinnert Sie rechtzeitig an den nächsten Wechsel. Nie wieder vergessen!
+Kaetao verwaltet automatisch den Wechselrhythmus Ihrer Haushaltsartikel. Tragen Sie einfach das Wechseldatum ein, und die App erinnert Sie rechtzeitig an den nächsten Wechsel. Nie wieder vergessen!
 
 ◆ Einfache Wechseldokumentation
-Registrieren Sie Ihre Badetücher, Handtücher, Geschirrtücher und mehr. Legen Sie individuelle Wechselintervalle fest und erkennen Sie auf einen Blick, welche Handtücher gewechselt werden müssen.
+Registrieren Sie Ihre Handtücher, Zahnbürsten, Küchenschwämme, Bettwäsche, Filter und mehr. Legen Sie individuelle Wechselintervalle fest und erkennen Sie auf einen Blick, welche Artikel gewechselt werden müssen.
 
-◆ KI-Zustandsdiagnose
-Fotografieren Sie einfach Ihr Handtuch, und die KI bewertet Verblassen, Flecken, Fusseln und Ausfransung auf einer 100-Punkte-Skala. Lassen Sie die KI entscheiden: "Noch brauchbar?" oder "Zeit für ein neues?"
+◆ KI-Zustandsdiagnose für Handtücher
+Fotografieren Sie einfach Ihr Handtuch, und die KI bewertet Verblassen, Flecken, Fusseln und Ausfransung auf einer 100-Punkte-Skala. Lassen Sie die KI entscheiden: „Noch brauchbar?" oder „Zeit für ein neues?"
 
 ◆ Erinnerungsbenachrichtigungen
 Erhalten Sie eine Benachrichtigung, wenn es Zeit zum Wechseln ist. Bleiben Sie auch an stressigen Tagen auf dem Laufenden.
 
 ◆ Familien-Gruppenfreigabe
-Laden Sie Familienmitglieder per Einladungscode ein und teilen Sie die Handtuchverwaltung. Die ganze Familie profitiert von frischen, sauberen Handtüchern.
+Laden Sie Familienmitglieder per Einladungscode ein und teilen Sie die Artikelverwaltung. Die ganze Familie profitiert von einem sauberen, organisierten Zuhause.
 
 ◆ Für wen ist das?
-・Alle, die vergessen, wann sie ihre Handtücher gewechselt haben
-・Menschen, denen Handtuchhygiene wichtig ist
-・Familien, die die Handtuchverwaltung teilen möchten
-・Alle, die ihren Haushalt besser organisieren wollen
+・Alle, die vergessen, wann sie ihre Haushaltsartikel gewechselt haben
+・Menschen, denen die Hygiene von Handtüchern, Zahnbürsten & Co. wichtig ist
+・Familien, die die Artikelverwaltung teilen möchten
+・Alle, die Austauschzyklen für Verbrauchsartikel verfolgen wollen
 
 ◆ Pro-Abo
 Die Grundfunktionen sind kostenlos. Mit dem Pro-Abo erhalten Sie noch mehr:
 ・Unbegrenzte KI-Zustandsdiagnosen
-・Unbegrenzte Handtuchregistrierungen
+・Unbegrenzte Artikelregistrierungen
 ・Bis zu 10 Gruppenmitglieder
 ・Vollständiger Diagnoseverlauf
 Wählen Sie zwischen Monats- oder Jahresabo.
 
-Starten Sie Ihr frisches Handtuchleben mit Kaetao.
+Starten Sie Ihr sauberes Leben mit Kaetao.
 
 Nutzungsbedingungen: https://kaetao-c43f1.web.app/terms-of-use
 Datenschutzrichtlinie: https://kaetao-c43f1.web.app/privacy-policy

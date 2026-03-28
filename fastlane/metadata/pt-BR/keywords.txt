@@ -1,1 +1,1 @@
-toalha,troca,higiene,lembrete,lavanderia,casa,limpo,familia,IA,banho,timer,domestico,organizar
+toalha,troca,higiene,lembrete,casa,limpo,família,IA,escova,esponja,lençol,filtro,consumível

@@ -1,36 +1,36 @@
-When was the last time you changed your towel?
+When did you last replace your household items?
 
-We use towels every day, so keeping them clean matters. But how often do you forget when you last swapped them out?
+Towels, toothbrushes, sponges, sheets, water filters... We use them every day, so keeping them fresh matters. But how often do you forget when you last replaced them?
 
-Kaetao automatically tracks your towel exchange schedule. Just log when you change a towel, and the app reminds you when it's time for the next one. Never forget a towel change again.
+Kaetao automatically tracks replacement schedules for all your household items. Just log when you replace something, and the app reminds you when it's time for the next change. Never forget a replacement again.
 
-EASY EXCHANGE TRACKING
-Register your bath towels, face towels, kitchen towels, and more. Set custom exchange intervals and see at a glance which towels need changing with clear status indicators.
+EASY REPLACEMENT TRACKING
+Register your towels, toothbrushes, kitchen sponges, bed sheets, filters, and more. Set custom replacement intervals and see at a glance which items need changing with clear status indicators.
 
 AI TOWEL CONDITION CHECK
-Simply take a photo of your towel, and AI evaluates fading, stains, pilling, and fraying on a 100-point scale. Let AI help you decide: "Still good to use?" or "Time for a new one?"
+Take a photo of your towel, and AI evaluates fading, stains, pilling, and fraying on a 100-point scale. Let AI help you decide: "Still good to use?" or "Time for a new one?"
 
 REMINDER NOTIFICATIONS
-Get notified when it's time to change your towels. Stay on top of towel hygiene even on your busiest days.
+Get notified when it's time to replace your items. Stay on top of household hygiene even on your busiest days.
 
 FAMILY GROUP SHARING
-Invite family members with an invite code and share towel management. Keep the whole family on track for fresh, clean towels.
+Invite family members with an invite code and share item management. Keep the whole family on track for a clean, organized home.
 
 WHO IS THIS FOR?
-- Anyone who forgets when they last changed their towels
-- People who care about towel hygiene
-- Families who want to share towel management
-- Anyone looking to better manage household items
+- Anyone who forgets when they last replaced household items
+- People who care about hygiene for towels, toothbrushes, and more
+- Families who want to share item management
+- Anyone looking to track replacement cycles for consumables
 
 PRO PLAN
 Basic features are free. Upgrade to Pro for even more:
 - Unlimited AI condition checks
-- Unlimited towel registrations
+- Unlimited item registrations
 - Up to 10 group members
 - Full diagnosis history
 Choose from monthly or yearly plans.
 
-Start your fresh towel life with Kaetao.
+Start your clean living with Kaetao.
 
 Terms of Use: https://kaetao-c43f1.web.app/terms-of-use
 Privacy Policy: https://kaetao-c43f1.web.app/privacy-policy

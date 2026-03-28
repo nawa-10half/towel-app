@@ -73,7 +73,7 @@ struct SignInView: View {
                     .font(.largeTitle)
                     .fontWeight(.bold)
 
-                Text("タオルの交換タイミングを管理")
+                Text("日用品の交換タイミングを管理")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }

@@ -12,7 +12,7 @@ private let onboardingPages: [OnboardingPage] = {
         OnboardingPage(
             icon: "drop.fill",
             title: "交換のタイミングを\n見える化",
-            description: "タオルごとに交換間隔を設定すると、\n余裕あり・もうすぐ・超過をひと目で把握できます。",
+            description: "アイテムごとに交換間隔を設定すると、\n余裕あり・もうすぐ・超過をひと目で把握できます。",
             color: .blue
         ),
         OnboardingPage(

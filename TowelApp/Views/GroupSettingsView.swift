@@ -26,7 +26,7 @@ struct GroupSettingsView: View {
                 groupName = ""
                 showingCreateAlert = true
             } label: {
-                Label("タオルグループを作成", systemImage: "person.3.fill")
+                Label("グループを作成", systemImage: "person.3.fill")
             }
 
             Button {
@@ -50,9 +50,9 @@ struct GroupSettingsView: View {
                     .foregroundStyle(.red)
             }
         } header: {
-            Text("タオルグループ")
+            Text("グループ")
         } footer: {
-            Text("タオルグループを作成すると、メンバー全員でタオルを共同管理できます")
+            Text("グループを作成すると、メンバー全員でアイテムを共同管理できます")
         }
         .alert("グループを作成", isPresented: $showingCreateAlert) {
             TextField("グループ名（例: 我が家）", text: $groupName)
@@ -137,7 +137,7 @@ struct GroupSettingsView: View {
                     .foregroundStyle(.red)
             }
         } header: {
-            Text("タオルグループ")
+            Text("グループ")
         }
         .confirmationDialog("グループから退出しますか？", isPresented: $showingLeaveConfirmation, titleVisibility: .visible) {
             Button("退出", role: .destructive) {
@@ -151,7 +151,7 @@ struct GroupSettingsView: View {
                 }
             }
         } message: {
-            Text("退出するとグループのタオルが表示されなくなります。タオルデータはグループに残ります。")
+            Text("退出するとグループのアイテムが表示されなくなります。データはグループに残ります。")
         }
         .confirmationDialog("招待コードを再生成しますか？", isPresented: $showingRegenerateConfirmation, titleVisibility: .visible) {
             Button("再生成") {

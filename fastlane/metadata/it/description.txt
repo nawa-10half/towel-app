@@ -1,36 +1,36 @@
-Quando hai cambiato gli asciugamani l'ultima volta?
+Quando hai sostituito i tuoi articoli domestici l'ultima volta?
 
-Usiamo gli asciugamani ogni giorno, quindi mantenerli puliti e fondamentale. Ma ammettiamolo: spesso dimentichiamo quando li abbiamo cambiati l'ultima volta, vero?
+Asciugamani, spazzolini da denti, spugne, lenzuola, filtri dell'acqua… Li usiamo ogni giorno, quindi mantenerli in buono stato è fondamentale. Ma ammettiamolo: spesso dimentichiamo quando li abbiamo cambiati l'ultima volta, vero?
 
-Kaetao gestisce automaticamente il calendario di cambio dei tuoi asciugamani. Basta registrare la data del cambio, e l'app ti avvisa quando e ora di cambiarli di nuovo. Mai piu dimenticanze!
+Kaetao gestisce automaticamente il calendario di sostituzione dei tuoi articoli domestici. Basta registrare la data del cambio, e l'app ti avvisa quando è ora di cambiarli di nuovo. Mai più dimenticanze!
 
 ◆ Registrazione facile dei cambi
-Registra i tuoi asciugamani da bagno, asciugamani per il viso, strofinacci da cucina e altro. Imposta liberamente gli intervalli di cambio e visualizza a colpo d'occhio quali asciugamani devono essere cambiati grazie agli indicatori di stato.
+Registra i tuoi asciugamani, spazzolini, spugne da cucina, lenzuola, filtri e altro. Imposta liberamente gli intervalli di sostituzione e visualizza a colpo d'occhio quali articoli devono essere cambiati grazie agli indicatori di stato.
 
 ◆ Diagnosi IA dello stato dell'asciugamano
-Scatta semplicemente una foto del tuo asciugamano e l'IA valutera scolorimento, macchie, pelucchi e sfilacciamento su una scala di 100 punti. Lascia che l'IA ti aiuti a decidere: "Si puo ancora usare?" o "E ora di comprarne uno nuovo?"
+Scatta semplicemente una foto del tuo asciugamano e l'IA valuterà scolorimento, macchie, pelucchi e sfilacciamento su una scala di 100 punti. Lascia che l'IA ti aiuti a decidere: "Si può ancora usare?" o "È ora di comprarne uno nuovo?"
 
 ◆ Promemoria con notifiche
-Ricevi una notifica quando e il momento di cambiare gli asciugamani. Resta organizzato anche nelle giornate piu impegnative.
+Ricevi una notifica quando è il momento di sostituire i tuoi articoli. Resta organizzato anche nelle giornate più impegnative.
 
 ◆ Condivisione familiare
-Invita i membri della famiglia con un codice di invito e condividi la gestione degli asciugamani. Tutta la famiglia puo godere di asciugamani freschi e puliti.
+Invita i membri della famiglia con un codice di invito e condividi la gestione degli articoli. Tutta la famiglia può godere di una casa pulita e organizzata.
 
-◆ A chi e consigliato?
-・A chi dimentica quando ha cambiato gli asciugamani
-・A chi tiene all'igiene degli asciugamani
-・Alle famiglie che vogliono condividere la gestione degli asciugamani
-・A chiunque voglia organizzare meglio gli articoli per la casa
+◆ A chi è consigliato?
+・A chi dimentica quando ha sostituito i propri articoli domestici
+・A chi tiene all'igiene di asciugamani, spazzolini, ecc.
+・Alle famiglie che vogliono condividere la gestione degli articoli
+・A chiunque voglia monitorare i cicli di sostituzione dei consumabili
 
 ◆ Piano Pro
-Le funzioni base sono gratuite. Passa al Piano Pro per ancora piu vantaggi:
+Le funzioni base sono gratuite. Passa al Piano Pro per ancora più vantaggi:
 ・Diagnosi IA illimitate
-・Registrazione illimitata di asciugamani
+・Registrazione illimitata di articoli
 ・Fino a 10 membri per gruppo
 ・Cronologia completa delle diagnosi
 Scegli tra piano mensile o annuale.
 
-Inizia la tua vita con asciugamani puliti con Kaetao.
+Inizia la tua vita pulita con Kaetao.
 
 Termini di utilizzo: https://kaetao-c43f1.web.app/terms-of-use
 Informativa sulla privacy: https://kaetao-c43f1.web.app/privacy-policy

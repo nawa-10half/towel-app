@@ -1,1 +1,1 @@
-toalla,cambio,higiene,recordatorio,lavado,hogar,limpio,familia,IA,bano,temporizador,ropa,gestionar
+toalla,cambio,higiene,recordatorio,hogar,limpio,familia,IA,cepillo,esponja,sábanas,filtro

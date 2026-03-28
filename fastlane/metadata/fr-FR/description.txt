@@ -1,31 +1,31 @@
-Quand avez-vous changé vos serviettes pour la dernière fois ?
+Quand avez-vous remplacé vos articles ménagers pour la dernière fois ?
 
-Nous utilisons des serviettes tous les jours, alors les garder propres est essentiel. Mais avouez-le : vous oubliez souvent quand vous les avez changées, non ?
+Serviettes, brosses à dents, éponges, draps, filtres à eau… Nous les utilisons tous les jours, alors les maintenir en bon état est essentiel. Mais avouez-le : vous oubliez souvent quand vous les avez remplacés, non ?
 
-Kaetao gère automatiquement le calendrier de remplacement de vos serviettes. Il suffit de noter la date de changement, et l'application vous rappelle quand il est temps de les remplacer. Fini les oublis !
+Kaetao gère automatiquement le calendrier de remplacement de vos articles ménagers. Il suffit de noter la date de remplacement, et l'application vous rappelle quand il est temps de changer. Fini les oublis !
 
-◆ Suivi facile des changements
-Enregistrez vos serviettes de bain, serviettes de toilette, torchons de cuisine et bien plus. Définissez librement les intervalles de remplacement et visualisez en un coup d'oeil lesquelles doivent être changées grâce aux indicateurs de statut.
+◆ Suivi facile des remplacements
+Enregistrez vos serviettes, brosses à dents, éponges de cuisine, draps, filtres et bien plus. Définissez librement les intervalles de remplacement et visualisez en un coup d'œil lesquels doivent être changés grâce aux indicateurs de statut.
 
 ◆ Diagnostic IA de l'état des serviettes
-Prenez simplement une photo de votre serviette et l'IA évalue la décoloration, les taches, le boulochage et l'effilochage sur une échelle de 100 points. Laissez l'IA vous aider à décider : "Encore utilisable ?" ou "Il est temps d'en acheter une nouvelle ?"
+Prenez simplement une photo de votre serviette et l'IA évalue la décoloration, les taches, le boulochage et l'effilochage sur une échelle de 100 points. Laissez l'IA vous aider à décider : « Encore utilisable ? » ou « Il est temps d'en acheter une nouvelle ? »
 
 ◆ Rappels par notification
-Recevez une notification lorsqu'il est temps de changer vos serviettes. Restez organisé même dans les journées les plus chargées.
+Recevez une notification lorsqu'il est temps de remplacer vos articles. Restez organisé même dans les journées les plus chargées.
 
 ◆ Partage familial
-Invitez les membres de votre famille avec un code d'invitation et partagez la gestion des serviettes. Toute la famille profite de serviettes propres et fraîches.
+Invitez les membres de votre famille avec un code d'invitation et partagez la gestion des articles. Toute la famille profite d'un foyer propre et organisé.
 
 ◆ Qui peut en bénéficier ?
-・Ceux qui oublient quand ils ont changé leurs serviettes
-・Les personnes soucieuses de l'hygiène de leurs serviettes
-・Les familles souhaitant partager la gestion des serviettes
-・Tous ceux qui veulent mieux gérer leurs articles ménagers
+・Ceux qui oublient quand ils ont remplacé leurs articles ménagers
+・Les personnes soucieuses de l'hygiène des serviettes, brosses à dents, etc.
+・Les familles souhaitant partager la gestion des articles
+・Tous ceux qui veulent suivre les cycles de remplacement des consommables
 
 ◆ Forfait Pro
 Les fonctionnalités de base sont gratuites. Passez au forfait Pro pour encore plus d'avantages :
 ・Diagnostics IA illimités
-・Enregistrement illimité de serviettes
+・Enregistrement illimité d'articles
 ・Jusqu'à 10 membres par groupe
 ・Historique complet des diagnostics
 Choisissez entre un abonnement mensuel ou annuel.

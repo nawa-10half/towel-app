@@ -10,7 +10,7 @@ enum ProFeature {
     var title: String {
         switch self {
         case .assessment: return String(localized: "AI状態診断")
-        case .towelLimit: return String(localized: "タオル登録数")
+        case .towelLimit: return String(localized: "アイテム登録数")
         case .groupMembers: return String(localized: "グループメンバー")
         case .history: return String(localized: "診断履歴")
         }
@@ -19,7 +19,7 @@ enum ProFeature {
     var description: String {
         switch self {
         case .assessment: return String(localized: "AIによる状態診断が無制限に")
-        case .towelLimit: return String(localized: "タオルを何枚でも登録可能")
+        case .towelLimit: return String(localized: "アイテムを何個でも登録可能")
         case .groupMembers: return String(localized: "グループメンバーを最大10人まで")
         case .history: return String(localized: "すべての診断履歴を閲覧可能")
         }
@@ -94,7 +94,7 @@ struct ProPaywallView: View {
     private var featuresSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             featureRow(icon: "sparkles", text: "AI状態診断が無制限")
-            featureRow(icon: "plus.circle", text: "タオル登録数が無制限")
+            featureRow(icon: "plus.circle", text: "アイテム登録数が無制限")
             featureRow(icon: "person.3", text: "グループメンバー最大10人")
             featureRow(icon: "clock.arrow.circlepath", text: "すべての診断履歴を閲覧")
             featureRow(icon: "nosign", text: "広告なし")

@@ -1,1 +1,1 @@
-towel,exchange,hygiene,reminder,laundry,household,clean,timer,family,AI,tracker,bath,schedule,fresh
+towel,exchange,hygiene,reminder,household,clean,family,AI,tracker,toothbrush,sponge,sheets,filter

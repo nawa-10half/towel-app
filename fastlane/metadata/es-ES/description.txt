@@ -1,36 +1,36 @@
-Esa toalla, cuando fue la ultima vez que la cambiaste?
+¿Cuándo fue la última vez que cambiaste tus artículos del hogar?
 
-Usamos toallas todos los dias, asi que mantenerlas limpias es fundamental. Pero, seamos sinceros: a menudo olvidamos cuando las cambiamos por ultima vez, verdad?
+Toallas, cepillos de dientes, esponjas, sábanas, filtros de agua… Los usamos todos los días, así que mantenerlos en buen estado es fundamental. Pero seamos sinceros: a menudo olvidamos cuándo los cambiamos por última vez, ¿verdad?
 
-Kaetao gestiona automaticamente el calendario de cambio de tus toallas. Solo registra la fecha del cambio, y la app te avisara cuando sea el momento de cambiarlas. Se acabaron los olvidos.
+Kaetao gestiona automáticamente el calendario de cambio de tus artículos del hogar. Solo registra la fecha del cambio, y la app te avisará cuando sea el momento de cambiarlos. Se acabaron los olvidos.
 
-◆ Registro facil de cambios
-Registra tus toallas de bano, toallas de mano, panos de cocina y mas. Configura libremente los intervalos de cambio y visualiza de un vistazo cuales necesitan ser cambiadas con indicadores de estado claros.
+◆ Registro fácil de cambios
+Registra tus toallas, cepillos de dientes, esponjas de cocina, sábanas, filtros y más. Configura libremente los intervalos de cambio y visualiza de un vistazo cuáles necesitan ser cambiados con indicadores de estado claros.
 
-◆ Diagnostico IA del estado de la toalla
-Simplemente toma una foto de tu toalla y la IA evaluara la decoloracion, manchas, pelusa y deshilachado en una escala de 100 puntos. Deja que la IA te ayude a decidir: "Aun sirve?" o "Es hora de comprar una nueva?"
+◆ Diagnóstico IA del estado de la toalla
+Simplemente toma una foto de tu toalla y la IA evaluará la decoloración, manchas, pelusa y deshilachado en una escala de 100 puntos. Deja que la IA te ayude a decidir: "¿Aún sirve?" o "¿Es hora de comprar una nueva?"
 
-◆ Recordatorios por notificacion
-Recibe una notificacion cuando sea el momento de cambiar tus toallas. Mantente al dia incluso en los dias mas ajetreados.
+◆ Recordatorios por notificación
+Recibe una notificación cuando sea el momento de cambiar tus artículos. Mantente al día incluso en los días más ajetreados.
 
 ◆ Compartir en familia
-Invita a miembros de tu familia con un codigo de invitacion y comparte la gestion de toallas. Toda la familia disfrutara de toallas frescas y limpias.
+Invita a miembros de tu familia con un código de invitación y comparte la gestión de artículos. Toda la familia disfrutará de un hogar limpio y organizado.
 
 ◆ Recomendado para
-・Quienes olvidan cuando cambiaron sus toallas
-・Personas preocupadas por la higiene de sus toallas
-・Familias que quieren compartir la gestion de toallas
-・Cualquiera que busque gestionar mejor los articulos del hogar
+・Quienes olvidan cuándo cambiaron sus artículos del hogar
+・Personas preocupadas por la higiene de toallas, cepillos de dientes, etc.
+・Familias que quieren compartir la gestión de artículos
+・Cualquiera que busque controlar los ciclos de reemplazo de consumibles
 
 ◆ Plan Pro
-Las funciones basicas son gratuitas. Actualiza al Plan Pro para mas ventajas:
-・Diagnosticos IA ilimitados
-・Registro ilimitado de toallas
+Las funciones básicas son gratuitas. Actualiza al Plan Pro para más ventajas:
+・Diagnósticos IA ilimitados
+・Registro ilimitado de artículos
 ・Hasta 10 miembros por grupo
-・Historial completo de diagnosticos
+・Historial completo de diagnósticos
 Elige entre plan mensual o anual.
 
-Comienza tu vida con toallas limpias con Kaetao.
+Comienza tu vida limpia con Kaetao.
 
-Terminos de uso: https://kaetao-c43f1.web.app/terms-of-use
-Politica de privacidad: https://kaetao-c43f1.web.app/privacy-policy
+Términos de uso: https://kaetao-c43f1.web.app/terms-of-use
+Política de privacidad: https://kaetao-c43f1.web.app/privacy-policy

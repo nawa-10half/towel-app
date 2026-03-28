@@ -11,7 +11,7 @@ struct ContentView: View {
                 TowelListView()
             }
             .tabItem {
-                Label("タオル", systemImage: "hand.raised.fill")
+                Label("アイテム", systemImage: "hand.raised.fill")
             }
             .tag(0)
 

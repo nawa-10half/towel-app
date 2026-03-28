@@ -57,7 +57,7 @@ struct TowelFormView: View {
                 iconSection
                 intervalSection
             }
-            .navigationTitle(isEditing ? "タオルを編集" : "タオルを追加")
+            .navigationTitle(isEditing ? "アイテムを編集" : "アイテムを追加")
             .navigationBarTitleDisplayMode(.inline)
             .alert("エラー", isPresented: Binding(
                 get: { errorMessage != nil },
@@ -87,7 +87,7 @@ struct TowelFormView: View {
 
     private var nameSection: some View {
         Section {
-            TextField("タオルの名前", text: $name)
+            TextField("アイテムの名前", text: $name)
         } header: {
             Text("名前")
         }
@@ -145,7 +145,7 @@ struct TowelFormView: View {
         } header: {
             Text("交換間隔")
         } footer: {
-            Text("タオルの交換推奨間隔を設定します")
+            Text("交換推奨間隔を設定します")
         }
     }
 

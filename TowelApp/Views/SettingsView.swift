@@ -247,7 +247,7 @@ struct SettingsView: View {
             Text("通知")
         } footer: {
             if notificationsEnabled {
-                Text("交換期限を過ぎたタオルについてもリマインドします")
+                Text("交換期限を過ぎたアイテムについてもリマインドします")
             } else {
                 Text("交換時期が近づくとリマインダーが届きます")
             }
