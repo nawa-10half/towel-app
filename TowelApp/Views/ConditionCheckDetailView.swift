@@ -81,7 +81,7 @@ struct ConditionCheckDetailView: View {
         }
     }
 
-    private func scoreCard(title: String, score: Int, icon: String) -> some View {
+    private func scoreCard(title: LocalizedStringKey, score: Int, icon: String) -> some View {
         VStack(spacing: 6) {
             Image(systemName: icon)
                 .font(.title3)
