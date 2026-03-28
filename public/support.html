@@ -106,6 +106,17 @@
       text-align: right;
       margin-top: 40px;
     }
+    .lang-switch {
+      text-align: right;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+    .lang-switch a {
+      color: #0071e3;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .lang-switch a:hover { text-decoration: underline; }
     @media (max-width: 600px) {
       .container { padding: 32px 20px; }
       h1 { font-size: 22px; }
@@ -114,106 +125,227 @@
 </head>
 <body>
   <div class="container">
-    <div class="logo">🏠</div>
-    <h1>サポート</h1>
-    <p class="subtitle">かえたお（Kaetao）</p>
-
-    <p>「かえたお」をご利用いただきありがとうございます。よくあるご質問と、お問い合わせ先をご案内します。</p>
-
-    <h2>よくあるご質問</h2>
-    <div class="faq">
-
-      <details class="faq-item">
-        <summary>リストアコードを忘れてしまいました</summary>
-        <div class="answer">
-          <p>リストアコードはアプリの設定画面から確認できます。</p>
-          <ol>
-            <li>アプリを開き、下部の「設定」タブをタップ</li>
-            <li>「アカウント」セクションのリストアコードをご確認ください</li>
-          </ol>
-          <p>コードが表示されない場合、または端末を変更してログインできない場合は、お手数ですがサポートまでご連絡ください。なお、セキュリティ上の理由からコードの再発行はできません。</p>
-        </div>
-      </details>
-
-      <details class="faq-item">
-        <summary>家族グループに参加する方法を教えてください</summary>
-        <div class="answer">
-          <ol>
-            <li>グループを作成したメンバーに6文字の招待コードを共有してもらう</li>
-            <li>アプリの「設定」→「グループ設定」→「グループに参加」をタップ</li>
-            <li>招待コードを入力して参加完了</li>
-          </ol>
-          <p>参加後は、グループのタオルデータがリアルタイムで同期されます。</p>
-        </div>
-      </details>
-
-      <details class="faq-item">
-        <summary>データが消えた・同期されない</summary>
-        <div class="answer">
-          <p>以下をお試しください。</p>
-          <ul>
-            <li>インターネット接続を確認する</li>
-            <li>アプリを一度終了して再起動する</li>
-            <li>端末を再起動する</li>
-          </ul>
-          <p>改善しない場合は、リストアコードとアプリのバージョンをお知らせのうえ、サポートまでご連絡ください。</p>
-        </div>
-      </details>
-
-      <details class="faq-item">
-        <summary>アカウントを削除するには？</summary>
-        <div class="answer">
-          <ol>
-            <li>アプリの「設定」タブをタップ</li>
-            <li>「アカウント」セクション内の「アカウントを削除」をタップ</li>
-            <li>確認ダイアログで削除を実行</li>
-          </ol>
-          <p>削除するとタオルデータ・状態診断写真・認証情報のすべてが完全に消去されます。この操作は取り消しできません。</p>
-        </div>
-      </details>
-
-      <details class="faq-item">
-        <summary>Amazon Alexa と連携する方法を教えてください</summary>
-        <div class="answer">
-          <ol>
-            <li>かえたおアプリの「設定」→「Alexa 連携」→「連携コードを生成」をタップして6文字のコードを取得（コードは10分間有効です）</li>
-            <li>スマートフォンの Alexa アプリを開き、スキル「かえたおアプリ」を検索して「有効にして使用する」をタップ</li>
-            <li>スキルの詳細画面が表示された場合は、右上の「✕」をタップして閉じてください</li>
-            <li>有効化したスキルの画面で「設定」をタップし、「アカウントをリンク」を選択</li>
-            <li>表示されたリンクページで、手順1で取得した6文字のコードを入力して「連携する」をタップ</li>
-          </ol>
-          <p>連携完了後は「アレクサ、かえたおアプリを開いて」でタオルの状態を音声で確認できます。コードの有効期限が切れた場合は、かえたおアプリから再度生成してください。</p>
-        </div>
-      </details>
-
-      <details class="faq-item">
-        <summary>通知が届きません</summary>
-        <div class="answer">
-          <ul>
-            <li>【iOS】「設定」アプリ → 「かえたお」→ 「通知」で通知が許可されているか確認する</li>
-            <li>【Android】端末の「設定」→「アプリ」→「かえたお」→「通知」で通知が許可されているか確認する</li>
-            <li>アプリ内「設定」→「通知設定」で通知が有効になっているか確認する</li>
-            <li>各タオルに交換間隔が設定されているか確認する</li>
-          </ul>
-        </div>
-      </details>
-
+    <div class="lang-switch">
+      <a onclick="switchLang('en')">EN</a> | <a onclick="switchLang('ja')">日本語</a>
     </div>
 
-    <h2>お問い合わせ</h2>
-    <p>上記で解決しない場合は、以下のメールアドレスまでお気軽にご連絡ください。</p>
-    <div class="contact-box">
-      <strong>10HALF LLC</strong><br>
-      メール：<a href="mailto:support@10half.jp">support@10half.jp</a><br>
-      <small style="color:#8e8e93;">通常2営業日以内にご返信いたします。</small>
+    <div id="ja">
+      <div class="logo">🏠</div>
+      <h1>サポート</h1>
+      <p class="subtitle">かえたお（Kaetao）</p>
+
+      <p>「かえたお」をご利用いただきありがとうございます。よくあるご質問と、お問い合わせ先をご案内します。</p>
+
+      <h2>よくあるご質問</h2>
+      <div class="faq">
+
+        <details class="faq-item">
+          <summary>リストアコードを忘れてしまいました</summary>
+          <div class="answer">
+            <p>リストアコードはアプリの設定画面から確認できます。</p>
+            <ol>
+              <li>アプリを開き、下部の「設定」タブをタップ</li>
+              <li>「アカウント」セクションのリストアコードをご確認ください</li>
+            </ol>
+            <p>コードが表示されない場合、または端末を変更してログインできない場合は、お手数ですがサポートまでご連絡ください。なお、セキュリティ上の理由からコードの再発行はできません。</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>家族グループに参加する方法を教えてください</summary>
+          <div class="answer">
+            <ol>
+              <li>グループを作成したメンバーに6文字の招待コードを共有してもらう</li>
+              <li>アプリの「設定」→「グループ設定」→「グループに参加」をタップ</li>
+              <li>招待コードを入力して参加完了</li>
+            </ol>
+            <p>参加後は、グループのタオルデータがリアルタイムで同期されます。</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>データが消えた・同期されない</summary>
+          <div class="answer">
+            <p>以下をお試しください。</p>
+            <ul>
+              <li>インターネット接続を確認する</li>
+              <li>アプリを一度終了して再起動する</li>
+              <li>端末を再起動する</li>
+            </ul>
+            <p>改善しない場合は、リストアコードとアプリのバージョンをお知らせのうえ、サポートまでご連絡ください。</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>アカウントを削除するには？</summary>
+          <div class="answer">
+            <ol>
+              <li>アプリの「設定」タブをタップ</li>
+              <li>「アカウント」セクション内の「アカウントを削除」をタップ</li>
+              <li>確認ダイアログで削除を実行</li>
+            </ol>
+            <p>削除するとタオルデータ・状態診断写真・認証情報のすべてが完全に消去されます。この操作は取り消しできません。</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Amazon Alexa と連携する方法を教えてください</summary>
+          <div class="answer">
+            <ol>
+              <li>かえたおアプリの「設定」→「Alexa 連携」→「連携コードを生成」をタップして6文字のコードを取得（コードは10分間有効です）</li>
+              <li>スマートフォンの Alexa アプリを開き、スキル「かえたおアプリ」を検索して「有効にして使用する」をタップ</li>
+              <li>スキルの詳細画面が表示された場合は、右上の「✕」をタップして閉じてください</li>
+              <li>有効化したスキルの画面で「設定」をタップし、「アカウントをリンク」を選択</li>
+              <li>表示されたリンクページで、手順1で取得した6文字のコードを入力して「連携する」をタップ</li>
+            </ol>
+            <p>連携完了後は「アレクサ、かえたおアプリを開いて」でタオルの状態を音声で確認できます。コードの有効期限が切れた場合は、かえたおアプリから再度生成してください。</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>通知が届きません</summary>
+          <div class="answer">
+            <ul>
+              <li>【iOS】「設定」アプリ → 「かえたお」→ 「通知」で通知が許可されているか確認する</li>
+              <li>【Android】端末の「設定」→「アプリ」→「かえたお」→「通知」で通知が許可されているか確認する</li>
+              <li>アプリ内「設定」→「通知設定」で通知が有効になっているか確認する</li>
+              <li>各タオルに交換間隔が設定されているか確認する</li>
+            </ul>
+          </div>
+        </details>
+
+      </div>
+
+      <h2>お問い合わせ</h2>
+      <p>上記で解決しない場合は、以下のメールアドレスまでお気軽にご連絡ください。</p>
+      <div class="contact-box">
+        <strong>10HALF LLC</strong><br>
+        メール：<a href="mailto:support@10half.jp">support@10half.jp</a><br>
+        <small style="color:#8e8e93;">通常2営業日以内にご返信いたします。</small>
+      </div>
+
+      <div class="links">
+        <a href="/privacy-policy">プライバシーポリシー</a>
+        <a href="/terms-of-use">利用規約</a>
+      </div>
+
+      <p class="updated">最終更新日：2026年3月8日</p>
     </div>
 
-    <div class="links">
-      <a href="/privacy-policy">プライバシーポリシー</a>
-      <a href="/terms-of-use">利用規約</a>
-    </div>
+    <div id="en" style="display:none">
+      <div class="logo">🏠</div>
+      <h1>Support</h1>
+      <p class="subtitle">Kaetao</p>
 
-    <p class="updated">最終更新日：2026年3月8日</p>
+      <p>Thank you for using Kaetao. Below you'll find answers to frequently asked questions and our contact information.</p>
+
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq">
+
+        <details class="faq-item">
+          <summary>I forgot my restore code</summary>
+          <div class="answer">
+            <p>You can check your restore code in the app's settings.</p>
+            <ol>
+              <li>Open the app and tap the "Settings" tab at the bottom</li>
+              <li>Check the restore code in the "Account" section</li>
+            </ol>
+            <p>If the code is not displayed, or if you changed devices and cannot sign in, please contact support. Please note that restore codes cannot be reissued for security reasons.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>How do I join a family group?</summary>
+          <div class="answer">
+            <ol>
+              <li>Ask the group creator to share the 6-character invite code</li>
+              <li>In the app, go to "Settings" > "Group Settings" > "Join Group"</li>
+              <li>Enter the invite code to complete joining</li>
+            </ol>
+            <p>After joining, the group's item data will sync in real time.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>My data disappeared or isn't syncing</summary>
+          <div class="answer">
+            <p>Please try the following:</p>
+            <ul>
+              <li>Check your internet connection</li>
+              <li>Close and restart the app</li>
+              <li>Restart your device</li>
+            </ul>
+            <p>If the issue persists, please contact support with your restore code and app version.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>How do I delete my account?</summary>
+          <div class="answer">
+            <ol>
+              <li>Tap the "Settings" tab in the app</li>
+              <li>Tap "Delete Account" in the "Account" section</li>
+              <li>Confirm the deletion in the dialog</li>
+            </ol>
+            <p>Deleting your account will permanently erase all item data, condition check photos, and authentication information. This action cannot be undone.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>How do I link with Amazon Alexa?</summary>
+          <div class="answer">
+            <ol>
+              <li>In the Kaetao app, go to "Settings" > "Alexa Integration" > "Generate Link Code" to get a 6-character code (valid for 10 minutes)</li>
+              <li>Open the Alexa app on your smartphone, search for the "Kaetao" skill, and tap "Enable to Use"</li>
+              <li>If a skill details screen appears, tap the "X" in the upper right to close it</li>
+              <li>On the enabled skill screen, tap "Settings" and select "Link Account"</li>
+              <li>On the linking page, enter the 6-character code from step 1 and tap "Link"</li>
+            </ol>
+            <p>Once linked, you can check your item status by voice with "Alexa, open Kaetao." If the code has expired, generate a new one from the Kaetao app.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>I'm not receiving notifications</summary>
+          <div class="answer">
+            <ul>
+              <li>[iOS] Go to device Settings > "Kaetao" > "Notifications" and check that notifications are enabled</li>
+              <li>[Android] Go to device Settings > "Apps" > "Kaetao" > "Notifications" and check that notifications are enabled</li>
+              <li>In the app, go to "Settings" > "Notification Settings" and check that notifications are turned on</li>
+              <li>Make sure each item has an exchange interval set</li>
+            </ul>
+          </div>
+        </details>
+
+      </div>
+
+      <h2>Contact Us</h2>
+      <p>If the above doesn't resolve your issue, please feel free to contact us at the email address below.</p>
+      <div class="contact-box">
+        <strong>10HALF LLC</strong><br>
+        Email: <a href="mailto:support@10half.jp">support@10half.jp</a><br>
+        <small style="color:#8e8e93;">We typically respond within 2 business days.</small>
+      </div>
+
+      <div class="links">
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms-of-use">Terms of Use</a>
+      </div>
+
+      <p class="updated">Last updated: March 8, 2026</p>
+    </div>
   </div>
+
+  <script>
+    var userLang = navigator.language || navigator.userLanguage;
+    if (!userLang.startsWith('ja')) {
+      document.getElementById('ja').style.display = 'none';
+      document.getElementById('en').style.display = 'block';
+    }
+    function switchLang(lang) {
+      document.getElementById('ja').style.display = lang === 'ja' ? 'block' : 'none';
+      document.getElementById('en').style.display = lang === 'en' ? 'block' : 'none';
+    }
+  </script>
 </body>
 </html>

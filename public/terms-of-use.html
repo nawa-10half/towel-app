@@ -63,6 +63,17 @@
       text-align: right;
       margin-top: 40px;
     }
+    .lang-switch {
+      text-align: right;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+    .lang-switch a {
+      color: #0071e3;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .lang-switch a:hover { text-decoration: underline; }
     @media (max-width: 600px) {
       .container { padding: 32px 20px; }
       h1 { font-size: 22px; }
@@ -71,111 +82,237 @@
 </head>
 <body>
   <div class="container">
-    <div class="logo">🏠</div>
-    <h1>利用規約</h1>
-    <p class="subtitle">かえたお（Kaetao）</p>
-
-    <p>
-      本利用規約（以下「本規約」）は、10HALF LLC（以下「当社」）が提供するiOS/AndroidアプリおよびAmazon Alexaスキル
-      「かえたお」（以下「本サービス」）の利用条件を定めるものです。
-      本サービスをご利用になる前に、必ず本規約をお読みください。
-      本サービスを利用した場合、本規約に同意したものとみなします。
-    </p>
-
-    <h2>1. サービスの内容</h2>
-    <p>
-      本サービスは、タオルの交換タイミング管理を支援するアプリおよびAlexaスキルです。
-      登録タオルの管理、交換記録の登録、AI診断機能、Alexa音声操作機能を提供します。
-    </p>
-
-    <h2>2. 利用資格</h2>
-    <p>
-      本サービスは、スマートフォンまたはAmazon Alexaデバイスを利用できる方であればご利用いただけます。
-      基本機能は無料でご利用いただけますが、一部の機能はProプラン（有料）への加入が必要です。
-      13歳未満の方は保護者の同意のもとでご利用ください。
-    </p>
-
-    <h2>3. 有料プラン（Proプラン）</h2>
-    <p>
-      本サービスでは、Apple App Store のApp内課金を通じて有料プラン（Proプラン）を提供しています。
-    </p>
-    <ul>
-      <li><strong>月額プラン</strong>：購入日を起点に1ヶ月ごとに自動更新されます。</li>
-      <li><strong>買い切りプラン</strong>：一度の購入で永続的にご利用いただけます。</li>
-    </ul>
-    <p>
-      月額プランの自動更新は、現在の期間が終了する24時間以上前にApple IDの設定画面から解約することで停止できます。
-      解約後も、支払い済みの期間が終了するまでProプランの機能をご利用いただけます。
-    </p>
-    <p>
-      購入に関する返金は、Appleの返金ポリシーに従います。
-      アカウントを削除しても、月額プランの自動更新は停止されません。
-      必ずApple IDの設定画面からサブスクリプションを解約してください。
-    </p>
-
-    <h2>4. アカウントの管理</h2>
-    <p>
-      ユーザーは、アプリ初回起動時に発行されるリストアコードを安全に管理する責任を負います。
-      リストアコードを紛失した場合、アカウントの復元ができなくなる可能性があります。
-      当社はリストアコードの紛失によるデータ損失について責任を負いません。
-    </p>
-
-    <h2>5. 禁止事項</h2>
-    <p>ユーザーは以下の行為を行ってはなりません。</p>
-    <ul>
-      <li>本サービスの逆アセンブル、逆コンパイル、リバースエンジニアリング</li>
-      <li>本サービスを利用した違法行為または公序良俗に反する行為</li>
-      <li>他のユーザーまたは第三者への迷惑行為</li>
-      <li>当社の事前承諾なく本サービスを商業目的で利用する行為</li>
-      <li>本サービスの運営を妨害する行為</li>
-    </ul>
-
-    <h2>6. 知的財産権</h2>
-    <p>
-      本サービスに関する著作権、商標権その他の知的財産権は、当社または正当な権利者に帰属します。
-      ユーザーは、当社の事前承諾なく、本サービスのコンテンツを複製・転載・配布することはできません。
-    </p>
-
-    <h2>7. 免責事項</h2>
-    <p>
-      当社は、本サービスの内容の正確性・完全性・有用性について保証しません。
-      本サービスの利用または利用不能によって生じた損害について、当社は一切の責任を負いません。
-    </p>
-    <p>
-      AI診断機能の結果はあくまで参考情報であり、実際のタオルの状態を保証するものではありません。
-    </p>
-
-    <h2>8. サービスの変更・終了</h2>
-    <p>
-      当社は、ユーザーへの事前通知なく、本サービスの内容を変更または終了することがあります。
-      これによりユーザーに生じた損害について、当社は責任を負いません。
-    </p>
-
-    <h2>9. 規約の変更</h2>
-    <p>
-      当社は、必要に応じて本規約を変更することがあります。
-      変更後の規約はアプリ内または本ページに掲載した時点で効力を生じます。
-    </p>
-
-    <h2>10. 準拠法・裁判管轄</h2>
-    <p>
-      本規約は日本法に準拠します。
-      本サービスに関する紛争については、当社所在地を管轄する裁判所を専属的合意管轄裁判所とします。
-    </p>
-
-    <h2>11. 特定商取引法に基づく表記</h2>
-    <p>
-      有料プランの販売に関する特定商取引法に基づく表記は、<a href="https://10half.jp/tokushoho.html" style="color: #0071e3; text-decoration: none;">こちら</a>をご覧ください。
-    </p>
-
-    <h2>12. お問い合わせ</h2>
-    <p>本規約に関するお問い合わせは、以下までご連絡ください。</p>
-    <div class="contact-box">
-      <strong>10HALF LLC</strong><br>
-      メール：<a href="mailto:support@10half.jp">support@10half.jp</a>
+    <div class="lang-switch">
+      <a onclick="switchLang('en')">EN</a> | <a onclick="switchLang('ja')">日本語</a>
     </div>
 
-    <p class="updated">最終更新日：2026年2月28日</p>
+    <div id="ja">
+      <div class="logo">🏠</div>
+      <h1>利用規約</h1>
+      <p class="subtitle">かえたお（Kaetao）</p>
+
+      <p>
+        本利用規約（以下「本規約」）は、10HALF LLC（以下「当社」）が提供するiOS/AndroidアプリおよびAmazon Alexaスキル
+        「かえたお」（以下「本サービス」）の利用条件を定めるものです。
+        本サービスをご利用になる前に、必ず本規約をお読みください。
+        本サービスを利用した場合、本規約に同意したものとみなします。
+      </p>
+
+      <h2>1. サービスの内容</h2>
+      <p>
+        本サービスは、タオルの交換タイミング管理を支援するアプリおよびAlexaスキルです。
+        登録タオルの管理、交換記録の登録、AI診断機能、Alexa音声操作機能を提供します。
+      </p>
+
+      <h2>2. 利用資格</h2>
+      <p>
+        本サービスは、スマートフォンまたはAmazon Alexaデバイスを利用できる方であればご利用いただけます。
+        基本機能は無料でご利用いただけますが、一部の機能はProプラン（有料）への加入が必要です。
+        13歳未満の方は保護者の同意のもとでご利用ください。
+      </p>
+
+      <h2>3. 有料プラン（Proプラン）</h2>
+      <p>
+        本サービスでは、Apple App Store のApp内課金を通じて有料プラン（Proプラン）を提供しています。
+      </p>
+      <ul>
+        <li><strong>月額プラン</strong>：購入日を起点に1ヶ月ごとに自動更新されます。</li>
+        <li><strong>買い切りプラン</strong>：一度の購入で永続的にご利用いただけます。</li>
+      </ul>
+      <p>
+        月額プランの自動更新は、現在の期間が終了する24時間以上前にApple IDの設定画面から解約することで停止できます。
+        解約後も、支払い済みの期間が終了するまでProプランの機能をご利用いただけます。
+      </p>
+      <p>
+        購入に関する返金は、Appleの返金ポリシーに従います。
+        アカウントを削除しても、月額プランの自動更新は停止されません。
+        必ずApple IDの設定画面からサブスクリプションを解約してください。
+      </p>
+
+      <h2>4. アカウントの管理</h2>
+      <p>
+        ユーザーは、アプリ初回起動時に発行されるリストアコードを安全に管理する責任を負います。
+        リストアコードを紛失した場合、アカウントの復元ができなくなる可能性があります。
+        当社はリストアコードの紛失によるデータ損失について責任を負いません。
+      </p>
+
+      <h2>5. 禁止事項</h2>
+      <p>ユーザーは以下の行為を行ってはなりません。</p>
+      <ul>
+        <li>本サービスの逆アセンブル、逆コンパイル、リバースエンジニアリング</li>
+        <li>本サービスを利用した違法行為または公序良俗に反する行為</li>
+        <li>他のユーザーまたは第三者への迷惑行為</li>
+        <li>当社の事前承諾なく本サービスを商業目的で利用する行為</li>
+        <li>本サービスの運営を妨害する行為</li>
+      </ul>
+
+      <h2>6. 知的財産権</h2>
+      <p>
+        本サービスに関する著作権、商標権その他の知的財産権は、当社または正当な権利者に帰属します。
+        ユーザーは、当社の事前承諾なく、本サービスのコンテンツを複製・転載・配布することはできません。
+      </p>
+
+      <h2>7. 免責事項</h2>
+      <p>
+        当社は、本サービスの内容の正確性・完全性・有用性について保証しません。
+        本サービスの利用または利用不能によって生じた損害について、当社は一切の責任を負いません。
+      </p>
+      <p>
+        AI診断機能の結果はあくまで参考情報であり、実際のタオルの状態を保証するものではありません。
+      </p>
+
+      <h2>8. サービスの変更・終了</h2>
+      <p>
+        当社は、ユーザーへの事前通知なく、本サービスの内容を変更または終了することがあります。
+        これによりユーザーに生じた損害について、当社は責任を負いません。
+      </p>
+
+      <h2>9. 規約の変更</h2>
+      <p>
+        当社は、必要に応じて本規約を変更することがあります。
+        変更後の規約はアプリ内または本ページに掲載した時点で効力を生じます。
+      </p>
+
+      <h2>10. 準拠法・裁判管轄</h2>
+      <p>
+        本規約は日本法に準拠します。
+        本サービスに関する紛争については、当社所在地を管轄する裁判所を専属的合意管轄裁判所とします。
+      </p>
+
+      <h2>11. 特定商取引法に基づく表記</h2>
+      <p>
+        有料プランの販売に関する特定商取引法に基づく表記は、<a href="https://10half.jp/tokushoho.html" style="color: #0071e3; text-decoration: none;">こちら</a>をご覧ください。
+      </p>
+
+      <h2>12. お問い合わせ</h2>
+      <p>本規約に関するお問い合わせは、以下までご連絡ください。</p>
+      <div class="contact-box">
+        <strong>10HALF LLC</strong><br>
+        メール：<a href="mailto:support@10half.jp">support@10half.jp</a>
+      </div>
+
+      <p class="updated">最終更新日：2026年2月28日</p>
+    </div>
+
+    <div id="en" style="display:none">
+      <div class="logo">🏠</div>
+      <h1>Terms of Use</h1>
+      <p class="subtitle">Kaetao</p>
+
+      <p>
+        These Terms of Use ("Terms") set forth the conditions for using the iOS/Android app and Amazon Alexa skill
+        "Kaetao" (the "Service") provided by 10HALF LLC ("we," "us," or "our").
+        Please read these Terms carefully before using the Service.
+        By using the Service, you are deemed to have agreed to these Terms.
+      </p>
+
+      <h2>1. Description of the Service</h2>
+      <p>
+        The Service is an app and Alexa skill that helps manage the exchange timing of towels and household items.
+        It provides item management, exchange record tracking, AI condition diagnosis, and Alexa voice control features.
+      </p>
+
+      <h2>2. Eligibility</h2>
+      <p>
+        The Service is available to anyone who can use a smartphone or Amazon Alexa device.
+        Basic features are available for free, but some features require a Pro Plan (paid) subscription.
+        Users under the age of 13 must obtain parental consent before using the Service.
+      </p>
+
+      <h2>3. Paid Plan (Pro Plan)</h2>
+      <p>
+        The Service offers a paid plan (Pro Plan) through in-app purchases on the Apple App Store.
+      </p>
+      <ul>
+        <li><strong>Monthly Plan</strong>: Automatically renews every month from the date of purchase.</li>
+        <li><strong>One-Time Purchase Plan</strong>: A single purchase grants permanent access.</li>
+      </ul>
+      <p>
+        Auto-renewal of the monthly plan can be canceled through your Apple ID settings at least 24 hours before the current period ends.
+        After cancellation, Pro Plan features remain available until the end of the paid period.
+      </p>
+      <p>
+        Refunds are subject to Apple's refund policy.
+        Deleting your account does not cancel the monthly plan's auto-renewal.
+        Please make sure to cancel the subscription through your Apple ID settings.
+      </p>
+
+      <h2>4. Account Management</h2>
+      <p>
+        Users are responsible for securely managing the restore code issued upon first app launch.
+        If the restore code is lost, account recovery may not be possible.
+        We are not responsible for data loss resulting from a lost restore code.
+      </p>
+
+      <h2>5. Prohibited Actions</h2>
+      <p>Users must not engage in any of the following:</p>
+      <ul>
+        <li>Disassembling, decompiling, or reverse engineering the Service</li>
+        <li>Using the Service for illegal activities or activities that violate public order and morals</li>
+        <li>Causing nuisance to other users or third parties</li>
+        <li>Using the Service for commercial purposes without our prior consent</li>
+        <li>Interfering with the operation of the Service</li>
+      </ul>
+
+      <h2>6. Intellectual Property</h2>
+      <p>
+        Copyrights, trademarks, and other intellectual property rights related to the Service belong to us or their rightful owners.
+        Users may not reproduce, repost, or distribute the Service's content without our prior consent.
+      </p>
+
+      <h2>7. Disclaimer</h2>
+      <p>
+        We do not guarantee the accuracy, completeness, or usefulness of the Service's content.
+        We are not liable for any damages arising from the use or inability to use the Service.
+      </p>
+      <p>
+        AI diagnosis results are for reference only and do not guarantee the actual condition of items.
+      </p>
+
+      <h2>8. Changes to or Termination of the Service</h2>
+      <p>
+        We may change or terminate the Service without prior notice to users.
+        We are not liable for any damages arising from such changes or termination.
+      </p>
+
+      <h2>9. Changes to These Terms</h2>
+      <p>
+        We may modify these Terms as necessary.
+        Modified Terms take effect when posted within the app or on this page.
+      </p>
+
+      <h2>10. Governing Law and Jurisdiction</h2>
+      <p>
+        These Terms are governed by the laws of Japan.
+        Any disputes related to the Service shall be subject to the exclusive jurisdiction of the court having jurisdiction over our location.
+      </p>
+
+      <h2>11. Disclosure Under the Specified Commercial Transactions Act</h2>
+      <p>
+        For the disclosure required under the Japanese Specified Commercial Transactions Act regarding paid plan sales, please see <a href="https://10half.jp/tokushoho.html" style="color: #0071e3; text-decoration: none;">here</a>.
+      </p>
+
+      <h2>12. Contact Us</h2>
+      <p>For inquiries regarding these Terms, please contact us at:</p>
+      <div class="contact-box">
+        <strong>10HALF LLC</strong><br>
+        Email: <a href="mailto:support@10half.jp">support@10half.jp</a>
+      </div>
+
+      <p class="updated">Last updated: February 28, 2026</p>
+    </div>
   </div>
+
+  <script>
+    var userLang = navigator.language || navigator.userLanguage;
+    if (!userLang.startsWith('ja')) {
+      document.getElementById('ja').style.display = 'none';
+      document.getElementById('en').style.display = 'block';
+    }
+    function switchLang(lang) {
+      document.getElementById('ja').style.display = lang === 'ja' ? 'block' : 'none';
+      document.getElementById('en').style.display = lang === 'en' ? 'block' : 'none';
+    }
+  </script>
 </body>
 </html>

@@ -82,6 +82,17 @@
       text-align: right;
       margin-top: 40px;
     }
+    .lang-switch {
+      text-align: right;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+    .lang-switch a {
+      color: #0071e3;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .lang-switch a:hover { text-decoration: underline; }
     @media (max-width: 600px) {
       .container { padding: 32px 20px; }
       h1 { font-size: 22px; }
@@ -90,154 +101,323 @@
 </head>
 <body>
   <div class="container">
-    <div class="logo">🏠</div>
-    <h1>プライバシーポリシー</h1>
-    <p class="subtitle">かえたお（Kaetao）</p>
-
-    <p>
-      10HALF LLC（以下「当社」）は、iOS/AndroidアプリおよびAmazon Alexaスキル「かえたおアプリ」（以下「本サービス」）において、
-      ユーザーの個人情報・データの取り扱いについて、以下のとおりプライバシーポリシーを定めます。
-    </p>
-
-    <h2>1. 収集する情報</h2>
-    <p>本サービスでは、以下の情報を収集します。</p>
-    <table>
-      <thead>
-        <tr>
-          <th>情報の種類</th>
-          <th>内容</th>
-          <th>収集方法</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>表示名</td>
-          <td>ユーザーが任意に設定したニックネーム</td>
-          <td>アプリ内で入力</td>
-        </tr>
-        <tr>
-          <td>タオルデータ</td>
-          <td>登録タオルの名称・交換記録・使用期間等</td>
-          <td>アプリ内で入力</td>
-        </tr>
-        <tr>
-          <td>状態診断写真</td>
-          <td>タオルの状態確認のためにアップロードした画像</td>
-          <td>カメラまたはフォトライブラリ</td>
-        </tr>
-        <tr>
-          <td>AI診断結果</td>
-          <td>写真をもとにAIが生成したタオルの状態評価テキスト</td>
-          <td>AI処理により自動生成</td>
-        </tr>
-        <tr>
-          <td>認証コード</td>
-          <td>アカウントの認証・復元に使用するコード（端末・サーバー両方に保存）</td>
-          <td>アプリ初回起動時に自動生成</td>
-        </tr>
-        <tr>
-          <td>Alexa連携コード</td>
-          <td>Alexaスキルとのアカウント連携に使用する一時コード（有効期限10分）</td>
-          <td>アプリ内の操作により生成</td>
-        </tr>
-      </tbody>
-    </table>
-    <p>本サービスは、メールアドレスや電話番号などの連絡先情報は収集しません。</p>
-
-    <h2>2. 情報の利用目的</h2>
-    <p>収集した情報は、以下の目的のみに利用します。</p>
-    <ul>
-      <li>タオルの交換タイミング管理・通知機能の提供</li>
-      <li>タオルの状態診断機能の提供</li>
-      <li>家族グループでのデータ共有機能の提供</li>
-      <li>Alexaスキルとの連携機能の提供</li>
-      <li>サービスの品質向上・不具合対応</li>
-    </ul>
-    <p>収集した情報を、上記以外の目的に利用することはありません。</p>
-
-    <h2>3. 第三者への情報提供</h2>
-    <p>当社は、以下のサービスプロバイダーとデータを共有します。いずれもサービス運営に必要な処理のみを行います。</p>
-    <table>
-      <thead>
-        <tr>
-          <th>提供先</th>
-          <th>目的</th>
-          <th>プライバシーポリシー</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Google Firebase</td>
-          <td>データの保存・認証処理</td>
-          <td><a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google プライバシーポリシー</a></td>
-        </tr>
-        <tr>
-          <td>Amazon Web Services（AWS）</td>
-          <td>AI診断処理（状態診断写真の解析）</td>
-          <td><a href="https://aws.amazon.com/privacy/" target="_blank" rel="noopener">AWS プライバシーポリシー</a></td>
-        </tr>
-        <tr>
-          <td>Amazon Alexa</td>
-          <td>音声操作機能の提供</td>
-          <td><a href="https://www.amazon.co.jp/gp/help/customer/display.html?nodeId=GX7NJQ4ZB8MHFRNJ" target="_blank" rel="noopener">Amazon プライバシー規約</a></td>
-        </tr>
-        <tr>
-          <td>Google AdMob</td>
-          <td>無料プランでの広告表示</td>
-          <td><a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google プライバシーポリシー</a></td>
-        </tr>
-        <tr>
-          <td>Apple（App Store）</td>
-          <td>App内課金（サブスクリプション・買い切り）の決済処理</td>
-          <td><a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener">Apple プライバシーポリシー</a></td>
-        </tr>
-      </tbody>
-    </table>
-    <p>
-      Google AdMobによる広告表示において、広告の最適化のためにデバイス情報（広告識別子等）が収集される場合があります。
-      Proプラン加入中は広告は表示されません。
-    </p>
-    <p>
-      App内課金の決済処理はAppleが直接管理しており、当社がクレジットカード情報等の決済情報を取得・保存することはありません。
-    </p>
-    <p>上記以外の第三者に個人情報を提供することは、法令に基づく場合を除きありません。</p>
-
-    <h2>4. データの保存期間と削除</h2>
-    <p>
-      収集したデータは、アカウントが有効な期間中保持されます。
-      アプリの設定画面からアカウントを削除することで、タオルデータ・認証コード・ユーザー情報のすべてが削除されます。
-    </p>
-    <p>
-      状態診断写真はAI処理後も削除されず、アカウント削除時に合わせて消去されます。
-      Alexa連携コードは有効期限（10分）経過後または使用後に自動的に無効化されます。
-    </p>
-
-    <h2>5. セキュリティ</h2>
-    <p>
-      データはFirebase（Google）のセキュリティ機能により保護されており、認証されたユーザーのみが自身のデータにアクセスできます。
-      データの通信はすべてHTTPSにより暗号化されます。
-    </p>
-
-    <h2>6. 子どものプライバシー</h2>
-    <p>
-      本サービスは13歳未満の子どもを対象としておらず、意図的にその個人情報を収集することはありません。
-    </p>
-
-    <h2>7. プライバシーポリシーの変更</h2>
-    <p>
-      本ポリシーは、サービスの変更や法令の改正に伴い更新されることがあります。
-      重要な変更が生じた場合はアプリ内でお知らせします。
-      最新のポリシーは常に本ページに掲載します。
-    </p>
-
-    <h2>8. お問い合わせ</h2>
-    <p>プライバシーに関するお問い合わせは、以下までご連絡ください。</p>
-    <div class="contact-box">
-      <strong>10HALF LLC</strong><br>
-      メール：<a href="mailto:support@10half.jp">support@10half.jp</a>
+    <div class="lang-switch">
+      <a onclick="switchLang('en')">EN</a> | <a onclick="switchLang('ja')">日本語</a>
     </div>
 
-    <p class="updated">最終更新日：2026年2月28日</p>
+    <div id="ja">
+      <div class="logo">🏠</div>
+      <h1>プライバシーポリシー</h1>
+      <p class="subtitle">かえたお（Kaetao）</p>
+
+      <p>
+        10HALF LLC（以下「当社」）は、iOS/AndroidアプリおよびAmazon Alexaスキル「かえたおアプリ」（以下「本サービス」）において、
+        ユーザーの個人情報・データの取り扱いについて、以下のとおりプライバシーポリシーを定めます。
+      </p>
+
+      <h2>1. 収集する情報</h2>
+      <p>本サービスでは、以下の情報を収集します。</p>
+      <table>
+        <thead>
+          <tr>
+            <th>情報の種類</th>
+            <th>内容</th>
+            <th>収集方法</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>表示名</td>
+            <td>ユーザーが任意に設定したニックネーム</td>
+            <td>アプリ内で入力</td>
+          </tr>
+          <tr>
+            <td>タオルデータ</td>
+            <td>登録タオルの名称・交換記録・使用期間等</td>
+            <td>アプリ内で入力</td>
+          </tr>
+          <tr>
+            <td>状態診断写真</td>
+            <td>タオルの状態確認のためにアップロードした画像</td>
+            <td>カメラまたはフォトライブラリ</td>
+          </tr>
+          <tr>
+            <td>AI診断結果</td>
+            <td>写真をもとにAIが生成したタオルの状態評価テキスト</td>
+            <td>AI処理により自動生成</td>
+          </tr>
+          <tr>
+            <td>認証コード</td>
+            <td>アカウントの認証・復元に使用するコード（端末・サーバー両方に保存）</td>
+            <td>アプリ初回起動時に自動生成</td>
+          </tr>
+          <tr>
+            <td>Alexa連携コード</td>
+            <td>Alexaスキルとのアカウント連携に使用する一時コード（有効期限10分）</td>
+            <td>アプリ内の操作により生成</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>本サービスは、メールアドレスや電話番号などの連絡先情報は収集しません。</p>
+
+      <h2>2. 情報の利用目的</h2>
+      <p>収集した情報は、以下の目的のみに利用します。</p>
+      <ul>
+        <li>タオルの交換タイミング管理・通知機能の提供</li>
+        <li>タオルの状態診断機能の提供</li>
+        <li>家族グループでのデータ共有機能の提供</li>
+        <li>Alexaスキルとの連携機能の提供</li>
+        <li>サービスの品質向上・不具合対応</li>
+      </ul>
+      <p>収集した情報を、上記以外の目的に利用することはありません。</p>
+
+      <h2>3. 第三者への情報提供</h2>
+      <p>当社は、以下のサービスプロバイダーとデータを共有します。いずれもサービス運営に必要な処理のみを行います。</p>
+      <table>
+        <thead>
+          <tr>
+            <th>提供先</th>
+            <th>目的</th>
+            <th>プライバシーポリシー</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Google Firebase</td>
+            <td>データの保存・認証処理</td>
+            <td><a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google プライバシーポリシー</a></td>
+          </tr>
+          <tr>
+            <td>Amazon Web Services（AWS）</td>
+            <td>AI診断処理（状態診断写真の解析）</td>
+            <td><a href="https://aws.amazon.com/privacy/" target="_blank" rel="noopener">AWS プライバシーポリシー</a></td>
+          </tr>
+          <tr>
+            <td>Amazon Alexa</td>
+            <td>音声操作機能の提供</td>
+            <td><a href="https://www.amazon.co.jp/gp/help/customer/display.html?nodeId=GX7NJQ4ZB8MHFRNJ" target="_blank" rel="noopener">Amazon プライバシー規約</a></td>
+          </tr>
+          <tr>
+            <td>Google AdMob</td>
+            <td>無料プランでの広告表示</td>
+            <td><a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google プライバシーポリシー</a></td>
+          </tr>
+          <tr>
+            <td>Apple（App Store）</td>
+            <td>App内課金（サブスクリプション・買い切り）の決済処理</td>
+            <td><a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener">Apple プライバシーポリシー</a></td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        Google AdMobによる広告表示において、広告の最適化のためにデバイス情報（広告識別子等）が収集される場合があります。
+        Proプラン加入中は広告は表示されません。
+      </p>
+      <p>
+        App内課金の決済処理はAppleが直接管理しており、当社がクレジットカード情報等の決済情報を取得・保存することはありません。
+      </p>
+      <p>上記以外の第三者に個人情報を提供することは、法令に基づく場合を除きありません。</p>
+
+      <h2>4. データの保存期間と削除</h2>
+      <p>
+        収集したデータは、アカウントが有効な期間中保持されます。
+        アプリの設定画面からアカウントを削除することで、タオルデータ・認証コード・ユーザー情報のすべてが削除されます。
+      </p>
+      <p>
+        状態診断写真はAI処理後も削除されず、アカウント削除時に合わせて消去されます。
+        Alexa連携コードは有効期限（10分）経過後または使用後に自動的に無効化されます。
+      </p>
+
+      <h2>5. セキュリティ</h2>
+      <p>
+        データはFirebase（Google）のセキュリティ機能により保護されており、認証されたユーザーのみが自身のデータにアクセスできます。
+        データの通信はすべてHTTPSにより暗号化されます。
+      </p>
+
+      <h2>6. 子どものプライバシー</h2>
+      <p>
+        本サービスは13歳未満の子どもを対象としておらず、意図的にその個人情報を収集することはありません。
+      </p>
+
+      <h2>7. プライバシーポリシーの変更</h2>
+      <p>
+        本ポリシーは、サービスの変更や法令の改正に伴い更新されることがあります。
+        重要な変更が生じた場合はアプリ内でお知らせします。
+        最新のポリシーは常に本ページに掲載します。
+      </p>
+
+      <h2>8. お問い合わせ</h2>
+      <p>プライバシーに関するお問い合わせは、以下までご連絡ください。</p>
+      <div class="contact-box">
+        <strong>10HALF LLC</strong><br>
+        メール：<a href="mailto:support@10half.jp">support@10half.jp</a>
+      </div>
+
+      <p class="updated">最終更新日：2026年2月28日</p>
+    </div>
+
+    <div id="en" style="display:none">
+      <div class="logo">🏠</div>
+      <h1>Privacy Policy</h1>
+      <p class="subtitle">Kaetao</p>
+
+      <p>
+        10HALF LLC ("we," "us," or "our") establishes this Privacy Policy regarding the handling of users' personal information and data
+        in the iOS/Android app and Amazon Alexa skill "Kaetao" (collectively, the "Service").
+      </p>
+
+      <h2>1. Information We Collect</h2>
+      <p>The Service collects the following information:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Type of Information</th>
+            <th>Details</th>
+            <th>Collection Method</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Display Name</td>
+            <td>A nickname optionally set by the user</td>
+            <td>Entered within the app</td>
+          </tr>
+          <tr>
+            <td>Item Data</td>
+            <td>Names, exchange records, usage periods, etc. of registered items (towels, etc.)</td>
+            <td>Entered within the app</td>
+          </tr>
+          <tr>
+            <td>Condition Check Photos</td>
+            <td>Images uploaded to check the condition of items</td>
+            <td>Camera or photo library</td>
+          </tr>
+          <tr>
+            <td>AI Diagnosis Results</td>
+            <td>Condition assessment text generated by AI based on photos</td>
+            <td>Automatically generated by AI processing</td>
+          </tr>
+          <tr>
+            <td>Restore Code</td>
+            <td>A code used for account authentication and recovery (stored on both device and server)</td>
+            <td>Automatically generated on first app launch</td>
+          </tr>
+          <tr>
+            <td>Alexa Link Code</td>
+            <td>A temporary code used to link with the Alexa skill (valid for 10 minutes)</td>
+            <td>Generated through in-app action</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>The Service does not collect contact information such as email addresses or phone numbers.</p>
+
+      <h2>2. Purpose of Use</h2>
+      <p>The collected information is used solely for the following purposes:</p>
+      <ul>
+        <li>Providing item exchange timing management and notification features</li>
+        <li>Providing AI condition diagnosis features</li>
+        <li>Providing family group data sharing features</li>
+        <li>Providing Alexa skill integration features</li>
+        <li>Improving service quality and addressing issues</li>
+      </ul>
+      <p>We do not use the collected information for any purposes other than those listed above.</p>
+
+      <h2>3. Sharing with Third Parties</h2>
+      <p>We share data with the following service providers, each performing only the processing necessary for operating the Service:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Provider</th>
+            <th>Purpose</th>
+            <th>Privacy Policy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Google Firebase</td>
+            <td>Data storage and authentication</td>
+            <td><a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy Policy</a></td>
+          </tr>
+          <tr>
+            <td>Amazon Web Services (AWS)</td>
+            <td>AI diagnosis processing (condition check photo analysis)</td>
+            <td><a href="https://aws.amazon.com/privacy/" target="_blank" rel="noopener">AWS Privacy Policy</a></td>
+          </tr>
+          <tr>
+            <td>Amazon Alexa</td>
+            <td>Voice control functionality</td>
+            <td><a href="https://www.amazon.com/gp/help/customer/display.html?nodeId=GX7NJQ4ZB8MHFRNJ" target="_blank" rel="noopener">Amazon Privacy Notice</a></td>
+          </tr>
+          <tr>
+            <td>Google AdMob</td>
+            <td>Ad display on the free plan</td>
+            <td><a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy Policy</a></td>
+          </tr>
+          <tr>
+            <td>Apple (App Store)</td>
+            <td>In-app purchase (subscription and one-time purchase) payment processing</td>
+            <td><a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener">Apple Privacy Policy</a></td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        When displaying ads through Google AdMob, device information (such as advertising identifiers) may be collected for ad optimization.
+        No ads are displayed while subscribed to the Pro Plan.
+      </p>
+      <p>
+        In-app purchase payment processing is managed directly by Apple. We do not obtain or store any payment information such as credit card details.
+      </p>
+      <p>We do not provide personal information to any third parties other than those listed above, except as required by law.</p>
+
+      <h2>4. Data Retention and Deletion</h2>
+      <p>
+        Collected data is retained while the account is active.
+        By deleting your account from the app's settings, all item data, restore codes, and user information will be deleted.
+      </p>
+      <p>
+        Condition check photos are not deleted after AI processing and are removed when the account is deleted.
+        Alexa link codes are automatically invalidated after expiration (10 minutes) or after use.
+      </p>
+
+      <h2>5. Security</h2>
+      <p>
+        Data is protected by Firebase (Google) security features, and only authenticated users can access their own data.
+        All data communications are encrypted via HTTPS.
+      </p>
+
+      <h2>6. Children's Privacy</h2>
+      <p>
+        The Service is not directed at children under the age of 13, and we do not intentionally collect their personal information.
+      </p>
+
+      <h2>7. Changes to This Privacy Policy</h2>
+      <p>
+        This policy may be updated in response to changes in the Service or applicable laws.
+        We will notify users within the app if significant changes are made.
+        The latest policy is always available on this page.
+      </p>
+
+      <h2>8. Contact Us</h2>
+      <p>For privacy-related inquiries, please contact us at:</p>
+      <div class="contact-box">
+        <strong>10HALF LLC</strong><br>
+        Email: <a href="mailto:support@10half.jp">support@10half.jp</a>
+      </div>
+
+      <p class="updated">Last updated: February 28, 2026</p>
+    </div>
   </div>
+
+  <script>
+    var userLang = navigator.language || navigator.userLanguage;
+    if (!userLang.startsWith('ja')) {
+      document.getElementById('ja').style.display = 'none';
+      document.getElementById('en').style.display = 'block';
+    }
+    function switchLang(lang) {
+      document.getElementById('ja').style.display = lang === 'ja' ? 'block' : 'none';
+      document.getElementById('en').style.display = lang === 'en' ? 'block' : 'none';
+    }
+  </script>
 </body>
 </html>
