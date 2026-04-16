@@ -1,10 +1,10 @@
 import Foundation
+import SwiftUI
 import FirebaseFirestore
 
 enum AchievementCategory: String, Codable {
     case exchange
     case condition
-    case streak
     case group
     case milestone
 }
@@ -18,11 +18,11 @@ enum AchievementTier: Int, Codable, Comparable {
         lhs.rawValue < rhs.rawValue
     }
 
-    var colorName: String {
+    var color: Color {
         switch self {
-        case .bronze: return "brown"
-        case .silver: return "gray"
-        case .gold: return "yellow"
+        case .bronze: return .brown
+        case .silver: return .gray
+        case .gold: return .yellow
         }
     }
 }

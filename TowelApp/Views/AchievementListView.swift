@@ -72,12 +72,12 @@ struct AchievementBadgeCell: View {
                     .clipShape(Circle())
                     .overlay(
                         Circle()
-                            .strokeBorder(ringColor, lineWidth: 3)
+                            .strokeBorder(definition.tier.color, lineWidth: 3)
                     )
                     .overlay {
                         SparkleOverlay(
                             color: .yellow,
-                            shadowColor: ringColor,
+                            shadowColor: definition.tier.color,
                             sparkles: [
                                 (x: 62, y: 10, size: 8, delay: 0.0),
                                 (x: 8, y: 56, size: 7, delay: 0.2),
@@ -108,11 +108,7 @@ struct AchievementBadgeCell: View {
     }
 
     private var ringColor: Color {
-        switch definition.tier {
-        case .bronze: return .brown
-        case .silver: return .gray
-        case .gold: return .yellow
-        }
+        definition.tier.color
     }
 }
 

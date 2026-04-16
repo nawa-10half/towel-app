@@ -22,13 +22,6 @@ struct UserProfileBadgeView: View {
         }
     }
 
-    private func tierColor(for tier: AchievementTier) -> Color {
-        switch tier {
-        case .bronze: return .brown
-        case .silver: return .gray
-        case .gold: return .yellow
-        }
-    }
 }
 
 struct UserProfileSheet: View {

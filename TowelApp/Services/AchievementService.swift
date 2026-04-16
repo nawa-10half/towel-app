@@ -29,6 +29,7 @@ final class AchievementService {
     private var userListener: ListenerRegistration?
     private var achievementsListener: ListenerRegistration?
     private var groupAchievementsListener: ListenerRegistration?
+    private var groupDocListener: ListenerRegistration?
 
     private static let retroactiveFlagKey = "achievements_migrated_v1"
 
@@ -74,7 +75,6 @@ final class AchievementService {
             self.conditionScoreSum = data["conditionScoreSum"] as? Int ?? 0
             self.conditionScoreCount = data["conditionScoreCount"] as? Int ?? 0
             self.pinnedBadgeId = data["pinnedBadgeId"] as? String
-            Task { await self.evaluateAll() }
         }
 
         achievementsListener = userRef.collection("achievements")
@@ -101,6 +101,8 @@ final class AchievementService {
         achievementsListener = nil
         groupAchievementsListener?.remove()
         groupAchievementsListener = nil
+        groupDocListener?.remove()
+        groupDocListener = nil
         unlocked = [:]
         groupUnlocked = [:]
         totalExchangeCount = 0
@@ -112,6 +114,7 @@ final class AchievementService {
 
     func subscribeGroupAchievements(groupId: String) {
         groupAchievementsListener?.remove()
+        groupDocListener?.remove()
 
         let groupRef = db.collection("groups").document(groupId)
         groupAchievementsListener = groupRef.collection("achievements")
@@ -126,11 +129,9 @@ final class AchievementService {
                 self.groupUnlocked = map
             }
 
-        // Also cache group counter via one-shot read triggered by listener
-        groupRef.addSnapshotListener { [weak self] snapshot, _ in
+        groupDocListener = groupRef.addSnapshotListener { [weak self] snapshot, _ in
             guard let self, let data = snapshot?.data() else { return }
             self.groupTotalExchangeCount = data["totalExchangeCount"] as? Int ?? 0
-            Task { await self.evaluateAfterGroupAction() }
         }
     }
 
@@ -284,14 +285,6 @@ final class AchievementService {
         do {
             let towels = try await towelsCollection.getDocuments()
             for towelDoc in towels.documents {
-                // In group mode, count only this user's own records
-                var recordsQuery: Query = towelDoc.reference.collection("records")
-                if inGroup {
-                    // Records don't carry userId in current schema; fall back to counting all
-                    // records of the group — over-counts for personal badge but acceptable for
-                    // one-time retro. Future: add createdBy to ExchangeRecord.
-                }
-                _ = recordsQuery
                 let records = try await towelDoc.reference.collection("records").getDocuments()
                 exchangeCount += records.documents.count
 

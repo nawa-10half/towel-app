@@ -70,13 +70,6 @@ struct AchievementUnlockedToast: ViewModifier {
         .shadow(color: .black.opacity(0.1), radius: 8, y: 2)
     }
 
-    private func tierColor(for tier: AchievementTier) -> Color {
-        switch tier {
-        case .bronze: return .brown
-        case .silver: return .gray
-        case .gold: return .yellow
-        }
-    }
 }
 
 extension View {
