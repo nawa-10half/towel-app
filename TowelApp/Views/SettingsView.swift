@@ -337,6 +337,15 @@ struct SettingsView: View {
                         .foregroundStyle(.secondary)
                 }
             }
+            Link(destination: URL(string: "https://game-icons.net")!) {
+                HStack {
+                    Text("Badge icons by Game-icons.net (CC BY 3.0)")
+                        .font(.caption)
+                    Spacer()
+                    Image(systemName: "arrow.up.right.square")
+                        .foregroundStyle(.secondary)
+                }
+            }
         } header: {
             Text("アプリ情報")
         }
