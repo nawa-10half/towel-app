@@ -1445,6 +1445,9 @@
         }
       }
     },
+    "Badge icons by Game-icons.net (CC BY 3.0)" : {
+
+    },
     "OK" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -14255,61 +14258,60 @@
         }
       }
     },
-    "診断10回以上で平均スコア80以上を達成" : {
-      "extractionState" : "stale",
+    "診断20回以上で平均スコア60以上を達成" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Durchschnittspunktzahl von 80+ bei 10+ Diagnosen"
+            "value" : "Durchschnittspunktzahl von 60+ bei 20+ Diagnosen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Achieved average score of 80+ over 10+ checks"
+            "value" : "Achieved average score of 60+ over 20+ checks"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Puntuación promedio de 80+ en más de 10 diagnósticos"
+            "value" : "Puntuación promedio de 60+ en más de 20 diagnósticos"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Score moyen de 80+ sur 10+ diagnostics"
+            "value" : "Score moyen de 60+ sur 20+ diagnostics"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Punteggio medio di 80+ su 10+ diagnosi"
+            "value" : "Punteggio medio di 60+ su 20+ diagnosi"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "진단 10회 이상에서 평균 점수 80 이상 달성"
+            "value" : "진단 20회 이상에서 평균 점수 60 이상 달성"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pontuação média de 80+ em 10+ diagnósticos"
+            "value" : "Pontuação média de 60+ em 20+ diagnósticos"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Средний балл 80+ при 10+ диагностиках"
+            "value" : "Средний балл 60+ при 20+ диагностиках"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "10次以上诊断中平均分达到80以上"
+            "value" : "20次以上诊断中平均分达到60以上"
           }
         }
       }

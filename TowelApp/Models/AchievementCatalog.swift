@@ -159,8 +159,8 @@ enum AchievementCatalog {
             tier: .gold,
             iconName: "badge_clean_freak",
             titleKey: "きれい好き",
-            descriptionKey: "診断10回以上で平均スコア80以上を達成",
-            requirement: .averageScore(min: 80, minChecks: 10),
+            descriptionKey: "診断20回以上で平均スコア60以上を達成",
+            requirement: .averageScore(min: 60, minChecks: 20),
             isProOnly: true,
             isGroupAchievement: false
         )
