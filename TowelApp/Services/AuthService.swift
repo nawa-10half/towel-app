@@ -14,6 +14,8 @@ final class AuthService {
     var isDeletingAccount = false
     var errorMessage: String?
     var displayName: String = ""
+    var iconName: String = UserProfile.defaultIconName
+    var iconColor: String = UserProfile.defaultIconColor
     var restoreCode: String?
 
     private var authStateListener: AuthStateDidChangeListenerHandle?
@@ -103,9 +105,28 @@ final class AuthService {
     func loadDisplayName(uid: String) async {
         do {
             let doc = try await db.collection("users").document(uid).getDocument()
-            self.displayName = doc.data()?["displayName"] as? String ?? ""
+            let data = doc.data() ?? [:]
+            self.displayName = data["displayName"] as? String ?? ""
+            self.iconName = data["iconName"] as? String ?? UserProfile.defaultIconName
+            self.iconColor = data["iconColor"] as? String ?? UserProfile.defaultIconColor
         } catch {
             // ネットワークエラー等は無視
+        }
+    }
+
+    func updateProfile(iconName: String, iconColor: String) async throws {
+        guard let uid = currentUser?.uid else { return }
+        try await db.collection("users").document(uid).setData([
+            "iconName": iconName,
+            "iconColor": iconColor
+        ], merge: true)
+        self.iconName = iconName
+        self.iconColor = iconColor
+
+        if let groupId = GroupService.shared.groupId {
+            try await db.collection("groups").document(groupId)
+                .collection("members").document(uid)
+                .updateData(["iconName": iconName, "iconColor": iconColor])
         }
     }
 
@@ -151,6 +172,7 @@ final class AuthService {
         // リスナーを先に停止（サインアウト後の権限エラーを防ぐ）
         FirestoreService.shared.stopListening()
         GroupService.shared.stopListening()
+        AchievementService.shared.stopListening()
         do {
             try Auth.auth().signOut()
             displayName = ""
@@ -175,6 +197,7 @@ final class AuthService {
 
         // 2. Firestore リスナー停止
         FirestoreService.shared.stopListening()
+        AchievementService.shared.stopListening()
 
         // 3. Storage 写真削除（ベストエフォート）
         let towelsSnapshot = FirestoreService.shared.towels

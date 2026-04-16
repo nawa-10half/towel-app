@@ -15,5 +15,9 @@ struct GroupMember: Codable, Identifiable {
     @DocumentID var id: String?  // userId
     var displayName: String?
     var role: String = "member"  // "owner" | "member"
+    var iconName: String?
+    var iconColor: String?
+    var pinnedBadgeId: String?
+    var exchangeCount: Int?
     @ServerTimestamp var joinedAt: Date?
 }

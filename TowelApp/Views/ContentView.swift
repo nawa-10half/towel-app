@@ -26,6 +26,8 @@ struct ContentView: View {
         .task {
             await GroupService.shared.loadGroupForCurrentUser()
             firestoreService.startListening()
+            AchievementService.shared.startListening()
+            await AchievementService.shared.performRetroactiveEvaluation()
         }
         .onChange(of: firestoreService.towels) { _, towels in
             NotificationService.shared.rescheduleAllNotifications(for: towels)
@@ -33,6 +35,7 @@ struct ContentView: View {
         .onOpenURL { url in
             handleDeepLink(url)
         }
+        .achievementUnlockedToast()
     }
 
     private func handleDeepLink(_ url: URL) {

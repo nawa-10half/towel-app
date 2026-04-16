@@ -277,19 +277,25 @@ final class FirestoreService {
         guard let userId else {
             throw FirestoreError.notAuthenticated
         }
-        // dailyAssessments サブコレクションを削除（Firestoreは親削除時に自動削除しない）
-        let assessments = try await db.collection("users").document(userId)
-            .collection("dailyAssessments").getDocuments()
+        let userRef = db.collection("users").document(userId)
+
+        let assessments = try await userRef.collection("dailyAssessments").getDocuments()
         for doc in assessments.documents {
             try? await doc.reference.delete()
         }
-        try await db.collection("users").document(userId).delete()
+
+        let achievements = try await userRef.collection("achievements").getDocuments()
+        for doc in achievements.documents {
+            try? await doc.reference.delete()
+        }
+
+        try await userRef.delete()
     }
 
     // MARK: - Exchange Record
 
     func addRecord(towelId: String, exchangedAt: Date, note: String?) throws -> String {
-        guard let collection = towelsCollection() else {
+        guard let collection = towelsCollection(), let userId else {
             throw FirestoreError.notAuthenticated
         }
 
@@ -298,6 +304,7 @@ final class FirestoreService {
         let recordRef = collection.document(towelId).collection("records").document()
         var data: [String: Any] = [
             "exchangedAt": Timestamp(date: exchangedAt),
+            "createdBy": userId,
             "createdAt": FieldValue.serverTimestamp()
         ]
         if let note, !note.isEmpty {
@@ -311,7 +318,28 @@ final class FirestoreService {
             "updatedAt": FieldValue.serverTimestamp()
         ], forDocument: towelRef)
 
-        batch.commit { _ in }
+        // Achievement counters
+        let userRef = db.collection("users").document(userId)
+        batch.setData([
+            "totalExchangeCount": FieldValue.increment(Int64(1))
+        ], forDocument: userRef, merge: true)
+
+        if let groupId = GroupService.shared.groupId {
+            let groupRef = db.collection("groups").document(groupId)
+            batch.setData([
+                "totalExchangeCount": FieldValue.increment(Int64(1))
+            ], forDocument: groupRef, merge: true)
+            let memberRef = groupRef.collection("members").document(userId)
+            batch.setData([
+                "exchangeCount": FieldValue.increment(Int64(1))
+            ], forDocument: memberRef, merge: true)
+        }
+
+        batch.commit { _ in
+            Task { @MainActor in
+                await AchievementService.shared.evaluateAfterExchange()
+            }
+        }
         return recordRef.documentID
     }
 
@@ -349,7 +377,7 @@ final class FirestoreService {
         comment: String,
         recommendation: String
     ) async throws -> String {
-        guard let collection = towelsCollection() else {
+        guard let collection = towelsCollection(), let userId else {
             throw FirestoreError.notAuthenticated
         }
 
@@ -368,6 +396,17 @@ final class FirestoreService {
         }
 
         let docRef = try await collection.document(towelId).collection("conditionChecks").addDocument(data: data)
+
+        // Achievement counters
+        let userRef = db.collection("users").document(userId)
+        try? await userRef.setData([
+            "totalConditionCheckCount": FieldValue.increment(Int64(1)),
+            "conditionScoreSum": FieldValue.increment(Int64(overallScore)),
+            "conditionScoreCount": FieldValue.increment(Int64(1))
+        ], merge: true)
+
+        await AchievementService.shared.evaluateAfterConditionCheck()
+
         return docRef.documentID
     }
 

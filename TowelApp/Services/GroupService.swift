@@ -129,6 +129,8 @@ final class GroupService {
         FirestoreService.shared.startListening()
 
         startListening(groupId: newGroupId)
+        AchievementService.shared.subscribeGroupAchievements(groupId: newGroupId)
+        await AchievementService.shared.evaluateAfterGroupAction()
     }
 
     // MARK: - Join Group
@@ -185,6 +187,8 @@ final class GroupService {
         FirestoreService.shared.startListening()
 
         startListening(groupId: targetGroupId)
+        AchievementService.shared.subscribeGroupAchievements(groupId: targetGroupId)
+        await AchievementService.shared.evaluateAfterGroupAction()
     }
 
     // MARK: - Leave Group

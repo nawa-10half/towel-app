@@ -99,11 +99,32 @@ struct GroupSettingsView: View {
             // Members
             DisclosureGroup(String(localized: "メンバー（\(groupService.members.count)名）")) {
                 ForEach(groupService.members) { member in
-                    HStack {
-                        Image(systemName: member.role == "owner" ? "star.circle.fill" : "person.circle")
-                            .foregroundStyle(member.role == "owner" ? .orange : .secondary)
-                        Text(member.displayName ?? "名前未設定")
-                            .font(.subheadline)
+                    HStack(spacing: 10) {
+                        UserProfileIconView(
+                            iconName: member.iconName ?? UserProfile.defaultIconName,
+                            colorName: member.iconColor ?? UserProfile.defaultIconColor,
+                            size: 32
+                        )
+                        VStack(alignment: .leading, spacing: 2) {
+                            HStack(spacing: 4) {
+                                Text(member.displayName ?? String(localized: "名前未設定"))
+                                    .font(.subheadline)
+                                if member.role == "owner" {
+                                    Image(systemName: "star.fill")
+                                        .font(.caption2)
+                                        .foregroundStyle(.orange)
+                                }
+                            }
+                        }
+                        Spacer()
+                        if let badgeId = member.pinnedBadgeId,
+                           let def = AchievementCatalog.definition(for: badgeId) {
+                            Image(def.iconName)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 28, height: 28)
+                                .clipShape(Circle())
+                        }
                     }
                 }
             }

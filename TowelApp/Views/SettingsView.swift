@@ -13,7 +13,6 @@ struct SettingsView: View {
     @State private var showingJoinSheet = false
     @State private var showingSignOutConfirmation = false
     @State private var showingDeleteAccountConfirmation = false
-    @State private var editingDisplayName: String = ""
     @State private var codeCopied = false
     @State private var alexaLinkCode: String? = nil
     @State private var alexaLinkExpiry: Date? = nil
@@ -24,6 +23,8 @@ struct SettingsView: View {
     @State private var showingPaywall = false
     @State private var showingManageSubscriptions = false
     @State private var storeService = StoreService.shared
+    @State private var achievementService = AchievementService.shared
+    @State private var showingProfileEdit = false
 
     private var notificationTime: Binding<Date> {
         Binding(
@@ -58,6 +59,9 @@ struct SettingsView: View {
         .sheet(isPresented: $showingJoinSheet) {
             JoinGroupView()
         }
+        .sheet(isPresented: $showingProfileEdit) {
+            UserProfileEditView()
+        }
         .sheet(isPresented: $showingPaywall) {
             ProPaywallView(feature: .assessment)
         }
@@ -88,12 +92,6 @@ struct SettingsView: View {
                 authService.signOut()
             }
         }
-        .task {
-            editingDisplayName = authService.displayName
-        }
-        .onChange(of: authService.displayName) { _, newValue in
-            editingDisplayName = newValue
-        }
         .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
             if let expiry = alexaLinkExpiry, expiry <= .now {
                 alexaLinkCode = nil
@@ -104,19 +102,40 @@ struct SettingsView: View {
 
     private var accountSection: some View {
         Section {
-            // 表示名編集
-            HStack {
-                TextField("表示名", text: $editingDisplayName)
-                    .autocorrectionDisabled()
-                    .submitLabel(.done)
-                    .onSubmit { Task { await saveDisplayName() } }
-
-                if editingDisplayName.trimmingCharacters(in: .whitespacesAndNewlines) != authService.displayName {
-                    Button("保存") {
-                        Task { await saveDisplayName() }
+            Button {
+                showingProfileEdit = true
+            } label: {
+                HStack(spacing: 12) {
+                    UserProfileIconView(
+                        iconName: authService.iconName,
+                        colorName: authService.iconColor,
+                        size: 44
+                    )
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(authService.displayName.isEmpty ? String(localized: "名称未設定") : authService.displayName)
+                            .font(.headline)
+                            .foregroundStyle(.primary)
+                        HStack(spacing: 4) {
+                            Image(systemName: "trophy.fill")
+                                .font(.caption)
+                                .foregroundStyle(.yellow)
+                            Text("\(achievementService.unlockedCount) / \(achievementService.totalCount) バッジ")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
                     }
-                    .font(.callout)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
                 }
+            }
+            .buttonStyle(.plain)
+
+            NavigationLink {
+                AchievementListView()
+            } label: {
+                Label("すべてのバッジ", systemImage: "trophy")
             }
 
             // リストアコード
@@ -379,19 +398,6 @@ struct SettingsView: View {
         String(localized: "【かえたお リストアコード】\n\(code)\n\n機種変更や再インストール時に必要です。大切に保管してください。")
     }
 
-    private func saveDisplayName() async {
-        guard NetworkMonitor.shared.isConnected else {
-            editingDisplayName = authService.displayName
-            errorMessage = String(localized: "オフラインのため表示名を変更できません。ネットワーク接続後に再度お試しください。")
-            return
-        }
-        do {
-            try await authService.updateDisplayName(editingDisplayName)
-        } catch {
-            editingDisplayName = authService.displayName
-            errorMessage = String(localized: "表示名の保存に失敗しました: \(error.localizedDescription)")
-        }
-    }
 }
 
 #Preview {

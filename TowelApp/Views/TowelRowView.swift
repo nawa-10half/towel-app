@@ -11,6 +11,15 @@ struct TowelRowView: View {
                 .frame(width: 40, height: 40)
                 .background(statusColor.opacity(0.15))
                 .clipShape(RoundedRectangle(cornerRadius: 8))
+                .overlay {
+                    if towel.status == .ok {
+                        SparkleOverlay(sparkles: [
+                            (x: 34, y: 6, size: 10, delay: 0.0),
+                            (x: 6, y: 32, size: 8, delay: 0.18),
+                            (x: 30, y: 30, size: 6, delay: 0.36)
+                        ])
+                    }
+                }
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(towel.name)
@@ -57,6 +66,7 @@ struct TowelRowView: View {
         }
     }
 }
+
 
 #Preview {
     let towel = Towel(name: "バスタオル", location: "浴室", iconName: "shower.fill", exchangeIntervalDays: 3)

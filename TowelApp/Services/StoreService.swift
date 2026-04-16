@@ -79,7 +79,11 @@ final class StoreService {
             }
         }
 
+        let wasPro = isPro
         isPro = hasPro
+        if !wasPro && hasPro {
+            await AchievementService.shared.evaluateAfterProPurchase()
+        }
     }
 
     // MARK: - Purchase

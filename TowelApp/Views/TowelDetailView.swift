@@ -372,6 +372,10 @@ struct TowelDetailView: View {
                             Text(note)
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
+                        } else if let name = exchangerName(for: record) {
+                            Text(String(localized: "\(name) が交換"))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                         }
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
@@ -413,6 +417,12 @@ struct TowelDetailView: View {
                 }
             }
         }
+    }
+
+    private func exchangerName(for record: ExchangeRecord) -> String? {
+        guard GroupService.shared.groupId != nil else { return nil }
+        guard let uid = record.createdBy else { return nil }
+        return GroupService.shared.members.first { $0.id == uid }?.displayName
     }
 
     private func statusBadge(_ towel: Towel) -> some View {

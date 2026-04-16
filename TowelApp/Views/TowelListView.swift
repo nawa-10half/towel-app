@@ -9,6 +9,7 @@ struct TowelListView: View {
     @State private var towelToDelete: Towel?
     @State private var deleteTrigger = false
     @State private var showingPaywall = false
+    @State private var showingProfile = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -37,6 +38,13 @@ struct TowelListView: View {
         }
         .navigationTitle("アイテムリスト")
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    showingProfile = true
+                } label: {
+                    UserProfileBadgeView()
+                }
+            }
             ToolbarItem(placement: .primaryAction) {
                 Button {
                     let limit = ProLimits.maxTowels(isPro: StoreService.shared.isPro)
@@ -56,6 +64,9 @@ struct TowelListView: View {
         }
         .sheet(isPresented: $showingPaywall) {
             ProPaywallView(feature: .towelLimit)
+        }
+        .sheet(isPresented: $showingProfile) {
+            UserProfileSheet()
         }
         .alert("エラー", isPresented: Binding(
             get: { viewModel.errorMessage != nil },
